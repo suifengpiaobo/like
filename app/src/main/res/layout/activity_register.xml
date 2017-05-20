@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.aladdin.like.module.register.RegisterActivity">
+
+    <com.aladdin.like.widget.CustomViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+    </com.aladdin.like.widget.CustomViewPager>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        >
+        <TextView
+            android:id="@+id/login_wx_login"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="微信登录"
+            android:gravity="center"
+            android:background="@color/Red"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="账号注册"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textColor="@color/Black"
+            android:visibility="gone"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/register_buttom"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
+        android:background="@color/white"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/wx_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
+            android:paddingTop="13dp"
+            android:paddingBottom="13dp"
+            android:background="@drawable/login_button_bg"
+            android:textColor="@color/white"
+            android:text="微信登录"
+            android:gravity="center"
+            android:textSize="18sp"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:text="也可以在这里"
+                />
+
+            <TextView
+                android:id="@+id/register_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="注册账号"
+                android:textColor="@color/Red"
+                android:textSize="16sp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

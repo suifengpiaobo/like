@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BaseLibrary</string>
+    <string name="back">返回</string>
+    <string name="again">点击重试</string>
+    <string name="loading">请稍后...</string>
+
+    <string name="wx_no_exist">未安装微信客户端</string>
+    <string name="wx_version_not_support">当前的微信版本过低，请先更新</string>
+</resources>
