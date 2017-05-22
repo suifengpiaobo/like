@@ -2,9 +2,11 @@ package com.aladdin.like.module.main.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
@@ -12,6 +14,8 @@ import com.aladdin.like.model.PrefecturePojo;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,37 +26,39 @@ import butterknife.ButterKnife;
  * Email:444288256@qq.com
  */
 public class MainAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
-    private onItemClickListener mOnItemClickListener;
+    onItemClickListener mItemClickListener;
+    private Context mContext;
 
-    public MainAdapter(Context mContext) {
-        super(mContext);
+    private Integer[] imgs = {
+            R.drawable.picture_1, R.drawable.picture_2, R.drawable.picture_3,
+            R.drawable.picture_4,  R.drawable.picture_6,
+            R.drawable.picture_7, R.drawable.picture_8,
+            R.drawable.picture_10, R.drawable.picture_11, R.drawable.picture_12,
+    };
+
+    public MainAdapter(Context context) {
+        super(context);
+        this.mContext = context;
     }
 
     @Override
-    public void onBindCommon(RecyclerView.ViewHolder holder, PrefecturePojo.Prefecture item) {
-
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
         MainViewHolder viewHolder = (MainViewHolder) holder;
         PrefecturePojo.Prefecture item = getItemObject(position);
-        if (item != null){
-            ImageLoaderUtils.displayRoundNative(mContext,viewHolder.mPrefectureBg,R.mipmap.ic_github);
+        Log.e("MainApadter","item--->>>"+item);
+        if (item != null) {
+            viewHolder.mMainTypeName.setText(item.typeName);
 
-            viewHolder.mTypeName.setText(item.typeName);
-            viewHolder.mTime.setText(item.time+"");
-
-            viewHolder.mPrefectureBg.setOnClickListener(new View.OnClickListener() {
+            ImageLoaderUtils.displayRoundNative(mContext, viewHolder.mMainImg, imgs[position]);
+            viewHolder.mMainItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mOnItemClickListener != null){
-                        mOnItemClickListener.onItemClick(item);
+                    if (mItemClickListener != null) {
+                        mItemClickListener.onItemClick(item);
                     }
                 }
             });
         }
-
     }
 
     @Override
@@ -61,8 +67,11 @@ public class MainAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     }
 
     @Override
-    public int getItemCount() {
-        return mDatas.size();
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    }
+
+    @Override
+    public void onBindCommon(RecyclerView.ViewHolder holder, PrefecturePojo.Prefecture item) {
     }
 
     public PrefecturePojo.Prefecture getItemObject(int position) {
@@ -77,12 +86,14 @@ public class MainAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     }
 
     static class MainViewHolder extends BaseViewHolder {
-        @BindView(R.id.prefecture_bg)
-        ImageView mPrefectureBg;
-        @BindView(R.id.type_name)
-        TextView mTypeName;
-        @BindView(R.id.time)
-        TextView mTime;
+        @BindView(R.id.main_img)
+        ImageView mMainImg;
+        @BindView(R.id.main_type_name)
+        TextView mMainTypeName;
+        @BindView(R.id.main_time)
+        TextView mMainTime;
+        @BindView(R.id.main_item)
+        LinearLayout mMainItem;
 
         MainViewHolder(View view) {
             super(view);
@@ -90,11 +101,11 @@ public class MainAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
         }
     }
 
-    public void setOnItemClickListener(onItemClickListener onItemClickListener) {
-        mOnItemClickListener = onItemClickListener;
+    public void setItemClickListener(onItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
     }
 
-    public interface onItemClickListener{
+    public interface onItemClickListener {
         void onItemClick(PrefecturePojo.Prefecture item);
     }
 

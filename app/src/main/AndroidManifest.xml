@@ -73,6 +73,13 @@
         </activity>
         <activity android:name=".module.message.MineMessageActivity">
         </activity>
+        <activity
+            android:name=".module.diary.PublishDiaryActivity"
+            android:label="@string/title_activity_publish_diary"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity android:name=".module.download.DownLoadPictureActivity">
+        </activity>
     </application>
 
 </manifest>

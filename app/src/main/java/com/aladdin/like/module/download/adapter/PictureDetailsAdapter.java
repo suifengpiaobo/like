@@ -25,7 +25,12 @@ public class PictureDetailsAdapter extends BaseAdapter<PrefecturePojo.Prefecture
 
     private onItemClickListener mOnItemClickListener;
 
-
+    private Integer[] imgs = {
+            R.drawable.picture_1, R.drawable.picture_2, R.drawable.picture_3,
+            R.drawable.picture_4,  R.drawable.picture_6,
+            R.drawable.picture_7, R.drawable.picture_8,
+            R.drawable.picture_10, R.drawable.picture_11, R.drawable.picture_12,
+    };
 
     public PictureDetailsAdapter(Context mContext) {
         super(mContext);
@@ -42,7 +47,7 @@ public class PictureDetailsAdapter extends BaseAdapter<PrefecturePojo.Prefecture
         MainViewHolder viewHolder = (MainViewHolder) holder;
         PrefecturePojo.Prefecture item = getItemObject(position);
         if (item != null){
-            ImageLoaderUtils.displayRoundNative(mContext,viewHolder.mPrefectureBg,R.mipmap.ic_github);
+            ImageLoaderUtils.displayRoundNative(mContext,viewHolder.mPrefectureBg,imgs[position]);
 
             viewHolder.mTypeName.setText(item.typeName);
             viewHolder.mTime.setText(item.time+"");
@@ -81,11 +86,11 @@ public class PictureDetailsAdapter extends BaseAdapter<PrefecturePojo.Prefecture
     }
 
     static class MainViewHolder extends BaseViewHolder {
-        @BindView(R.id.prefecture_bg)
+        @BindView(R.id.main_img)
         ImageView mPrefectureBg;
-        @BindView(R.id.type_name)
+        @BindView(R.id.main_type_name)
         TextView mTypeName;
-        @BindView(R.id.time)
+        @BindView(R.id.main_time)
         TextView mTime;
 
         MainViewHolder(View view) {

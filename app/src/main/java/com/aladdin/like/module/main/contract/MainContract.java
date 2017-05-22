@@ -11,7 +11,7 @@ import com.aladdin.like.model.PrefecturePojo;
  */
 public interface MainContract {
     interface View extends BaseView {
-        void setData(PrefecturePojo data);
+        void setData(PrefecturePojo.Prefecture data);
     }
 
     interface Presenter extends BasePresenter {

@@ -1,4 +1,4 @@
-package com.aladdin.like.module.circle;
+package com.aladdin.like.module.diary;
 
 import android.content.Intent;
 import android.util.Log;
@@ -7,12 +7,12 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
 import com.aladdin.utils.ImageLoaderUtils;
-import com.aladdin.widget.NormalTitleBar;
+import com.aladdin.utils.ToastUtil;
 import com.yalantis.ucrop.ui.AlbumDirectoryActivity;
 import com.yalantis.ucrop.ui.ImageGridActivity;
 import com.yalantis.ucrop.util.Constants;
@@ -25,64 +25,51 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * Description 发布到日记
- * Created by zxl on 2017/5/1 上午10:27.
+ * Description 发布日记页面
+ * Created by zxl on 2017/5/21 下午9:25.
  */
-public class SendCircleActivity extends BaseActivity {
+public class PublishDiaryActivity extends BaseActivity {
 
-    @BindView(R.id.title)
-    NormalTitleBar mTitle;
+    @BindView(R.id.back)
+    ImageView mBack;
+    @BindView(R.id.finish)
+    TextView mFinish;
+    @BindView(R.id.shoose_picture)
+    ImageView mShoosePicture;
     @BindView(R.id.add_picture)
     ImageView mAddPicture;
-    @BindView(R.id.title_des)
-    EditText mTitleDes;
-    @BindView(R.id.desctiption)
-    EditText mDesctiption;
-    @BindView(R.id.choose_picture_img)
-    ImageView mChoosePictureImg;
-    @BindView(R.id.choose_picture_rl)
-    RelativeLayout mChoosePictureRl;
+    @BindView(R.id.description)
+    EditText mDescription;
 
     private int selectType = LocalMediaLoader.TYPE_IMAGE;
     private int copyMode = Constants.COPY_MODEL_DEFAULT;
     private int selectMode = Constants.MODE_SINGLE;
-
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_send_circle;
+        return R.layout.activity_publish_diary;
     }
 
     @Override
     protected void initView() {
-        mAddPicture.requestFocus();
-        initTitle();
+
     }
 
-    private void initTitle() {
-        mTitle.setBackVisibility(true);
-        mTitle.setRightTitleVisibility(false);
-        mTitle.setTvRightVisibility(true);
-
-        mTitle.setOnBackListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @OnClick({R.id.back, R.id.finish, R.id.add_picture})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.back:
                 finish();
-            }
-        });
-
-        mTitle.setOnRightTvListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(SendCircleSucActivity.class);
-            }
-        });
+                break;
+            case R.id.finish:
+                ToastUtil.sToastUtil.shortDuration("发布成功!");
+                break;
+            case R.id.add_picture:
+                choosePicture();
+                break;
+        }
     }
 
-    @OnClick(R.id.add_picture)
-    public void onViewClicked() {
-//        PictureChooseDialog dialog = new PictureChooseDialog();
-//        dialog.show(getSupportFragmentManager(),"picture_dialog");
-
+    void choosePicture(){
         /**
          * type --> 1图片 or 2视频
          * copyMode -->裁剪比例，默认、1:1、3:4、3:2、16:9
@@ -104,7 +91,7 @@ public class SendCircleActivity extends BaseActivity {
         options.setEnablePreview(true);
         options.setEnableCrop(false);
         options.setPreviewVideo(false);
-        AlbumDirectoryActivity.startPhoto(SendCircleActivity.this, options);
+        AlbumDirectoryActivity.startPhoto(PublishDiaryActivity.this, options);
     }
 
     @Override
@@ -116,18 +103,11 @@ public class SendCircleActivity extends BaseActivity {
                     if (result != null) {
                         mAddPicture.setVisibility(View.GONE);
                         Log.e("SendCircleActivity", "result---->>>" + result);
-                        ImageLoaderUtils.loadingImg(SendCircleActivity.this, mChoosePictureImg, result.get(0));
+                        ImageLoaderUtils.loadingImg(PublishDiaryActivity.this, mShoosePicture, result.get(0));
                     }
                     break;
             }
         }
-    }
-
-    //点击空白隐藏软键盘
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        final View v = this.getWindow().peekDecorView();
-        return hiddenInputMethodManager(v);
     }
 
     //隐藏键盘
@@ -137,5 +117,12 @@ public class SendCircleActivity extends BaseActivity {
             return imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
         }
         return false;
+    }
+
+    //点击空白隐藏软键盘
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        final View v = this.getWindow().peekDecorView();
+        return hiddenInputMethodManager(v);
     }
 }

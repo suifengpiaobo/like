@@ -118,14 +118,17 @@ public class MineFragment extends BaseFragment {
         switch (view.getId()) {
             case R.id.mine_atlas:
                 mCurrent = 0;
+                mViewpager.setCurrentItem(mCurrent);
                 setMineTitle();
                 break;
             case R.id.mine_picture:
                 mCurrent = 1;
+                mViewpager.setCurrentItem(mCurrent);
                 setMineTitle();
                 break;
             case R.id.mine_dirary:
                 mCurrent = 2;
+                mViewpager.setCurrentItem(mCurrent);
                 setMineTitle();
                 break;
             case R.id.set:

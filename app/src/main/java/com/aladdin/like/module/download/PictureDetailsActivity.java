@@ -1,11 +1,9 @@
 package com.aladdin.like.module.download;
 
 import android.os.Bundle;
-import android.os.Handler;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,41 +12,44 @@ import com.aladdin.dialog.ShareDialog;
 import com.aladdin.like.R;
 import com.aladdin.like.model.PrefecturePojo;
 import com.aladdin.like.module.download.adapter.PictureDetailsAdapter;
-import com.aladdin.utils.DensityUtils;
+import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.ImageLoaderUtils;
-import com.aladdin.utils.ToastUtil;
-import com.aladdin.widget.NormalTitleBar;
-import com.jcodecraeer.xrecyclerview.ProgressStyle;
-import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 /**
  * Description 图片详情页
  * Created by zxl on 2017/5/1 上午3:24.
  */
-public class PictureDetailsActivity extends BaseActivity implements XRecyclerView.LoadingListener {
+public class PictureDetailsActivity extends BaseActivity {
 
-    PrefecturePojo.Prefecture mPrefecture;
-    @BindView(R.id.title)
-    NormalTitleBar mTitle;
+    @BindView(R.id.back)
+    ImageView mBack;
+    @BindView(R.id.share)
+    ImageView mShare;
+    @BindView(R.id.picture)
     ImageView mPicture;
+    @BindView(R.id.type_name)
     TextView mTypeName;
-    ImageView mDownload;
-    TextView mPraiseNum;
-
+    @BindView(R.id.parise_num)
+    TextView mPariseNum;
+    @BindView(R.id.click_praise)
+    ImageView mClickPraise;
     @BindView(R.id.download_recycle)
-    XRecyclerView mDownloadRecycle;
+    RecyclerView mDownloadRecycle;
+
 
     PictureDetailsAdapter mAdapter;
 
     List<PrefecturePojo.Prefecture> mPrefectures = new ArrayList<>();
+    PrefecturePojo.Prefecture mPrefecture;
 
-    private int cursor = 0;
-    private int width;
+    String[] name = {"日韩美图","微信素材","另类图集","美食图集","健美图片","欧美情侣",
+            "运动名将","奢侈生活","电影明星","轻松搞笑","夜生活","专辑封面"};
 
     @Override
     protected int getLayoutId() {
@@ -58,37 +59,20 @@ public class PictureDetailsActivity extends BaseActivity implements XRecyclerVie
     @Override
     protected void initView() {
         mPrefecture = (PrefecturePojo.Prefecture) getIntent().getSerializableExtra("PREFECTURE");
-        width = DensityUtils.mScreenWidth;
-        initTitle();
 
-        mDownloadRecycle.setRefreshProgressStyle(ProgressStyle.BallClipRotate);
-        mDownloadRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallClipRotate);
-        mDownloadRecycle.setArrowImageView(R.mipmap.icon_refresh);
+        for (int i = 0; i< 10;i++){
+            mPrefecture = new PrefecturePojo.Prefecture();
+            mPrefecture.typeName = name[i];
+            mPrefectures.add(mPrefecture);
+        }
+        ImageLoaderUtils.displayRoundNative(PictureDetailsActivity.this,mPicture,R.drawable.picture_11);
 
-        View header = LayoutInflater.from(this).inflate(R.layout.layout_picture_details_header, (ViewGroup) findViewById(android.R.id.content), false);
-        mPicture = (ImageView) header.findViewById(R.id.download_picture);
-        mTypeName = (TextView) header.findViewById(R.id.type_name);
-        mDownload = (ImageView) header.findViewById(R.id.download);
-        mPraiseNum = (TextView) header.findViewById(R.id.praise_num);
-        mDownloadRecycle.addHeaderView(header);
-
-        ViewGroup.LayoutParams lp = mPicture.getLayoutParams();
-        lp.width = width - DensityUtils.dip2px(30);
-        lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-
-        mPicture.setLayoutParams(lp);
-
-        mPicture.setMaxWidth(width);
-        mPicture.setMaxHeight((int) (width * 5));
-        ImageLoaderUtils.displayRoundNative(PictureDetailsActivity.this, mPicture, R.mipmap.ic_github);
-
+        StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mAdapter = new PictureDetailsAdapter(PictureDetailsActivity.this);
+        mDownloadRecycle.setLayoutManager(staggered);
+        mDownloadRecycle.addItemDecoration(new SpacesItemDecoration(10));
         mDownloadRecycle.setAdapter(mAdapter);
-
-
-        mDownloadRecycle.setLoadingListener(this);
-
-        mDownloadRecycle.setRefreshing(true);
+        mAdapter.addAll(mPrefectures);
 
         bindEvent();
     }
@@ -99,85 +83,27 @@ public class PictureDetailsActivity extends BaseActivity implements XRecyclerVie
             public void onItemClick(PrefecturePojo.Prefecture item) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("PREFECTURE", item);
-                startActivity(DownLoadActivity.class, bundle);
+                startActivity(DownLoadPictureActivity.class, bundle);
             }
         });
 
-        mDownload.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ToastUtil.sToastUtil.shortDuration("下载");
-            }
-        });
     }
 
-    private void initTitle() {
-        mTitle.setBackVisibility(true);
-        mTitle.setRightTitleVisibility(true);
-        mTitle.setRightTitle(R.mipmap.share);
-
-        mTitle.setOnBackListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    @OnClick({R.id.back, R.id.share, R.id.click_praise,R.id.picture})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.back:
                 finish();
-            }
-        });
-
-        mTitle.setOnRightTextListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                break;
+            case R.id.share:
                 ShareDialog shareDialog = new ShareDialog();
                 shareDialog.show(getSupportFragmentManager(), "share_dialog");
-            }
-        });
-    }
-
-    @Override
-    public void onRefresh() {
-        cursor = 0;
-        if (mAdapter != null && mAdapter.getItemCount() > 0) {
-            mAdapter.clear();
+                break;
+            case R.id.picture:
+                startActivity(DownLoadPictureActivity.class);
+                break;
+            case R.id.click_praise:
+                break;
         }
-        for (int i = 0; i < 10; i++) {
-            PrefecturePojo.Prefecture prefecture = new PrefecturePojo.Prefecture();
-            prefecture.time = 10192;
-            prefecture.typeName = "健身美图" + i;
-
-            mPrefectures.add(prefecture);
-        }
-
-        StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        mDownloadRecycle.setLayoutManager(staggered);
-        mAdapter.addAll(mPrefectures);
-        mAdapter.notifyDataSetChanged();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mDownloadRecycle.refreshComplete();
-            }
-        }, 2000);
     }
-
-    @Override
-    public void onLoadMore() {
-        for (int i = 0; i < 10; i++) {
-            PrefecturePojo.Prefecture prefecture = new PrefecturePojo.Prefecture();
-            prefecture.time = 10192;
-            prefecture.typeName = "健身美图" + i;
-
-            mPrefectures.add(prefecture);
-        }
-
-        mAdapter.addAll(mPrefectures);
-        mAdapter.notifyDataSetChanged();
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mDownloadRecycle.loadMoreComplete();
-            }
-        }, 1000);
-    }
-
 }

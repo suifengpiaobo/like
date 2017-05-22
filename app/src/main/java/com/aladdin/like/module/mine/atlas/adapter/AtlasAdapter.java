@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.aladdin.like.R;
 import com.aladdin.like.model.AtlasPicturePojo;
 import com.aladdin.utils.ImageLoaderUtils;
-import com.aladdin.utils.LogUtil;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
 
@@ -50,7 +49,6 @@ public class AtlasAdapter extends BaseAdapter<AtlasPicturePojo.AtlasPicture> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
         HorizontalViewHolder viewHolder = (HorizontalViewHolder) holder;
         AtlasPicturePojo.AtlasPicture item = getItemObject(position);
-        LogUtil.i("item--->>>"+item);
 
         if (position == 11){
             viewHolder.mSearchSpace2.setVisibility(View.VISIBLE);

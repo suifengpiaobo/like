@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.aladdin.like.R;
 import com.aladdin.like.model.AtlasPicturePojo;
-import com.aladdin.utils.ImageLoaderUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,8 +84,8 @@ public class ChooseAdapter extends BaseAdapter {
             }else{
                 viewHolder.mAtlasChoose.setSelected(false);
             }
-
-            ImageLoaderUtils.displayRoundNative(mContext,viewHolder.mAtlasItemBg,imgs[position]);
+            viewHolder.mAtlasItemBg.setBackgroundResource(imgs[position]);
+//            ImageLoaderUtils.displayRoundNative(mContext,viewHolder.mAtlasItemBg,imgs[position]);
 
             viewHolder.mAtlasTypeName.setText(item.name);
 

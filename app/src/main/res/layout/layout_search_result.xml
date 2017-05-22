@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/main_item"
+              android:id="@+id/result_item"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="center"
               android:orientation="vertical"
     >
     <ImageView
-        android:id="@+id/main_img"
+        android:id="@+id/result_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
@@ -19,7 +19,7 @@
 
         >
         <TextView
-            android:id="@+id/main_type_name"
+            android:id="@+id/result_type_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
@@ -31,7 +31,7 @@
             />
 
         <TextView
-            android:id="@+id/main_time"
+            android:id="@+id/result_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

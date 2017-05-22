@@ -4,4 +4,12 @@
              android:layout_height="match_parent"
              tools:context="com.aladdin.like.module.mine.diary.MineDiraryFragment">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/mine_diary_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        ></android.support.v7.widget.RecyclerView>
 </FrameLayout>

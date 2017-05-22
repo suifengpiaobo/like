@@ -1,11 +1,11 @@
 package com.aladdin.like.module.search.adapter;
 
 import android.content.Context;
-import android.support.v4.widget.Space;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
@@ -24,18 +24,18 @@ import butterknife.ButterKnife;
  * Created by zxl on 2017/5/1 上午6:23.
  * Email:444288256@qq.com
  */
-public class HorizontalAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
+public class SearchResultAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     onItemClickListener mItemClickListener;
     private Context mContext;
 
     private Integer[] imgs = {
             R.drawable.picture_1, R.drawable.picture_2, R.drawable.picture_3,
-            R.drawable.picture_4, R.drawable.picture_5, R.drawable.picture_6,
-            R.drawable.picture_7, R.drawable.picture_8, R.drawable.picture_9,
+            R.drawable.picture_4,  R.drawable.picture_6,
+            R.drawable.picture_7, R.drawable.picture_8,
             R.drawable.picture_10, R.drawable.picture_11, R.drawable.picture_12,
     };
 
-    public HorizontalAdapter(Context context) {
+    public SearchResultAdapter(Context context) {
         super(context);
         this.mContext = context;
     }
@@ -44,16 +44,11 @@ public class HorizontalAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
         HorizontalViewHolder viewHolder = (HorizontalViewHolder) holder;
         PrefecturePojo.Prefecture item = getItemObject(position);
-        if (position == 11){
-            viewHolder.mSearchSpace2.setVisibility(View.VISIBLE);
-        }else{
-            viewHolder.mSearchSpace2.setVisibility(View.GONE);
-        }
         if (item != null) {
-            viewHolder.mHorizontalTypeName.setText(item.typeName);
+            viewHolder.mResultTypeName.setText(item.typeName);
 
-            ImageLoaderUtils.displayRoundNative(mContext, viewHolder.mSearchHorizontalBg, imgs[position]);
-            viewHolder.mSearchHorizontalBg.setOnClickListener(new View.OnClickListener() {
+            ImageLoaderUtils.displayRoundNative(mContext, viewHolder.mResultImg, imgs[position]);
+            viewHolder.mResultItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mItemClickListener != null) {
@@ -85,19 +80,19 @@ public class HorizontalAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
 
     @Override
     public RecyclerView.ViewHolder onCreateCommon(ViewGroup parent, int viewType) {
-        View mView = View.inflate(mContext, R.layout.layout_search_horizontal, null);
+        View mView = View.inflate(mContext, R.layout.layout_search_result, null);
         return new HorizontalViewHolder(mView);
     }
 
     static class HorizontalViewHolder extends BaseViewHolder {
-        @BindView(R.id.search_space_1)
-        Space mSearchSpace1;
-        @BindView(R.id.search_space_2)
-        Space mSearchSpace2;
-        @BindView(R.id.search_horizontal_bg)
-        ImageView mSearchHorizontalBg;
-        @BindView(R.id.horizontal_type_name)
-        TextView mHorizontalTypeName;
+        @BindView(R.id.result_img)
+        ImageView mResultImg;
+        @BindView(R.id.result_type_name)
+        TextView mResultTypeName;
+        @BindView(R.id.result_time)
+        TextView mResultTime;
+        @BindView(R.id.result_item)
+        LinearLayout mResultItem;
 
         HorizontalViewHolder(View view) {
             super(view);
