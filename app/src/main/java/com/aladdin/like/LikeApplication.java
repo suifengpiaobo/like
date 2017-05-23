@@ -3,6 +3,7 @@ package com.aladdin.like;
 import com.aladdin.base.BaseApplication;
 import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.DensityUtils;
+import com.facebook.drawee.backends.pipeline.Fresco;
 
 /**
  * Description
@@ -15,5 +16,6 @@ public class LikeApplication extends BaseApplication {
     public void initConfig() {
         ContextUtils.getInstance().setContext(this.getApplicationContext()); // Must!! First call this method.
         DensityUtils.setAppContext(this);
+        Fresco.initialize(this);
     }
 }

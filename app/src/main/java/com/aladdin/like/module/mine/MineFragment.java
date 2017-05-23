@@ -15,7 +15,7 @@ import com.aladdin.like.module.mine.diary.MineDiraryFragment;
 import com.aladdin.like.module.mine.pictures.MinePictureFragment;
 import com.aladdin.like.module.set.SettingActivity;
 import com.aladdin.like.widget.ScrollViewPager;
-import com.aladdin.widget.CircleImageView;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +30,7 @@ import butterknife.OnClick;
 public class MineFragment extends BaseFragment {
 
     @BindView(R.id.user_avatar)
-    CircleImageView mUserAvatar;
+    SimpleDraweeView mUserAvatar;
     @BindView(R.id.user_name)
     TextView mUserName;
     @BindView(R.id.description)

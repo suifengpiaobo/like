@@ -1,12 +1,14 @@
 package com.aladdin.utils;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Looper;
 import android.widget.ImageView;
 
 import com.aladdin.base.R;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
@@ -136,5 +138,42 @@ public class ImageLoaderUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 加载本地图片（drawable图片）
+     * @param context
+     * @param simpleDraweeView
+     * @param id
+     */
+    public static void loadResPic(Context context, SimpleDraweeView simpleDraweeView, int id) {
+        Uri uri = Uri.parse("res://" +
+                context.getPackageName() +
+                "/" + id);
+        simpleDraweeView.setImageURI(uri);
+    }
+
+    /**
+     * 加载本地图片（assets图片）
+     * @param context
+     * @param simpleDraweeView
+     * @param nameWithSuffix 带后缀的名称
+     */
+    public static void loadAssetsPic(Context context, SimpleDraweeView simpleDraweeView, String nameWithSuffix) {
+        Uri uri = Uri.parse("asset:///" +
+                nameWithSuffix);
+        simpleDraweeView.setImageURI(uri);
+    }
+
+    /**
+     * 加载本地图片
+     * @param context
+     * @param simpleDraweeView
+     * @param nameWithSuffix
+     */
+    public static void loadLocalsPic(Context context, SimpleDraweeView simpleDraweeView, String nameWithSuffix) {
+        Uri uri = Uri.parse("file://" +
+                nameWithSuffix);
+        simpleDraweeView.setImageURI(uri);
     }
 }

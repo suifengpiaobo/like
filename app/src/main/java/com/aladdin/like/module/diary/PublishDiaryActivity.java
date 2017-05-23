@@ -1,7 +1,6 @@
 package com.aladdin.like.module.diary;
 
 import android.content.Intent;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -13,6 +12,7 @@ import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.aladdin.utils.ToastUtil;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.yalantis.ucrop.ui.AlbumDirectoryActivity;
 import com.yalantis.ucrop.ui.ImageGridActivity;
 import com.yalantis.ucrop.util.Constants;
@@ -35,7 +35,7 @@ public class PublishDiaryActivity extends BaseActivity {
     @BindView(R.id.finish)
     TextView mFinish;
     @BindView(R.id.shoose_picture)
-    ImageView mShoosePicture;
+    SimpleDraweeView mShoosePicture;
     @BindView(R.id.add_picture)
     ImageView mAddPicture;
     @BindView(R.id.description)
@@ -102,8 +102,7 @@ public class PublishDiaryActivity extends BaseActivity {
                     ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
                     if (result != null) {
                         mAddPicture.setVisibility(View.GONE);
-                        Log.e("SendCircleActivity", "result---->>>" + result);
-                        ImageLoaderUtils.loadingImg(PublishDiaryActivity.this, mShoosePicture, result.get(0));
+                        ImageLoaderUtils.loadLocalsPic(PublishDiaryActivity.this, mShoosePicture, result.get(0));
                     }
                     break;
             }

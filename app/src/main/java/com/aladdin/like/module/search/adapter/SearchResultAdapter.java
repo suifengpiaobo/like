@@ -1,10 +1,11 @@
 package com.aladdin.like.module.search.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import com.aladdin.like.model.PrefecturePojo;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -47,7 +49,14 @@ public class SearchResultAdapter extends BaseAdapter<PrefecturePojo.Prefecture> 
         if (item != null) {
             viewHolder.mResultTypeName.setText(item.typeName);
 
-            ImageLoaderUtils.displayRoundNative(mContext, viewHolder.mResultImg, imgs[position]);
+            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgs[position]);
+            int height = bitmap.getHeight();
+
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mResultImg.getLayoutParams();
+            params.height=height;
+            viewHolder.mResultImg.setLayoutParams(params);
+
+            ImageLoaderUtils.loadResPic(mContext, viewHolder.mResultImg, imgs[position]);
             viewHolder.mResultItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -86,7 +95,7 @@ public class SearchResultAdapter extends BaseAdapter<PrefecturePojo.Prefecture> 
 
     static class HorizontalViewHolder extends BaseViewHolder {
         @BindView(R.id.result_img)
-        ImageView mResultImg;
+        SimpleDraweeView mResultImg;
         @BindView(R.id.result_type_name)
         TextView mResultTypeName;
         @BindView(R.id.result_time)

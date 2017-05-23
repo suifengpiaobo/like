@@ -1,11 +1,11 @@
 package com.aladdin.like.module.main.adapter;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +14,7 @@ import com.aladdin.like.model.PrefecturePojo;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -45,11 +46,16 @@ public class MainAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
         MainViewHolder viewHolder = (MainViewHolder) holder;
         PrefecturePojo.Prefecture item = getItemObject(position);
-        Log.e("MainApadter","item--->>>"+item);
         if (item != null) {
             viewHolder.mMainTypeName.setText(item.typeName);
 
-            ImageLoaderUtils.displayRoundNative(mContext, viewHolder.mMainImg, imgs[position]);
+            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgs[position]);
+            int height = bitmap.getHeight();
+
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
+            params.height=height;
+            viewHolder.mMainImg.setLayoutParams(params);
+            ImageLoaderUtils.loadResPic(mContext, viewHolder.mMainImg, imgs[position]);
             viewHolder.mMainItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -87,7 +93,7 @@ public class MainAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
 
     static class MainViewHolder extends BaseViewHolder {
         @BindView(R.id.main_img)
-        ImageView mMainImg;
+        SimpleDraweeView mMainImg;
         @BindView(R.id.main_type_name)
         TextView mMainTypeName;
         @BindView(R.id.main_time)

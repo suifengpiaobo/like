@@ -5,7 +5,6 @@ import android.support.v4.widget.Space;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
@@ -14,6 +13,7 @@ import com.aladdin.utils.ImageLoaderUtils;
 import com.aladdin.utils.LogUtil;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -60,7 +60,7 @@ public class AtlasNotChooseAdapter extends BaseAdapter<AtlasPicturePojo.AtlasPic
         if (item != null) {
             viewHolder.mHorizontalTypeName.setText(item.name);
 
-            ImageLoaderUtils.displayRoundNative(mContext, viewHolder.mSearchHorizontalBg, imgs[position]);
+            ImageLoaderUtils.loadResPic(mContext, viewHolder.mSearchHorizontalBg, imgs[position]);
             viewHolder.mSearchHorizontalBg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -98,7 +98,7 @@ public class AtlasNotChooseAdapter extends BaseAdapter<AtlasPicturePojo.AtlasPic
         @BindView(R.id.search_space_2)
         Space mSearchSpace2;
         @BindView(R.id.search_horizontal_bg)
-        ImageView mSearchHorizontalBg;
+        SimpleDraweeView mSearchHorizontalBg;
         @BindView(R.id.horizontal_type_name)
         TextView mHorizontalTypeName;
 

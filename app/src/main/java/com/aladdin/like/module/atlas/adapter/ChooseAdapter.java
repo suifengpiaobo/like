@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.aladdin.like.R;
 import com.aladdin.like.model.AtlasPicturePojo;
+import com.aladdin.utils.ImageLoaderUtils;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,7 +68,7 @@ public class ChooseAdapter extends BaseAdapter {
         if (convertView == null){
             convertView = mInflater.inflate(R.layout.layout_atlas_choose,null);
             viewHolder = new ViewHolder();
-            viewHolder.mAtlasItemBg = (ImageView) convertView.findViewById(R.id.atlas_item_bg);
+            viewHolder.mAtlasItemBg = (SimpleDraweeView) convertView.findViewById(R.id.atlas_item_bg);
             viewHolder.mAtlasTypeName = (TextView) convertView.findViewById(R.id.atlas_type_name);
             viewHolder.mAtlasChoose = (ImageView) convertView.findViewById(R.id.atlas_choose);
 
@@ -84,8 +86,7 @@ public class ChooseAdapter extends BaseAdapter {
             }else{
                 viewHolder.mAtlasChoose.setSelected(false);
             }
-            viewHolder.mAtlasItemBg.setBackgroundResource(imgs[position]);
-//            ImageLoaderUtils.displayRoundNative(mContext,viewHolder.mAtlasItemBg,imgs[position]);
+            ImageLoaderUtils.loadResPic(mContext,viewHolder.mAtlasItemBg,imgs[position]);
 
             viewHolder.mAtlasTypeName.setText(item.name);
 
@@ -100,7 +101,7 @@ public class ChooseAdapter extends BaseAdapter {
     }
 
     class ViewHolder {
-        ImageView mAtlasItemBg;
+        SimpleDraweeView mAtlasItemBg;
         TextView mAtlasTypeName;
         public ImageView mAtlasChoose;
     }

@@ -48,8 +48,8 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
 
     @Override
     protected void initView() {
-        mTitle.setVisibility(View.VISIBLE);
-        mTitle.setBackVisibility(false);
+//        mTitle.setVisibility(View.VISIBLE);
+//        mTitle.setBackVisibility(false);
 
         for (int i = 0; i< 12;i++){
             picture = new AtlasPicturePojo.AtlasPicture();

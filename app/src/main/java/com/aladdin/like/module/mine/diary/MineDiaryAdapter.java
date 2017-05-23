@@ -1,17 +1,19 @@
 package com.aladdin.like.module.mine.diary;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.aladdin.like.R;
 import com.aladdin.like.model.PrefecturePojo;
 import com.aladdin.utils.ImageLoaderUtils;
-import com.aladdin.utils.LogUtil;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,9 +44,15 @@ public class MineDiaryAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         PictureViewHolder viewHolder = (PictureViewHolder) holder;
         PrefecturePojo.Prefecture item= getItemObject(position);
-        LogUtil.i("--item-->>"+item);
         if (item != null){
-            ImageLoaderUtils.displayRoundNative(mContext, viewHolder.mMinePictureImg, imgs[0]);
+
+            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgs[0]);
+            int height = bitmap.getHeight();
+
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMinePictureImg.getLayoutParams();
+            params.height=height;
+            viewHolder.mMinePictureImg.setLayoutParams(params);
+            ImageLoaderUtils.loadResPic(mContext, viewHolder.mMinePictureImg, imgs[0]);
         }
     }
 
@@ -67,7 +75,7 @@ public class MineDiaryAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
 
     static class PictureViewHolder extends BaseViewHolder {
         @BindView(R.id.mine_picture_img)
-        ImageView mMinePictureImg;
+        SimpleDraweeView mMinePictureImg;
 
         PictureViewHolder(View view) {
             super(view);
