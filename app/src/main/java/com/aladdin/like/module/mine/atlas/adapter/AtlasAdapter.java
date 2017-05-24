@@ -71,6 +71,11 @@ public class AtlasAdapter extends BaseAdapter<AtlasPicturePojo.AtlasPicture> {
     }
 
     @Override
+    public int getItemCount() {
+        return imgs.length;
+    }
+
+    @Override
     public int getCommonType(int position) {
         return 0;
     }

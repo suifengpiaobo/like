@@ -7,4 +7,6 @@ package com.aladdin.like.constant;
  */
 public class Constant {
     public static boolean IS_AUTH_WCHAT = false;//是否是登录
+
+    public static boolean isScroll = false;
 }

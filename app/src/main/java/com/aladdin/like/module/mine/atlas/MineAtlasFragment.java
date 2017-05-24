@@ -42,6 +42,7 @@ public class MineAtlasFragment extends BaseFragment {
 
     @Override
     protected void initView() {
+
         for (int i = 0; i< 12;i++){
             picture = new AtlasPicturePojo.AtlasPicture();
             picture.name = name[i];
