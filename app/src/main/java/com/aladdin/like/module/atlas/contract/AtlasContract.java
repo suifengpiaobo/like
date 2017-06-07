@@ -2,7 +2,9 @@ package com.aladdin.like.module.atlas.contract;
 
 import com.aladdin.base.BasePresenter;
 import com.aladdin.base.BaseView;
-import com.aladdin.like.model.AtlasPicturePojo;
+import com.aladdin.like.model.ThemeModes;
+
+import java.util.List;
 
 /**
  * Description
@@ -11,10 +13,14 @@ import com.aladdin.like.model.AtlasPicturePojo;
  */
 public interface AtlasContract {
     interface View extends BaseView{
-        void setData(AtlasPicturePojo data);
+        void setData(ThemeModes data);
+
+        void addThemeSuc();
     }
 
     interface Presenter extends BasePresenter{
-        void loadData(String url);
+        void loadData(String openid,String themeName);
+
+        void addUserTheme(String openid, List<String> themeId);
     }
 }

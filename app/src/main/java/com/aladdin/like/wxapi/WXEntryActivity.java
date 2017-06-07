@@ -6,18 +6,24 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.aladdin.like.R;
+import com.aladdin.like.constant.Constant;
+import com.aladdin.like.event.ShareEvent;
+import com.aladdin.like.http.WChatHttpClient;
 import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.ToastUtil;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
 import com.tencent.mm.opensdk.modelbase.BaseResp;
+import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.modelmsg.ShowMessageFromWX;
 import com.tencent.mm.opensdk.modelmsg.WXAppExtendObject;
 import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Description 微信登录，分享
@@ -65,7 +71,13 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
         LogUtil.e("onResp");
         switch (resp.errCode){
             case BaseResp.ErrCode.ERR_OK:
-
+                if (Constant.IS_AUTH_WCHAT) {
+                    String code = ((SendAuth.Resp) resp).code;
+                    LogUtil.i("---code--->>>"+code);
+                    WChatHttpClient.requestGetWChatToken(code);
+                } else {
+                    EventBus.getDefault().post(new ShareEvent(ShareEvent.SHARE_SUCCESS));
+                }
                 break;
 
             case BaseResp.ErrCode.ERR_AUTH_DENIED:// 发送拒绝

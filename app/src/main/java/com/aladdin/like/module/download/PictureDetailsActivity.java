@@ -1,19 +1,23 @@
 package com.aladdin.like.module.download;
 
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aladdin.base.BaseActivity;
-import com.aladdin.dialog.ShareDialog;
 import com.aladdin.like.R;
-import com.aladdin.like.model.PrefecturePojo;
+import com.aladdin.like.model.ThemeDetail;
+import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.download.adapter.PictureDetailsAdapter;
+import com.aladdin.like.module.download.contract.PictureDetailsContract;
+import com.aladdin.like.module.download.presenter.PictureDetailsPrestener;
+import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.ImageLoaderUtils;
+import com.jcodecraeer.xrecyclerview.ProgressStyle;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +29,7 @@ import butterknife.OnClick;
  * Description 图片详情页
  * Created by zxl on 2017/5/1 上午3:24.
  */
-public class PictureDetailsActivity extends BaseActivity {
+public class PictureDetailsActivity extends BaseActivity implements PictureDetailsContract.View,XRecyclerView.LoadingListener{
 
     @BindView(R.id.back)
     ImageView mBack;
@@ -40,16 +44,19 @@ public class PictureDetailsActivity extends BaseActivity {
     @BindView(R.id.click_praise)
     ImageView mClickPraise;
     @BindView(R.id.download_recycle)
-    RecyclerView mDownloadRecycle;
+    XRecyclerView mDownloadRecycle;
 
 
     PictureDetailsAdapter mAdapter;
 
-    List<PrefecturePojo.Prefecture> mPrefectures = new ArrayList<>();
-    PrefecturePojo.Prefecture mPrefecture;
+    List<ThemeModes.Theme> mPrefectures = new ArrayList<>();
+    ThemeModes.Theme mPrefecture;
 
-    String[] name = {"日韩美图","微信素材","另类图集","美食图集","健美图片","欧美情侣",
-            "运动名将","奢侈生活","电影明星","轻松搞笑","夜生活","专辑封面"};
+    String themeId;
+    int page = 0;
+    int page_num = 10;
+
+    PictureDetailsContract.Prestener mPrestener;
 
     @Override
     protected int getLayoutId() {
@@ -58,21 +65,23 @@ public class PictureDetailsActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        mPrefecture = (PrefecturePojo.Prefecture) getIntent().getSerializableExtra("PREFECTURE");
+        mPrestener = new PictureDetailsPrestener(this);
+        mPrefecture = (ThemeModes.Theme) getIntent().getSerializableExtra("PREFECTURE");
+        themeId = mPrefecture.themeId;
 
-        for (int i = 0; i< 10;i++){
-            mPrefecture = new PrefecturePojo.Prefecture();
-            mPrefecture.typeName = name[i];
-            mPrefectures.add(mPrefecture);
-        }
         ImageLoaderUtils.displayRoundNative(PictureDetailsActivity.this,mPicture,R.drawable.picture_11);
+
+        mDownloadRecycle.setRefreshProgressStyle(ProgressStyle.BallClipRotate);
+        mDownloadRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallClipRotate);
+        mDownloadRecycle.setArrowImageView(R.drawable.icon_refresh);
+        mDownloadRecycle.setLoadingListener(this);
+        mDownloadRecycle.setRefreshing(true);
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mAdapter = new PictureDetailsAdapter(PictureDetailsActivity.this);
         mDownloadRecycle.setLayoutManager(staggered);
         mDownloadRecycle.addItemDecoration(new SpacesItemDecoration(10));
         mDownloadRecycle.setAdapter(mAdapter);
-        mAdapter.addAll(mPrefectures);
 
         bindEvent();
     }
@@ -80,7 +89,7 @@ public class PictureDetailsActivity extends BaseActivity {
     private void bindEvent() {
         mAdapter.setOnItemClickListener(new PictureDetailsAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(PrefecturePojo.Prefecture item) {
+            public void onItemClick(ThemeDetail.Theme item) {
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("PREFECTURE", item);
                 startActivity(DownLoadPictureActivity.class, bundle);
@@ -105,5 +114,51 @@ public class PictureDetailsActivity extends BaseActivity {
             case R.id.click_praise:
                 break;
         }
+    }
+
+    @Override
+    public void showLoading() {
+        startProgressDialog();
+    }
+
+    @Override
+    public void stopLoading() {
+        stopProgressDialog();
+    }
+
+    @Override
+    public void showErrorTip(String msg) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mDownloadRecycle.refreshComplete();
+                mDownloadRecycle.loadMoreComplete();
+                showToast(msg);
+            }
+        });
+    }
+
+    @Override
+    public void setData(ThemeDetail prefecture) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAdapter.addAll(prefecture.imageList);
+            }
+        });
+    }
+
+    @Override
+    public void onRefresh() {
+        if (mAdapter != null && mAdapter.getItemCount() > 0){
+            mAdapter.clear();
+        }
+
+        mPrestener.getData("",themeId,page,page_num);
+    }
+
+    @Override
+    public void onLoadMore() {
+
     }
 }

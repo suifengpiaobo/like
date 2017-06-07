@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
-import com.aladdin.like.model.AtlasPicturePojo;
+import com.aladdin.like.model.ThemeModes;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -23,8 +23,8 @@ import java.util.List;
  */
 public class ChooseAdapter extends BaseAdapter {
     Context mContext;
-    List<AtlasPicturePojo.AtlasPicture> mAtlas = new ArrayList<>();
-    List<AtlasPicturePojo.AtlasPicture> mChoose = new ArrayList<>(); //存放选中的图集
+    List<ThemeModes.Theme> mAtlas = new ArrayList<>();
+    List<ThemeModes.Theme> mChoose = new ArrayList<>(); //存放选中的图集
     LayoutInflater mInflater;
 
     private Integer[] imgs = {
@@ -34,14 +34,18 @@ public class ChooseAdapter extends BaseAdapter {
             R.drawable.picture_10, R.drawable.picture_11, R.drawable.picture_12,
     };
 
-    public ChooseAdapter(Context context,List<AtlasPicturePojo.AtlasPicture> choose){
+    public ChooseAdapter(Context context){
         this.mContext = context;
         mInflater = LayoutInflater.from(mContext);
-        mAtlas.clear();
-        this.mAtlas.addAll(choose);
+
     }
 
-    public void setChoose(List<AtlasPicturePojo.AtlasPicture> choose){
+    public void setAtlas(List<ThemeModes.Theme> atlas) {
+        mAtlas.clear();
+        this.mAtlas.addAll(atlas);
+    }
+
+    public void setChoose(List<ThemeModes.Theme> choose){
         mChoose.clear();
         this.mChoose.addAll(choose);
     }
@@ -64,7 +68,7 @@ public class ChooseAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder = null;
-        AtlasPicturePojo.AtlasPicture item;
+        ThemeModes.Theme item;
         if (convertView == null){
             convertView = mInflater.inflate(R.layout.layout_atlas_choose,null);
             viewHolder = new ViewHolder();
@@ -88,14 +92,14 @@ public class ChooseAdapter extends BaseAdapter {
             }
             ImageLoaderUtils.loadResPic(mContext,viewHolder.mAtlasItemBg,imgs[position]);
 
-            viewHolder.mAtlasTypeName.setText(item.name);
+            viewHolder.mAtlasTypeName.setText(item.themeName);
 
         }
 
         return convertView;
     }
 
-    public AtlasPicturePojo.AtlasPicture getItemObject(int position) {
+    public ThemeModes.Theme getItemObject(int position) {
         if (position < 0 || position > mChoose.size() - 1) return null;
         return mAtlas.get(position);
     }

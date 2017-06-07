@@ -15,8 +15,8 @@ import com.aladdin.dialog.DialogTools;
 import com.aladdin.utils.ToastUtil;
 
 import butterknife.ButterKnife;
-import rx.Subscription;
-import rx.subscriptions.CompositeSubscription;
+//import rx.Subscription;
+//import rx.subscriptions.CompositeSubscription;
 
 /**
  * Description
@@ -26,7 +26,7 @@ import rx.subscriptions.CompositeSubscription;
 public abstract class BaseFragment extends Fragment {
     private boolean isViewPrepared; // 标识fragment视图已经初始化完毕
     private boolean hasFetchData; // 标识已经触发过懒加载数据
-    private CompositeSubscription mSubscriptions;
+//    private CompositeSubscription mSubscriptions;
 
     @Override
     public void onAttach(Context context) {
@@ -99,9 +99,9 @@ public abstract class BaseFragment extends Fragment {
         super.onDestroy();
         hasFetchData = false;
         isViewPrepared = false;
-        if (mSubscriptions != null) {
-            mSubscriptions.clear();
-        }
+//        if (mSubscriptions != null) {
+//            mSubscriptions.clear();
+//        }
     }
 
     @Override
@@ -195,13 +195,13 @@ public abstract class BaseFragment extends Fragment {
         ToastUtil.sToastUtil.shortDuration(str).setToastBackground(Color.WHITE, R.drawable.toast_radius).show();
     }
 
-    protected void addSubscription(Subscription subscription) {
-        if (subscription == null) return;
-        if (mSubscriptions == null) {
-            mSubscriptions = new CompositeSubscription();
-        }
-        mSubscriptions.add(subscription);
-    }
+//    protected void addSubscription(Subscription subscription) {
+//        if (subscription == null) return;
+//        if (mSubscriptions == null) {
+//            mSubscriptions = new CompositeSubscription();
+//        }
+//        mSubscriptions.add(subscription);
+//    }
 
     protected abstract int getLayoutId();
     protected abstract void initView();

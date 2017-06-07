@@ -1,6 +1,9 @@
 package com.aladdin.like.module.download.presenter;
 
+import com.aladdin.like.http.HttpManager;
+import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.module.download.contract.PictureDetailsContract;
+import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 /**
  * Description
@@ -16,11 +19,24 @@ public class PictureDetailsPrestener implements PictureDetailsContract.Prestener
 
     @Override
     public void start() {
-
+        mView.showLoading();
     }
 
     @Override
-    public void getData(String url) {
+    public void getData(String openid, String themeId, int page, int page_num) {
+        HttpManager.INSTANCE.getThemeDetail(openid, themeId, page, page_num, new HttpResultCallback<ThemeDetail>() {
+            @Override
+            public void onSuccess(ThemeDetail result) {
+                if (mView == null) return;
 
+                mView.setData(result);
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                if (mView == null) return;
+                mView.showErrorTip(msg);
+            }
+        });
     }
 }

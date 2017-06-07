@@ -18,7 +18,6 @@ import com.aladdin.utils.AppManager;
 import com.aladdin.utils.ToastUtil;
 
 import butterknife.ButterKnife;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * Description activity基类
@@ -26,7 +25,7 @@ import rx.subscriptions.CompositeSubscription;
  * Email:444288256@qq.com
  */
 public abstract class BaseActivity extends AppCompatActivity {
-    private CompositeSubscription mSubscriptions;
+//    private CompositeSubscription mSubscriptions;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,9 +70,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         AppManager.instance.removeActivity(this);
-        if (mSubscriptions != null) {
-            mSubscriptions.clear();
-        }
+//        if (mSubscriptions != null) {
+//            mSubscriptions.clear();
+//        }
     }
 
     public void startActivity(Class<?> cls) {

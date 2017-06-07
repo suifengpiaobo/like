@@ -19,9 +19,9 @@ public class HttpResultProcess {
             public void onSuccess(String str) {
                 try {
                     JSONObject response = new JSONObject(str);
-                    int apistatus = response.optInt("apistatus");
-                    if (apistatus == 1) {
-                        JSONObject result = response.getJSONObject("result");
+                    int code = response.optInt("code");
+                    if (code == 200) {
+                        JSONObject result = response.getJSONObject("data");
                         httpResultCallback.onSuccess(RequestJsonUtils.getObj(uClass, result.toString()));
 
                     } else{//网络请求不区分环境
@@ -32,7 +32,7 @@ public class HttpResultProcess {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    httpResultCallback.onFailure("400", "解析错误");
+//                    httpResultCallback.onFailure("400", "解析错误");
                 }
             }
 

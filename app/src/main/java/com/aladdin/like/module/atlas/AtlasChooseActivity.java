@@ -6,13 +6,12 @@ import android.widget.TextView;
 
 import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
-import com.aladdin.like.model.AtlasPicturePojo;
+import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.atlas.adapter.ChooseAdapter;
 import com.aladdin.like.module.atlas.contract.AtlasContract;
 import com.aladdin.like.module.atlas.presenter.AtlasPresenter;
 import com.aladdin.like.module.main.MainActivity;
 import com.aladdin.like.widget.CustomGridView;
-import com.aladdin.widget.NormalTitleBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,20 +25,18 @@ import butterknife.OnClick;
  */
 public class AtlasChooseActivity extends BaseActivity implements AtlasContract.View{
 
-    @BindView(R.id.title)
-    NormalTitleBar mTitle;
     @BindView(R.id.atlas_choose)
     CustomGridView mAtlasChoose;
     @BindView(R.id.enter)
     TextView mEnter;
 
     AtlasContract.Presenter mPresenter;
-    List<AtlasPicturePojo.AtlasPicture> mPicturePojo = new ArrayList<>();
-    List<AtlasPicturePojo.AtlasPicture> mChoose = new ArrayList<>(); //存放选中的图集
-    String[] name = {"日韩美图","微信素材","另类图集","美食图集","健美图片","欧美情侣",
-            "运动名将","奢侈生活","电影明星","轻松搞笑","夜生活","专辑封面"};
-    AtlasPicturePojo.AtlasPicture picture;
     ChooseAdapter mAdapter;
+
+    List<ThemeModes.Theme> mChoose = new ArrayList<>();//存放选中的图集
+    List<ThemeModes.Theme> mPicturePojo = new ArrayList<>();
+    List<String> mChooseId = new ArrayList<>();
+    ThemeModes.Theme mTheme;
 
     @Override
     protected int getLayoutId() {
@@ -48,30 +45,23 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
 
     @Override
     protected void initView() {
-//        mTitle.setVisibility(View.VISIBLE);
-//        mTitle.setBackVisibility(false);
-
-        for (int i = 0; i< 12;i++){
-            picture = new AtlasPicturePojo.AtlasPicture();
-            picture.name = name[i];
-            mPicturePojo.add(picture);
-
-        }
-
-        mAdapter = new ChooseAdapter(AtlasChooseActivity.this,mPicturePojo);
-        mAdapter.setChoose(mChoose);
-
-        mAtlasChoose.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
         mPresenter = new AtlasPresenter(this);
+        mPresenter.loadData("","");
+        showLoading();
+
+        mAdapter = new ChooseAdapter(AtlasChooseActivity.this);
+        mAdapter.setChoose(mChoose);
+        mAtlasChoose.setAdapter(mAdapter);
 
         mAtlasChoose.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mChoose.contains(mPicturePojo.get(position))){
                     mChoose.remove(mPicturePojo.get(position));
+                    mChooseId.remove(mPicturePojo.get(position).themeId);
                 }else{
                     mChoose.add(mPicturePojo.get(position));
+                    mChooseId.add(mPicturePojo.get(position).themeId);
                 }
 
                 mAdapter.setChoose(mChoose);
@@ -83,6 +73,7 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
 
     @OnClick(R.id.enter)
     public void onViewClicked() {
+        mPresenter.addUserTheme("",mChooseId);
         startActivity(MainActivity.class);
     }
 
@@ -98,14 +89,29 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
 
     @Override
     public void showErrorTip(String msg) {
+        stopLoading();
         showErrorHint(msg);
     }
 
     @Override
-    public void setData(AtlasPicturePojo data) {
-        for (int i = 0;i < data.atlas.size();i++){
-            mPicturePojo.add(data.atlas.get(i));
-        }
-        mAdapter.notifyDataSetChanged();
+    public void setData(ThemeModes data) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                stopLoading();
+                if (data != null && data.themeList != null){
+                    mPicturePojo.addAll(data.themeList);
+                    mAdapter.setAtlas(mPicturePojo);
+                    mAdapter.notifyDataSetChanged();
+                }
+                mEnter.setVisibility(View.VISIBLE);
+            }
+        });
+
+    }
+
+    @Override
+    public void addThemeSuc() {
+        startActivity(MainActivity.class);
     }
 }

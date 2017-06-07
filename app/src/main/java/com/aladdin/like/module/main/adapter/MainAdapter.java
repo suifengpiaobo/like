@@ -10,13 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
-import com.aladdin.like.model.PrefecturePojo;
+import com.aladdin.like.model.ThemeModes;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,7 +24,7 @@ import butterknife.ButterKnife;
  * Created by zxl on 2017/4/30 下午4:08.
  * Email:444288256@qq.com
  */
-public class MainAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
+public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
     onItemClickListener mItemClickListener;
     private Context mContext;
 
@@ -35,6 +33,7 @@ public class MainAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
             R.drawable.picture_4,  R.drawable.picture_6,
             R.drawable.picture_7, R.drawable.picture_8,
             R.drawable.picture_10, R.drawable.picture_11, R.drawable.picture_12,
+            R.drawable.picture_1, R.drawable.picture_2
     };
 
     public MainAdapter(Context context) {
@@ -43,11 +42,16 @@ public class MainAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
+    public int getCommonType(int position) {
+        return position;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MainViewHolder viewHolder = (MainViewHolder) holder;
-        PrefecturePojo.Prefecture item = getItemObject(position);
+        ThemeModes.Theme item = getItemObject(position);
         if (item != null) {
-            viewHolder.mMainTypeName.setText(item.typeName);
+            viewHolder.mMainTypeName.setText(item.themeName);
 
             Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgs[position]);
             int height = bitmap.getHeight();
@@ -67,20 +71,13 @@ public class MainAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
         }
     }
 
-    @Override
-    public int getCommonType(int position) {
-        return 0;
-    }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindCommon(RecyclerView.ViewHolder holder, ThemeModes.Theme item) {
+
     }
 
-    @Override
-    public void onBindCommon(RecyclerView.ViewHolder holder, PrefecturePojo.Prefecture item) {
-    }
-
-    public PrefecturePojo.Prefecture getItemObject(int position) {
+    public ThemeModes.Theme getItemObject(int position) {
         if (position < 0 || position > mDatas.size() - 1) return null;
         return mDatas.get(position);
     }
@@ -112,7 +109,7 @@ public class MainAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(PrefecturePojo.Prefecture item);
+        void onItemClick(ThemeModes.Theme item);
     }
 
 }

@@ -6,20 +6,19 @@ package com.aladdin.like.model;
  * Email:444288256@qq.com
  */
 public class UserPojo {
-    public String uid;
-    public String name;
+    public String user_id;
+    public String nickName;
     public String avatar;
-    public int sex;
-    public String token;
+    public String openid;//微信openid
+    public boolean IsFirstLogin;//是否首次登录，1 是，0 否
 
     @Override
     public String toString() {
         return "UserPojo{" +
-                "uid='" + uid + '\'' +
-                ", name='" + name + '\'' +
+                "nickName='" + nickName + '\'' +
                 ", avatar='" + avatar + '\'' +
-                ", sex=" + sex +
-                ", token='" + token + '\'' +
+                ", openid='" + openid + '\'' +
+                ", IsFirstLogin=" + IsFirstLogin +
                 '}';
     }
 }

@@ -11,9 +11,14 @@ import android.widget.TextView;
 
 import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
+import com.aladdin.like.constant.Constant;
 import com.aladdin.like.module.atlas.AtlasChooseActivity;
 import com.aladdin.like.module.login.LoginAccountActivity;
+import com.aladdin.like.wxapi.WXEntryActivity;
 import com.aladdin.utils.ToastUtil;
+import com.tencent.mm.opensdk.modelmsg.SendAuth;
+import com.tencent.mm.opensdk.openapi.IWXAPI;
+import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +26,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+/**
+ * Description 登录
+ * Created by zxl on 2017/6/3 下午7:07.
+ */
 public class RegisterActivity extends BaseActivity {
-
+    public final static String WCHAT_APPID = WXEntryActivity.WX_APPID;
+    public final static String SCOPE = "snsapi_userinfo,snsapi_base";
+    public final static String STATE = "wechat_sdk_demo_test";
     @BindView(R.id.view_pager)
     ViewPager mViewPager;
 
@@ -81,17 +92,40 @@ public class RegisterActivity extends BaseActivity {
         switch (view.getId()) {
             case R.id.wx_login:
                 startActivity(AtlasChooseActivity.class);
+//                loginWx();
                 break;
             case R.id.register_account:
-//                ToastUtil.sToastUtil.shortDuration("注册账号").show();
                 startActivity(LoginAccountActivity.class);
                 break;
             case R.id.login_wx_login:
                 if (mCurrent == 1){
-                    ToastUtil.sToastUtil.shortDuration("微信登录").show();
+                    loginWx();
                 }
                 break;
         }
+    }
+
+    public void loginWx(){
+        IWXAPI api = WXAPIFactory.createWXAPI(getApplicationContext(), WCHAT_APPID);
+        api.registerApp(WCHAT_APPID);
+
+        if (!api.isWXAppInstalled()) {
+            ToastUtil.sToastUtil.shortDuration("未安装微信客户端");
+            return;
+        }
+
+        if (!api.isWXAppSupportAPI()) {
+            ToastUtil.sToastUtil.shortDuration("当前的微信版本太低，请先更新微信");
+            return;
+        }
+
+        Constant.IS_AUTH_WCHAT = true;
+
+        startProgressDialog();
+        final SendAuth.Req req = new SendAuth.Req();
+        req.scope = SCOPE;
+        req.state = STATE;
+        api.sendReq(req);
     }
 
     public class RegisterLoginAdapter extends FragmentStatePagerAdapter {

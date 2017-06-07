@@ -1,6 +1,9 @@
 package com.aladdin.like.module.main.presenter;
 
+import com.aladdin.like.http.HttpManager;
+import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.main.contract.MainContract;
+import com.zxl.network_lib.Inteface.HttpResultCallback;
 //import com.aladdin.utils.OkHttpUtils;
 
 /**
@@ -17,22 +20,26 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void start() {
-
+        mView.showLoading();
     }
 
     @Override
-    public void loadData(String url) {
-//        OkHttpUtils.get(url, new OkHttpUtils.ResultCallback<String>() {
-//            @Override
-//            public void onSuccess(String response) {
-//                PrefecturePojo atlas = JsonUtils.deserialize(response,PrefecturePojo.class);
-//                mView.setData(atlas);
-//            }
-//
-//            @Override
-//            public void onFailure(Exception e) {
-//                mView.showErrorTip(e.getMessage());
-//            }
-//        });
+    public void loadData(String openid) {
+        HttpManager.INSTANCE.getUserTheme(openid, new HttpResultCallback<ThemeModes>() {
+            @Override
+            public void onSuccess(ThemeModes result) {
+                if (mView == null) return;
+
+                mView.stopLoading();
+                mView.setData(result);
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                if (mView == null) return;
+                mView.stopLoading();
+                mView.showErrorTip(msg);
+            }
+        });
     }
 }

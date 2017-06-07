@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
-import com.aladdin.like.model.PrefecturePojo;
+import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
@@ -21,7 +21,7 @@ import butterknife.ButterKnife;
  * Created by zxl on 2017/5/1 上午3:55.
  * Email:444288256@qq.com
  */
-public class PictureDetailsAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
+public class PictureDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
 
     private onItemClickListener mOnItemClickListener;
 
@@ -38,19 +38,19 @@ public class PictureDetailsAdapter extends BaseAdapter<PrefecturePojo.Prefecture
     }
 
     @Override
-    public void onBindCommon(RecyclerView.ViewHolder holder, PrefecturePojo.Prefecture item) {
+    public void onBindCommon(RecyclerView.ViewHolder holder, ThemeDetail.Theme item) {
 
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MainViewHolder viewHolder = (MainViewHolder) holder;
-        PrefecturePojo.Prefecture item = getItemObject(position);
+        ThemeDetail.Theme item = getItemObject(position);
         if (item != null){
             ImageLoaderUtils.displayRoundNative(mContext,viewHolder.mPrefectureBg,imgs[position]);
 
-            viewHolder.mTypeName.setText(item.typeName);
-            viewHolder.mTime.setText(item.time+"");
+            viewHolder.mTypeName.setText(item.imageName);
+            viewHolder.mTime.setText(item.collectionTimes+"");
 
             viewHolder.mPrefectureBg.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -74,7 +74,7 @@ public class PictureDetailsAdapter extends BaseAdapter<PrefecturePojo.Prefecture
         return mDatas.size();
     }
 
-    public PrefecturePojo.Prefecture getItemObject(int position) {
+    public ThemeDetail.Theme getItemObject(int position) {
         if (position < 0 || position > mDatas.size() - 1) return null;
         return mDatas.get(position);
     }
@@ -104,6 +104,6 @@ public class PictureDetailsAdapter extends BaseAdapter<PrefecturePojo.Prefecture
     }
 
     public interface onItemClickListener{
-        void onItemClick(PrefecturePojo.Prefecture item);
+        void onItemClick(ThemeDetail.Theme item);
     }
 }

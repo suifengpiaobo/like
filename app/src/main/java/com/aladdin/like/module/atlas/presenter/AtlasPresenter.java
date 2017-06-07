@@ -1,6 +1,11 @@
 package com.aladdin.like.module.atlas.presenter;
 
+import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.module.atlas.contract.AtlasContract;
+import com.aladdin.like.model.ThemeModes;
+import com.zxl.network_lib.Inteface.HttpResultCallback;
+
+import java.util.List;
 
 /**
  * Description
@@ -20,18 +25,37 @@ public class AtlasPresenter implements AtlasContract.Presenter {
     }
 
     @Override
-    public void loadData(String url) {
-//        OkHttpUtils.get(url, new OkHttpUtils.ResultCallback<String>() {
-//            @Override
-//            public void onSuccess(String response) {
-//                AtlasPicturePojo atlas = JsonUtils.deserialize(response,AtlasPicturePojo.class);
-//                mView.setData(atlas);
-//            }
-//
-//            @Override
-//            public void onFailure(Exception e) {
-//                mView.showErrorTip(e.getMessage());
-//            }
-//        });
+    public void loadData(String openid,String themeName) {
+        HttpManager.INSTANCE.getTheme(openid, themeName, new HttpResultCallback<ThemeModes>() {
+            @Override
+            public void onSuccess(ThemeModes result) {
+                mView.setData(result);
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                mView.showErrorTip(msg);
+            }
+        });
     }
+
+    @Override
+    public void addUserTheme(String openid, List<String> themeId) {
+        HttpManager.INSTANCE.addUserTheme(openid, themeId, new HttpResultCallback<ThemeModes>() {
+            @Override
+            public void onSuccess(ThemeModes result) {
+                if (mView == null) return;
+
+                mView.addThemeSuc();
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                if (mView == null) return;
+                mView.showErrorTip(msg);
+            }
+        });
+    }
+
+
 }

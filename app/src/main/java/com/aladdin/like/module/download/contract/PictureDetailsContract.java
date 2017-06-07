@@ -2,7 +2,7 @@ package com.aladdin.like.module.download.contract;
 
 import com.aladdin.base.BasePresenter;
 import com.aladdin.base.BaseView;
-import com.aladdin.like.model.PrefecturePojo;
+import com.aladdin.like.model.ThemeDetail;
 
 /**
  * Description
@@ -11,10 +11,10 @@ import com.aladdin.like.model.PrefecturePojo;
  */
 public interface PictureDetailsContract {
     interface View extends BaseView{
-        void setData(PrefecturePojo prefecture);
+        void setData(ThemeDetail prefecture);
     }
 
     interface Prestener extends BasePresenter{
-        void getData(String url);
+        void getData(String openid,String themeId, int page, int page_num);
     }
 }

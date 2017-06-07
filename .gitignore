@@ -32,7 +32,7 @@ out
 
 # Gradle files
 /gradle
-.gradle
+
 
 .gradle/
 build/
@@ -70,12 +70,4 @@ gradlew
 gradlew.bat
 *.properties
 *.iml
-
-app/*.gradle
-network_lib/*.gradle
-base/*.gradle
-downloader/*.gradle
-picture_library/*.gradle
-ease/*.gradle
-xrecyclerview/*.gradle
 
