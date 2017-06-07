@@ -1,0 +1,54 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    packagingOptions{
+        exclude 'META-INF/rxjava.properties'
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.orhanobut:logger:1.15'
+    compile 'com.android.support:recyclerview-v7:25.3.0'
+    compile 'com.android.support:design:25.3.0'
+    compile 'com.android.support:multidex:1.0.1'
+
+//    compile 'com.trello.rxlifecycle2:rxlifecycle:2.0.1'
+//    compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.0.1'
+
+    //图片缩放
+    compile 'com.commit451:PhotoView:1.2.4'
+    compile 'jp.wasabeef:glide-transformations:2.0.1'
+
+    //图片压缩
+    compile 'top.zibin:Luban:1.0.9'
+    //弹性布局
+    compile 'com.google.android:flexbox:0.2.5'
+    compile 'com.google.code.gson:gson:2.2.4'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.2.0'
+    compile 'com.jakewharton:butterknife:8.5.1'
+    compile 'com.jakewharton:butterknife-compiler:8.5.1'
+    compile project(path: ':network_lib')
+    compile 'com.facebook.fresco:fresco:0.13.0'
+
+}

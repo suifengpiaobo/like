@@ -1,0 +1,99 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
+    defaultConfig {
+        applicationId "com.aladdin.like"
+        minSdkVersion 18
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+    }
+
+
+    // 移除lint检查的error
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+//    abortOnLintError = false
+//    checkLintRelease = true
+
+    signingConfigs {
+        debug {
+            storeFile file(properties.getProperty('DEBUG_KEY_PATH'))
+            storePassword "123456"
+            keyAlias "like"
+            keyPassword "123456"
+        }
+    }
+
+    productFlavors {
+        w_debug {
+            manifestPlaceholders = [CHANNEL_VALUE: "2010341075"]
+            buildConfigField "boolean", "IS_DEBUG", "true"
+            buildConfigField "boolean", "IS_RUNLEAKS", "false"
+            resValue "string", "wx_appid", "wx506f2c76b39d74fd"
+            resValue "string", "wx_secret", "feba33f6ead244883dc8d8180668bb43"
+        }
+
+        w_test {
+            manifestPlaceholders = [CHANNEL_VALUE: "2010341075"]
+            buildConfigField "boolean", "IS_DEBUG", "false"
+            buildConfigField "boolean", "IS_RUNLEAKS", "false"
+            resValue "string", "wx_appid", "wx506f2c76b39d74fd"
+            resValue "string", "wx_secret", "feba33f6ead244883dc8d8180668bb43"
+        }
+
+        w_reasse {
+            manifestPlaceholders = [CHANNEL_VALUE: "2010341075"]
+            buildConfigField "boolean", "IS_DEBUG", "false"
+            buildConfigField "boolean", "IS_RUNLEAKS", "false"
+            resValue "string", "wx_appid", "wx506f2c76b39d74fd"
+            resValue "string", "wx_secret", "feba33f6ead244883dc8d8180668bb43"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+//    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+//        exclude group: 'com.android.support', module: 'support-annotations'
+//    })
+    compile project(':base')
+    compile project(':picture_library')
+    compile project(':downloader')
+    compile project(':network_lib')
+    compile project(':ease')
+    compile project(':xrecycleview')
+
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
+    compile 'com.android.support:support-v4:25.3.0'
+    compile 'org.greenrobot:eventbus:3.0.0'
+
+}
