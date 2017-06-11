@@ -5,6 +5,7 @@ import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.aladdin.base.BaseActivity;
+import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.atlas.adapter.ChooseAdapter;
@@ -73,7 +74,7 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
 
     @OnClick(R.id.enter)
     public void onViewClicked() {
-        mPresenter.addUserTheme("",mChooseId);
+        mPresenter.addUserTheme(LikeAgent.getInstance().getUid(),mChooseId,1);
         startActivity(MainActivity.class);
     }
 
@@ -89,8 +90,14 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
 
     @Override
     public void showErrorTip(String msg) {
-        stopLoading();
-        showErrorHint(msg);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                stopLoading();
+                showErrorHint(msg);
+            }
+        });
+
     }
 
     @Override

@@ -18,6 +18,7 @@ public class ThemeDetail implements Serializable{
         public String imgeUrl;
         public String collectionTimes;//收藏次数
         public String imageName;
+        public String createTimeStr;
 
         @Override
         public String toString() {
@@ -26,6 +27,7 @@ public class ThemeDetail implements Serializable{
                     ", imgeUrl='" + imgeUrl + '\'' +
                     ", collectionTimes='" + collectionTimes + '\'' +
                     ", imageName='" + imageName + '\'' +
+                    ", createTimeStr='" + createTimeStr + '\'' +
                     '}';
         }
     }

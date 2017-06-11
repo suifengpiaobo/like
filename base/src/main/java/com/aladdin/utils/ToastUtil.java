@@ -99,6 +99,7 @@ public class ToastUtil {
         if (mToast != null) {
             View view = mToast.getView();
             TextView message = ((TextView) view.findViewById(android.R.id.message));
+            message.setCompoundDrawablePadding(15);
             message.setBackgroundResource(background);
             view.setBackgroundColor(Color.TRANSPARENT);
             message.setTextColor(messageColor);

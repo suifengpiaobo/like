@@ -40,8 +40,8 @@ public class AtlasPresenter implements AtlasContract.Presenter {
     }
 
     @Override
-    public void addUserTheme(String openid, List<String> themeId) {
-        HttpManager.INSTANCE.addUserTheme(openid, themeId, new HttpResultCallback<ThemeModes>() {
+    public void addUserTheme(String openid, List<String> themeId,int operateType) {
+        HttpManager.INSTANCE.addUserTheme(openid, themeId,operateType,new HttpResultCallback<ThemeModes>() {
             @Override
             public void onSuccess(ThemeModes result) {
                 if (mView == null) return;

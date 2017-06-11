@@ -20,7 +20,6 @@ public interface AtlasContract {
 
     interface Presenter extends BasePresenter{
         void loadData(String openid,String themeName);
-
-        void addUserTheme(String openid, List<String> themeId);
+        void addUserTheme(String openid, List<String> themeId, int operateType);
     }
 }

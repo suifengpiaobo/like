@@ -42,7 +42,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,7 +75,7 @@
                 android:textColor="@color/Black"
                 />
 
-            <android.support.v7.widget.RecyclerView
+            <com.jcodecraeer.xrecyclerview.XRecyclerView
                 android:id="@+id/search_result"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

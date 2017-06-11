@@ -1,18 +1,22 @@
 package com.aladdin.like.module.main;
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.aladdin.base.BaseActivity;
 import com.aladdin.base.BaseFragment;
 import com.aladdin.base.BaseFragmentAdapter;
 import com.aladdin.like.R;
-import com.aladdin.like.module.circle.CircleFragment;
+import com.aladdin.like.module.diary.PublishDiaryFragment;
 import com.aladdin.like.module.mine.MineFragment;
 import com.aladdin.like.module.search.SearchFragment;
 import com.aladdin.like.widget.NoScrollViewPager;
+import com.yalantis.ucrop.ui.ImageGridActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +43,14 @@ public class MainActivity extends BaseActivity {
     private List<BaseFragment> mFragments;
     private MainFragment mMainFragment;
     private SearchFragment mSearchFragment;
-    private CircleFragment mCircleFragment;
+    private PublishDiaryFragment mCircleFragment;
     private MineFragment mMineFragment;
     private BaseFragmentAdapter mAdapter;
 
     onSearchClickListener mSearchClickListener;
     onCircleClickListener mOnCircleClickListener;
+
+    onChoosePictureListener mOnChoosePictureListener;
 
     int currentTabPosition = 0;
     public static final String CURRENT_TAB_POSITION = "HOME_CURRENT_TAB_POSITION";
@@ -59,7 +65,7 @@ public class MainActivity extends BaseActivity {
         mFragments = new ArrayList<>();
         mMainFragment = new MainFragment();
         mSearchFragment = new SearchFragment();
-        mCircleFragment = new CircleFragment();
+        mCircleFragment = new PublishDiaryFragment();
         mMineFragment = new MineFragment();
 
         mFragments.add(mMainFragment);
@@ -133,5 +139,50 @@ public class MainActivity extends BaseActivity {
 //        void onChoose();
 //        void onTakePhoto();
         void onClick();
+    }
+
+    //隐藏键盘
+    protected boolean hiddenInputMethodManager(View v) {
+        if (v != null && v.getWindowToken() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            return imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
+        return false;
+    }
+
+    //点击空白隐藏软键盘
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        final View v = this.getWindow().peekDecorView();
+        return hiddenInputMethodManager(v);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case ImageGridActivity.REQUEST_IMAGE:
+                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
+                    if (result != null) {
+                        if (mOnChoosePictureListener != null){
+                            mOnChoosePictureListener.onChooseListener(result.get(0));
+                        }
+                    }
+                    break;
+            }
+        }
+    }
+
+    public onChoosePictureListener getOnChoosePictureListener() {
+        return mOnChoosePictureListener;
+    }
+
+    public void setOnChoosePictureListener(onChoosePictureListener onChoosePictureListener) {
+        mOnChoosePictureListener = onChoosePictureListener;
+    }
+
+    public interface onChoosePictureListener{
+        void onChooseListener(String path);
     }
 }

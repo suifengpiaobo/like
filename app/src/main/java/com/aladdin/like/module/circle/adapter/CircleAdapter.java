@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
-import com.aladdin.like.model.PrefecturePojo;
+import com.aladdin.like.model.ThemeModes;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
  * Created by zxl on 2017/5/1 上午9:47.
  * Email:444288256@qq.com
  */
-public class CircleAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
+public class CircleAdapter extends BaseAdapter<ThemeModes.Theme> {
     onItemClickListener mItemClickListener;
     private Context mContext;
 
@@ -43,7 +43,7 @@ public class CircleAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     }
 
     @Override
-    public void onBindCommon(RecyclerView.ViewHolder holder, PrefecturePojo.Prefecture item) {
+    public void onBindCommon(RecyclerView.ViewHolder holder, ThemeModes.Theme item) {
 
     }
 
@@ -61,9 +61,9 @@ public class CircleAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
         CircleViewHolder viewHolder = (CircleViewHolder) holder;
-        PrefecturePojo.Prefecture item = getItemObject(position);
+        ThemeModes.Theme item = getItemObject(position);
         if (item != null) {
-            viewHolder.mMainTypeName.setText(item.typeName);
+            viewHolder.mMainTypeName.setText(item.themeName);
 
             Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgs[position]);
             int height = bitmap.getHeight();
@@ -84,7 +84,7 @@ public class CircleAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
         }
     }
 
-    public PrefecturePojo.Prefecture getItemObject(int position) {
+    public ThemeModes.Theme getItemObject(int position) {
         if (position < 0 || position > mDatas.size() - 1) return null;
         return mDatas.get(position);
     }
@@ -110,6 +110,6 @@ public class CircleAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(PrefecturePojo.Prefecture item);
+        void onItemClick(ThemeModes.Theme item);
     }
 }

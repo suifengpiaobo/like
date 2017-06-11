@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
-import com.aladdin.like.model.PrefecturePojo;
+import com.aladdin.like.model.ThemeModes;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
  * Created by zxl on 2017/5/1 上午6:23.
  * Email:444288256@qq.com
  */
-public class HorizontalAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
+public class HorizontalAdapter extends BaseAdapter<ThemeModes.Theme> {
     onItemClickListener mItemClickListener;
     private Context mContext;
 
@@ -43,14 +43,14 @@ public class HorizontalAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
         HorizontalViewHolder viewHolder = (HorizontalViewHolder) holder;
-        PrefecturePojo.Prefecture item = getItemObject(position);
+        ThemeModes.Theme item = getItemObject(position);
         if (position == 11){
             viewHolder.mSearchSpace2.setVisibility(View.VISIBLE);
         }else{
             viewHolder.mSearchSpace2.setVisibility(View.GONE);
         }
         if (item != null) {
-            viewHolder.mHorizontalTypeName.setText(item.typeName);
+            viewHolder.mHorizontalTypeName.setText(item.themeName);
 
             ImageLoaderUtils.loadResPic(mContext, viewHolder.mSearchHorizontalBg, imgs[position]);
             viewHolder.mSearchHorizontalBg.setOnClickListener(new View.OnClickListener() {
@@ -66,7 +66,7 @@ public class HorizontalAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
 
     @Override
     public int getCommonType(int position) {
-        return 0;
+        return position;
     }
 
     @Override
@@ -74,11 +74,10 @@ public class HorizontalAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     }
 
     @Override
-    public void onBindCommon(RecyclerView.ViewHolder holder, PrefecturePojo.Prefecture item) {
-
+    public void onBindCommon(RecyclerView.ViewHolder holder, ThemeModes.Theme item) {
     }
 
-    public PrefecturePojo.Prefecture getItemObject(int position) {
+    public ThemeModes.Theme getItemObject(int position) {
         if (position < 0 || position > mDatas.size() - 1) return null;
         return mDatas.get(position);
     }
@@ -110,7 +109,7 @@ public class HorizontalAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(PrefecturePojo.Prefecture item);
+        void onItemClick(ThemeModes.Theme item);
     }
 
 

@@ -5,12 +5,11 @@ import com.aladdin.http.RequestType;
 import com.aladdin.like.model.CollectionImage;
 import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.model.ThemeDetail;
-import com.aladdin.like.model.UserPojo;
 import com.aladdin.like.model.ThemeModes;
+import com.aladdin.like.model.UserPojo;
 import com.zxl.network_lib.HttpUtil;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,9 +129,10 @@ public enum HttpManager {
      * 添加用户感兴趣主题
      * @param openid
      * @param themeId
+     * @param operateType 1、添加  2删除
      * @param callback
      */
-    public void addUserTheme(String openid, List<String> themeId, HttpResultCallback<ThemeModes> callback){
+    public void addUserTheme(String openid, List<String> themeId,int operateType, HttpResultCallback<ThemeModes> callback){
         Map<String, Object> map = new HashMap<>();
         map.put("openid",openid);
         if (themeId.toString().contains("[")){
@@ -141,6 +141,7 @@ public enum HttpManager {
         if (themeId.toString().contains("]")){
             themeId.toString().replace("]","");
         }
+        map.put("operateType",operateType);
         map.put("themeId",themeId);
         String params = prepareParam(map);
         try{
@@ -197,7 +198,7 @@ public enum HttpManager {
      * @param page_num
      * @param callback
      */
-    public void getUserDiary(String openid, String page, String page_num, HttpResultCallback<DiaryDetail> callback){
+    public void getUserDiary(String openid, int page, int page_num, HttpResultCallback<DiaryDetail> callback){
         Map<String, Object> map = new HashMap<>();
         map.put("openid",openid);
         map.put("page",page);
@@ -217,7 +218,7 @@ public enum HttpManager {
      * @param diaryTitle
      * @param diaryContent
      */
-    public void addUserDiary(String openid, File image, String diaryTitle, String diaryContent){
+    public void addUserDiary(String openid, String image, String diaryTitle, String diaryContent,HttpResultCallback<String> callback){
 
     }
 
@@ -228,7 +229,7 @@ public enum HttpManager {
      * @param page_num
      * @param callback
      */
-    public void getUserCollectionImage(String openid, String page, String page_num, HttpResultCallback<CollectionImage> callback){
+    public void getUserCollectionImage(String openid, int page, int page_num, HttpResultCallback<CollectionImage> callback){
         Map<String, Object> map = new HashMap<>();
         map.put("openid",openid);
         map.put("page",page);

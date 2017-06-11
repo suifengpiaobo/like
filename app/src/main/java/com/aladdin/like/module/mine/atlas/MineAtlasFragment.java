@@ -5,10 +5,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.aladdin.base.BaseFragment;
+import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
-import com.aladdin.like.model.AtlasPicturePojo;
+import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.mine.atlas.adapter.AtlasAdapter;
 import com.aladdin.like.module.mine.atlas.adapter.AtlasNotChooseAdapter;
+import com.aladdin.like.module.mine.atlas.contract.MineThemeContract;
+import com.aladdin.like.module.mine.atlas.prestener.MineThemePrestener;
+import com.aladdin.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +23,8 @@ import butterknife.BindView;
  * Description 我的 主题
  * Created by zxl on 2017/5/20 下午7:26.
  */
-public class MineAtlasFragment extends BaseFragment {
+public class MineAtlasFragment extends BaseFragment implements MineThemeContract.View{
+    MineThemeContract.Presenter mPresenter;
 
     @BindView(R.id.my_choose_atlas)
     RecyclerView mMyChooseAtlas;
@@ -29,12 +34,8 @@ public class MineAtlasFragment extends BaseFragment {
     AtlasAdapter mAtlasAdapter;
     AtlasNotChooseAdapter mNotChooseAdapter;
 
-    //主题
-    List<AtlasPicturePojo.AtlasPicture> mChooseAtlas = new ArrayList<>();
-    String[] name = {"日韩美图","微信素材","另类图集","美食图集","健美图片","欧美情侣",
-            "运动名将","奢侈生活","电影明星","轻松搞笑","夜生活","专辑封面"};
-    AtlasPicturePojo.AtlasPicture picture;
-
+    List<ThemeModes.Theme> mFollowThemes = new ArrayList<>();
+    List<ThemeModes.Theme> mNotFollowThemes = new ArrayList<>();
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_mine_atlas;
@@ -42,19 +43,14 @@ public class MineAtlasFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-
-        for (int i = 0; i< 12;i++){
-            picture = new AtlasPicturePojo.AtlasPicture();
-            picture.name = name[i];
-            mChooseAtlas.add(picture);
-        }
+        mPresenter = new MineThemePrestener(this);
+        mPresenter.getTheme(LikeAgent.getInstance().getUid());
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mMyChooseAtlas.setLayoutManager(linearLayoutManager);
         mAtlasAdapter = new AtlasAdapter(getActivity());
         mMyChooseAtlas.setAdapter(mAtlasAdapter);
-        mAtlasAdapter.addAll(mChooseAtlas);
 
 
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getActivity());
@@ -62,11 +58,91 @@ public class MineAtlasFragment extends BaseFragment {
         mMyNotAtlas.setLayoutManager(linearLayoutManager2);
         mNotChooseAdapter = new AtlasNotChooseAdapter(getActivity());
         mMyNotAtlas.setAdapter(mNotChooseAdapter);
-        mNotChooseAdapter.addAll(mChooseAtlas);
+
+        bindEvent();
+    }
+
+    private void bindEvent() {
+        mAtlasAdapter.setItemClickListener(new AtlasAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(ThemeModes.Theme item) {
+                List<String> tempList = new ArrayList<String>();
+                tempList.add(item.themeId);
+                mPresenter.addUserTheme(LikeAgent.getInstance().getUid(),tempList,2);
+                tempList.clear();
+            }
+        });
+
+        mNotChooseAdapter.setItemClickListener(new AtlasNotChooseAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(ThemeModes.Theme item) {
+                List<String> tempList = new ArrayList<String>();
+                tempList.add(item.themeId);
+                mPresenter.addUserTheme(LikeAgent.getInstance().getUid(),tempList,1);
+                tempList.clear();
+            }
+        });
     }
 
     @Override
     protected void lazyFetchData() {
+
+    }
+
+    @Override
+    public void showLoading() {
+        startProgressDialog();
+    }
+
+    @Override
+    public void stopLoading() {
+        stopProgressDialog();
+    }
+
+    @Override
+    public void showErrorTip(String msg) {
+        if (getActivity() == null){
+            return;
+        }
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LogUtil.i(msg);
+                showToast(msg);
+            }
+        });
+    }
+
+    @Override
+    public void setThemeData(ThemeModes theme) {
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (theme != null){
+                    for (ThemeModes.Theme themes : theme.themeList){
+                        if (themes.followSign == 1){
+                            mFollowThemes.add(themes);
+                        }else{
+                            mNotFollowThemes.add(themes);
+                        }
+                    }
+                    if (mFollowThemes != null && mFollowThemes.size()>0){
+                        mAtlasAdapter.addAll(mFollowThemes);
+                        mAtlasAdapter.notifyDataSetChanged();
+                    }
+                    if (mNotFollowThemes != null && mNotFollowThemes.size()>0){
+                        mNotChooseAdapter.addAll(mNotFollowThemes);
+                        mNotChooseAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        });
+
+    }
+
+    @Override
+    public void addThemeSuc() {
 
     }
 }

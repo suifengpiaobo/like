@@ -10,8 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
-import com.aladdin.like.model.PrefecturePojo;
+import com.aladdin.like.model.ThemeModes;
 import com.aladdin.utils.ImageLoaderUtils;
+import com.aladdin.utils.LogUtil;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -26,7 +27,7 @@ import butterknife.ButterKnife;
  * Created by zxl on 2017/5/1 上午6:23.
  * Email:444288256@qq.com
  */
-public class SearchResultAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
+public class SearchResultAdapter extends BaseAdapter<ThemeModes.Theme> {
     onItemClickListener mItemClickListener;
     private Context mContext;
 
@@ -35,6 +36,7 @@ public class SearchResultAdapter extends BaseAdapter<PrefecturePojo.Prefecture> 
             R.drawable.picture_4,  R.drawable.picture_6,
             R.drawable.picture_7, R.drawable.picture_8,
             R.drawable.picture_10, R.drawable.picture_11, R.drawable.picture_12,
+            R.drawable.picture_1, R.drawable.picture_2
     };
 
     public SearchResultAdapter(Context context) {
@@ -45,9 +47,9 @@ public class SearchResultAdapter extends BaseAdapter<PrefecturePojo.Prefecture> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
         HorizontalViewHolder viewHolder = (HorizontalViewHolder) holder;
-        PrefecturePojo.Prefecture item = getItemObject(position);
+        ThemeModes.Theme item = getItemObject(position);
         if (item != null) {
-            viewHolder.mResultTypeName.setText(item.typeName);
+            viewHolder.mResultTypeName.setText(item.themeName);
 
             Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgs[position]);
             int height = bitmap.getHeight();
@@ -70,19 +72,41 @@ public class SearchResultAdapter extends BaseAdapter<PrefecturePojo.Prefecture> 
 
     @Override
     public int getCommonType(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        HorizontalViewHolder viewHolder = (HorizontalViewHolder) holder;
+        ThemeModes.Theme item = getItemObject(position);
+        if (item != null) {
+            viewHolder.mResultTypeName.setText(item.themeName);
+
+            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgs[position]);
+            int height = bitmap.getHeight();
+
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mResultImg.getLayoutParams();
+            params.height=height;
+            viewHolder.mResultImg.setLayoutParams(params);
+
+            ImageLoaderUtils.loadResPic(mContext, viewHolder.mResultImg, imgs[position]);
+            viewHolder.mResultItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mItemClickListener != null) {
+                        mItemClickListener.onItemClick(item);
+                    }
+                }
+            });
+        }
     }
 
     @Override
-    public void onBindCommon(RecyclerView.ViewHolder holder, PrefecturePojo.Prefecture item) {
-
+    public void onBindCommon(RecyclerView.ViewHolder holder, ThemeModes.Theme item) {
+        LogUtil.i("--onBindCommon-->>");
     }
 
-    public PrefecturePojo.Prefecture getItemObject(int position) {
+    public ThemeModes.Theme getItemObject(int position) {
         if (position < 0 || position > mDatas.size() - 1) return null;
         return mDatas.get(position);
     }
@@ -114,7 +138,7 @@ public class SearchResultAdapter extends BaseAdapter<PrefecturePojo.Prefecture> 
     }
 
     public interface onItemClickListener {
-        void onItemClick(PrefecturePojo.Prefecture item);
+        void onItemClick(ThemeModes.Theme item);
     }
 
 

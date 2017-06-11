@@ -11,7 +11,7 @@ import com.aladdin.like.model.ThemeDetail;
  */
 public interface PictureDetailsContract {
     interface View extends BaseView{
-        void setData(ThemeDetail prefecture);
+        void setData(ThemeDetail themeDetail);
     }
 
     interface Prestener extends BasePresenter{

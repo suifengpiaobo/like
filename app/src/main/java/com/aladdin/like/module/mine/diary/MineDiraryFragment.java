@@ -2,15 +2,16 @@ package com.aladdin.like.module.mine.diary;
 
 
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 
 import com.aladdin.base.BaseFragment;
+import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
-import com.aladdin.like.model.PrefecturePojo;
+import com.aladdin.like.model.DiaryDetail;
+import com.aladdin.like.module.mine.diary.contract.DiaryContract;
+import com.aladdin.like.module.mine.diary.prestener.DiaryPrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.jcodecraeer.xrecyclerview.ProgressStyle;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import butterknife.BindView;
 
@@ -18,17 +19,15 @@ import butterknife.BindView;
  * Description 我的  日记
  * Created by zxl on 2017/5/20 下午8:04.
  */
-public class MineDiraryFragment extends BaseFragment {
-
+public class MineDiraryFragment extends BaseFragment implements DiaryContract.View,XRecyclerView.LoadingListener{
+    DiaryContract.Presenter mPresenter;
     @BindView(R.id.mine_diary_viewpager)
-    RecyclerView mMineDiaryViewpager;
-
-    List<PrefecturePojo.Prefecture> mPrefectures = new ArrayList<>();
-    String[] mName = {"日韩美图","微信素材","另类图集","美食图集","欧美情侣",
-            "运动名将","奢侈生活","轻松搞笑","夜生活","专辑封面"};
-    PrefecturePojo.Prefecture mResultPrefecture;
+    XRecyclerView mMineDiary;
 
     MineDiaryAdapter mDiaryAdapter;
+
+    int page;
+    int page_num;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_mine_dirary;
@@ -36,22 +35,70 @@ public class MineDiraryFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-        for (int i = 0; i< 10;i++){
-            mResultPrefecture = new PrefecturePojo.Prefecture();
-            mResultPrefecture.typeName = mName[i];
-            mPrefectures.add(mResultPrefecture);
-        }
+        mPresenter = new DiaryPrestener(this);
+        mPresenter.getUserDiary(LikeAgent.getInstance().getUid(),page,page_num);
+
+        mMineDiary.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        mMineDiary.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        mMineDiary.setArrowImageView(R.drawable.icon_refresh);
+        mMineDiary.setLoadingListener(this);
+        mMineDiary.setPullRefreshEnabled(false);
 
         GridLayoutManager staggered = new GridLayoutManager(getActivity(), 2);
         mDiaryAdapter = new MineDiaryAdapter(getActivity());
-        mMineDiaryViewpager.setLayoutManager(staggered);
-        mMineDiaryViewpager.addItemDecoration(new SpacesItemDecoration(10));
-        mMineDiaryViewpager.setAdapter(mDiaryAdapter);
-        mDiaryAdapter.addAll(mPrefectures);
+        mMineDiary.setLayoutManager(staggered);
+        mMineDiary.addItemDecoration(new SpacesItemDecoration(10));
+        mMineDiary.setAdapter(mDiaryAdapter);
     }
 
     @Override
     protected void lazyFetchData() {
 
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void stopLoading() {
+
+    }
+
+    @Override
+    public void showErrorTip(String msg) {
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                stopLoading();
+                showErrorHint(msg);
+            }
+        });
+    }
+
+    @Override
+    public void setUserDiary(DiaryDetail detail) {
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mMineDiary.refreshComplete();
+                mMineDiary.loadMoreComplete();
+                mDiaryAdapter.addAll(detail.diaryList);
+                page = detail.per_page;
+            }
+        });
+    }
+
+    @Override
+    public void onRefresh() {
+
+    }
+
+    @Override
+    public void onLoadMore() {
+        mPresenter.getUserDiary(LikeAgent.getInstance().getUid(),page,page_num);
     }
 }

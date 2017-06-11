@@ -32,14 +32,11 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.0'
     compile 'com.android.support:design:25.3.0'
     compile 'com.android.support:multidex:1.0.1'
-
-//    compile 'com.trello.rxlifecycle2:rxlifecycle:2.0.1'
-//    compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.0.1'
-
+    //    compile 'com.trello.rxlifecycle2:rxlifecycle:2.0.1'
+    //    compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.0.1'
     //图片缩放
     compile 'com.commit451:PhotoView:1.2.4'
     compile 'jp.wasabeef:glide-transformations:2.0.1'
-
     //图片压缩
     compile 'top.zibin:Luban:1.0.9'
     //弹性布局
@@ -50,5 +47,4 @@ dependencies {
     compile 'com.jakewharton:butterknife-compiler:8.5.1'
     compile project(path: ':network_lib')
     compile 'com.facebook.fresco:fresco:0.13.0'
-
 }

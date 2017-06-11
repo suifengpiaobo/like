@@ -3,7 +3,7 @@ package com.aladdin.like.model;
 import java.util.List;
 
 /**
- * Description
+ * Description 收藏的图片
  * Created by zxl on 2017/6/4 下午7:50.
  * Email:444288256@qq.com
  */
@@ -12,12 +12,13 @@ public class CollectionImage {
     public int per_page;
     public List<Collection> recordList;
 
-    class Collection{
+    public class Collection{
         public String recordId;
         public String imageId;
         public String imageUrl;
         public String imageName;
-        public long createTime;
+        public String themeName;
+        public String recordTimeStr;
 
         @Override
         public String toString() {
@@ -26,7 +27,8 @@ public class CollectionImage {
                     ", imageId='" + imageId + '\'' +
                     ", imageUrl='" + imageUrl + '\'' +
                     ", imageName='" + imageName + '\'' +
-                    ", createTime=" + createTime +
+                    ", themeName='" + themeName + '\'' +
+                    ", recordTimeStr='" + recordTimeStr + '\'' +
                     '}';
         }
     }

@@ -7,14 +7,17 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.widget.EditText;
 
 import com.aladdin.base.BaseFragment;
+import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
-import com.aladdin.like.model.PrefecturePojo;
+import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.search.adapter.HorizontalAdapter;
 import com.aladdin.like.module.search.adapter.SearchResultAdapter;
+import com.aladdin.like.module.search.contract.SearchContract;
+import com.aladdin.like.module.search.prestener.SearchPrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.aladdin.utils.LogUtil;
+import com.jcodecraeer.xrecyclerview.ProgressStyle;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -23,24 +26,18 @@ import butterknife.OnClick;
  * Description 搜索
  * Created by zxl on 2017/4/28 下午2:56.
  */
-public class SearchFragment extends BaseFragment {
+public class SearchFragment extends BaseFragment implements SearchContract.View,XRecyclerView.LoadingListener{
+    SearchContract.Presenter mPresenter;
+
     @BindView(R.id.search_horizontal)
     RecyclerView mSearchHorizontal;
     @BindView(R.id.search_result)
-    RecyclerView mSearchResult;
+    XRecyclerView mSearchResult;
     @BindView(R.id.search)
     EditText mSearch;
 
-    List<PrefecturePojo.Prefecture> mSearchPrefectures = new ArrayList<>();
-    String[] name = {"日韩美图","微信素材","另类图集","美食图集","健美图片","欧美情侣",
-            "运动名将","奢侈生活","电影明星","轻松搞笑","夜生活","专辑封面"};
-    PrefecturePojo.Prefecture mPrefecture;
     HorizontalAdapter mHorizontalAdapter;
 
-    List<PrefecturePojo.Prefecture> mResultPrefectures = new ArrayList<>();
-    String[] mResultName = {"日韩美图","微信素材","另类图集","美食图集","欧美情侣",
-            "运动名将","奢侈生活","轻松搞笑","夜生活","专辑封面"};
-    PrefecturePojo.Prefecture mResultPrefecture;
     SearchResultAdapter mResultAdapter;
     @Override
     protected int getLayoutId() {
@@ -49,31 +46,28 @@ public class SearchFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-        for (int i = 0; i< 12;i++){
-            mPrefecture = new PrefecturePojo.Prefecture();
-            mPrefecture.typeName = name[i];
-            mSearchPrefectures.add(mPrefecture);
-        }
+        mPresenter = new SearchPrestener(this);
+        mPresenter.loadData(LikeAgent.getInstance().getUid());
+        mPresenter.searchData(LikeAgent.getInstance().getUid(),"");
+
+        mSearchResult.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        mSearchResult.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        mSearchResult.setArrowImageView(R.drawable.icon_refresh);
+        mSearchResult.setLoadingListener(this);
+        mSearchResult.setPullRefreshEnabled(false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         mSearchHorizontal.setLayoutManager(linearLayoutManager);
         mHorizontalAdapter = new HorizontalAdapter(getActivity());
         mSearchHorizontal.setAdapter(mHorizontalAdapter);
-        mHorizontalAdapter.addAll(mSearchPrefectures);
 
-        for (int i = 0; i< 10;i++){
-            mResultPrefecture = new PrefecturePojo.Prefecture();
-            mResultPrefecture.typeName = mResultName[i];
-            mResultPrefectures.add(mResultPrefecture);
-        }
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mResultAdapter = new SearchResultAdapter(getActivity());
         mSearchResult.setLayoutManager(staggered);
         mSearchResult.addItemDecoration(new SpacesItemDecoration(10));
         mSearchResult.setAdapter(mResultAdapter);
-        mResultAdapter.addAll(mResultPrefectures);
     }
 
     @Override
@@ -83,5 +77,62 @@ public class SearchFragment extends BaseFragment {
 
     @OnClick(R.id.search)
     public void onViewClicked() {
+    }
+
+    @Override
+    public void showLoading() {
+        startProgressDialog();
+    }
+
+    @Override
+    public void stopLoading() {
+        stopProgressDialog();
+    }
+
+    @Override
+    public void showErrorTip(String msg) {
+        if (getActivity() ==null)
+            return;
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mSearchResult.loadMoreComplete();
+                mSearchResult.refreshComplete();
+                showToast(msg);
+            }
+        });
+    }
+
+    @Override
+    public void setData(ThemeModes data) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mHorizontalAdapter.addAll(data.themeList);
+                mHorizontalAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    @Override
+    public void setResultData(ThemeModes data) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mResultAdapter.addAll(data.themeList);
+                mResultAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    @Override
+    public void onRefresh() {
+
+    }
+
+    @Override
+    public void onLoadMore() {
+
     }
 }

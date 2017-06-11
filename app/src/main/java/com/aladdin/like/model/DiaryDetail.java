@@ -3,7 +3,7 @@ package com.aladdin.like.model;
 import java.util.List;
 
 /**
- * Description
+ * Description 日记
  * Created by zxl on 2017/6/4 下午7:28.
  * Email:444288256@qq.com
  */
@@ -11,20 +11,22 @@ public class DiaryDetail {
     public int total;
     public int per_page;
 
-    public List<Diary> recordList;
+    public List<Diary> diaryList;
 
-    class Diary{
-        public String recordId;
-        public String imageId;
-        public String diarySubject;//日志题目
+    public class Diary{
+        public String diaryId;
+        public String diaryImage;
+        public String diaryTimeStr;
+        public String diaryTitle;//日志题目
         public String diaryContent;//日志内容
 
         @Override
         public String toString() {
             return "Diary{" +
-                    "recordId='" + recordId + '\'' +
-                    ", imageId='" + imageId + '\'' +
-                    ", diarySubject='" + diarySubject + '\'' +
+                    "diaryId='" + diaryId + '\'' +
+                    ", diaryImage='" + diaryImage + '\'' +
+                    ", diaryTimeStr='" + diaryTimeStr + '\'' +
+                    ", diaryTitle='" + diaryTitle + '\'' +
                     ", diaryContent='" + diaryContent + '\'' +
                     '}';
         }
@@ -35,7 +37,7 @@ public class DiaryDetail {
         return "DiaryDetail{" +
                 "total=" + total +
                 ", per_page=" + per_page +
-                ", recordList=" + recordList +
+                ", diaryList=" + diaryList +
                 '}';
     }
 }

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.aladdin.like.R;
-import com.aladdin.like.model.PrefecturePojo;
+import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
  * Created by zxl on 2017/5/22 上午12:15.
  * Email:444288256@qq.com
  */
-public class MineDiaryAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
+public class MineDiaryAdapter extends BaseAdapter<DiaryDetail.Diary> {
     private Integer[] imgs = {
             R.drawable.picture_1, R.drawable.picture_2, R.drawable.picture_3,
             R.drawable.picture_4, R.drawable.picture_6,
@@ -36,14 +36,14 @@ public class MineDiaryAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
     }
 
     @Override
-    public void onBindCommon(RecyclerView.ViewHolder holder, PrefecturePojo.Prefecture item) {
+    public void onBindCommon(RecyclerView.ViewHolder holder, DiaryDetail.Diary item) {
 
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         PictureViewHolder viewHolder = (PictureViewHolder) holder;
-        PrefecturePojo.Prefecture item= getItemObject(position);
+        DiaryDetail.Diary item= getItemObject(position);
         if (item != null){
 
             Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgs[0]);
@@ -67,7 +67,7 @@ public class MineDiaryAdapter extends BaseAdapter<PrefecturePojo.Prefecture> {
         return new PictureViewHolder(mView);
     }
 
-    public PrefecturePojo.Prefecture getItemObject(int position) {
+    public DiaryDetail.Diary getItemObject(int position) {
         if (position < 0 || position > mDatas.size() - 1) return null;
         return mDatas.get(position);
     }

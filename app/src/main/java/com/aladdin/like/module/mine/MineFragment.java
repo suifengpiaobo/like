@@ -32,16 +32,12 @@ public class MineFragment extends BaseFragment {
     TextView mDescription;
     @BindView(R.id.mine_title)
     RelativeLayout mMineTitle;
-    //    @BindView(R.id.mine_info_viewpager)
-//    ScrollViewPager mViewpager;
     @BindView(R.id.set)
     ImageView mSet;
 
-//    List<BaseFragment> mFragments;
     MineAtlasFragment mAtlasFragment;
     MinePictureFragment mPictureFragment;
     MineDiraryFragment mDiraryFragment;
-//    BaseFragmentAdapter mAdapter;
 
     int mCurrent = 0;
     @BindView(R.id.mine_atlas)
@@ -60,35 +56,6 @@ public class MineFragment extends BaseFragment {
     protected void initView() {
         setMineTitle();
         initAtlasFragment();
-//        mFragments = new ArrayList<>();
-//        mAtlasFragment = new MineAtlasFragment();
-//        mPictureFragment = new MinePictureFragment();
-//        mDiraryFragment = new MineDiraryFragment();
-//        mFragments.add(mAtlasFragment);
-//        mFragments.add(mPictureFragment);
-//        mFragments.add(mDiraryFragment);
-
-//        mAdapter = new BaseFragmentAdapter(getFragmentManager(), mFragments);
-//        mViewpager.setAdapter(mAdapter);
-
-//        mViewpager.setCurrentItem(mCurrent);
-//        mViewpager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-//            @Override
-//            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-//                mCurrent = position;
-//                setMineTitle();
-//            }
-//
-//            @Override
-//            public void onPageSelected(int position) {
-//
-//            }
-//
-//            @Override
-//            public void onPageScrollStateChanged(int state) {
-//
-//            }
-//        });
     }
 
     @Override
@@ -114,19 +81,16 @@ public class MineFragment extends BaseFragment {
         switch (view.getId()) {
             case R.id.mine_atlas:
                 mCurrent = 0;
-//                mViewpager.setCurrentItem(mCurrent);
                 setMineTitle();
                 initAtlasFragment();
                 break;
             case R.id.mine_picture:
                 mCurrent = 1;
-//                mViewpager.setCurrentItem(mCurrent);
                 setMineTitle();
                 initPictureFragment();
                 break;
             case R.id.mine_dirary:
                 mCurrent = 2;
-//                mViewpager.setCurrentItem(mCurrent);
                 setMineTitle();
                 initMineDiraryFragment();
                 break;

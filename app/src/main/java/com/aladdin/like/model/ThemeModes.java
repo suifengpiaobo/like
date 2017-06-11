@@ -14,10 +14,10 @@ public class ThemeModes implements Serializable{
         public String openid;
         public String themeId;
         public String themeName;
-        public String themeImage;
+        public String themeImgUrl;//主题对应图片
+        public String createTimeStr;//创建时间
 
-        public boolean followSign; //是否关注 1 关注 0 未关注 查询全部时 为空
-        public String createTime;//创建时间
+        public int followSign; //是否关注 1 关注 0 未关注 查询全部时 为空
 
         @Override
         public String toString() {
@@ -25,7 +25,9 @@ public class ThemeModes implements Serializable{
                     "openid='" + openid + '\'' +
                     ", themeId='" + themeId + '\'' +
                     ", themeName='" + themeName + '\'' +
-                    ", themeImage='" + themeImage + '\'' +
+                    ", themeImgUrl='" + themeImgUrl + '\'' +
+                    ", createTimeStr='" + createTimeStr + '\'' +
+                    ", followSign=" + followSign +
                     '}';
         }
     }

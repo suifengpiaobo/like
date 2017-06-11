@@ -7,4 +7,5 @@ package com.aladdin.like.constant;
  */
 public class SharedPreferencesKey {
     public static final String IS_FIRST = "is_first";//是否是第一次使用
+    public static final String LOGIN_STATE = "login_state";
 }

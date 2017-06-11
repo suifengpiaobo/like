@@ -1,16 +1,18 @@
 package com.aladdin.like.module.mine.pictures;
 
 
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import com.aladdin.base.BaseFragment;
+import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
-import com.aladdin.like.model.PrefecturePojo;
+import com.aladdin.like.model.CollectionImage;
+import com.aladdin.like.module.mine.pictures.adapter.PictureAdapter;
+import com.aladdin.like.module.mine.pictures.contract.PictureContract;
+import com.aladdin.like.module.mine.pictures.prestener.PicturePrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.jcodecraeer.xrecyclerview.ProgressStyle;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import butterknife.BindView;
 
@@ -18,18 +20,17 @@ import butterknife.BindView;
  * Description 我的 图片
  * Created by zxl on 2017/5/20 下午8:05.
  */
-public class MinePictureFragment extends BaseFragment {
+public class MinePictureFragment extends BaseFragment implements PictureContract.View,XRecyclerView.LoadingListener{
+    PictureContract.Presenter mPresenter;
 
     @BindView(R.id.picture_recycleview)
-    RecyclerView mPictureRecycleview;
+    XRecyclerView mPicture;
 
-    List<PrefecturePojo.Prefecture> mPrefectures = new ArrayList<>();
-    String[] mName = {"日韩美图","微信素材","另类图集","美食图集","欧美情侣",
-            "运动名将","奢侈生活","轻松搞笑","夜生活","专辑封面"};
-    PrefecturePojo.Prefecture mResultPrefecture;
 
     PictureAdapter mPictureAdapter;
 
+    int page;
+    int page_num;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_mine_picture;
@@ -37,22 +38,70 @@ public class MinePictureFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-        for (int i = 0; i< 10;i++){
-            mResultPrefecture = new PrefecturePojo.Prefecture();
-            mResultPrefecture.typeName = mName[i];
-            mPrefectures.add(mResultPrefecture);
-        }
+        mPresenter = new PicturePrestener(this);
+        mPresenter.getPicture(LikeAgent.getInstance().getUid(),page,page_num);
+
+        mPicture.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        mPicture.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        mPicture.setArrowImageView(R.drawable.icon_refresh);
+        mPicture.setLoadingListener(this);
+        mPicture.setPullRefreshEnabled(false);
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mPictureAdapter = new PictureAdapter(getActivity());
-        mPictureRecycleview.setLayoutManager(staggered);
-        mPictureRecycleview.addItemDecoration(new SpacesItemDecoration(10));
-        mPictureRecycleview.setAdapter(mPictureAdapter);
-        mPictureAdapter.addAll(mPrefectures);
+        mPicture.setLayoutManager(staggered);
+        mPicture.addItemDecoration(new SpacesItemDecoration(10));
+        mPicture.setAdapter(mPictureAdapter);
     }
 
     @Override
     protected void lazyFetchData() {
 
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void stopLoading() {
+
+    }
+
+    @Override
+    public void showErrorTip(String msg) {
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showToast(msg);
+            }
+        });
+    }
+
+    @Override
+    public void setCollectImage(CollectionImage collectImage) {
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mPicture.loadMoreComplete();
+                mPicture.refreshComplete();
+                mPictureAdapter.addAll(collectImage.recordList);
+                mPictureAdapter.notifyDataSetChanged();
+                page = collectImage.per_page;
+            }
+        });
+    }
+
+    @Override
+    public void onRefresh() {
+
+    }
+
+    @Override
+    public void onLoadMore() {
+        mPresenter.getPicture(LikeAgent.getInstance().getUid(),page,page_num);
     }
 }

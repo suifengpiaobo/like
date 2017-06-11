@@ -37,11 +37,11 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
     protected void initView() {
         mPresenter = new MainPresenter(this) ;
 
-        mMainRecycle.setRefreshProgressStyle(ProgressStyle.BallClipRotate);
-        mMainRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallClipRotate);
+        mMainRecycle.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        mMainRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mMainRecycle.setArrowImageView(R.drawable.icon_refresh);
         mMainRecycle.setLoadingListener(this);
-        mMainRecycle.setFootViewVisible(false);
+        mMainRecycle.setPullRefreshEnabled(false);
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mMainRecycle.setLayoutManager(staggered);
@@ -57,6 +57,9 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
                 startActivity(PictureDetailsActivity.class,bundle);
             }
         });
+
+//        mPresenter.start();
+        mPresenter.loadData("");
     }
 
     @Override
@@ -81,6 +84,7 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
     @Override
     public void showErrorTip(String msg) {
+        if (getActivity() == null) return;
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -114,6 +118,6 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
     @Override
     public void onLoadMore() {
-        mMainRecycle.loadMoreComplete();
+        mPresenter.loadData("");
     }
 }

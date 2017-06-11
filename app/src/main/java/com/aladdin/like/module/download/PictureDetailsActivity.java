@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aladdin.base.BaseActivity;
+import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.model.ThemeModes;
@@ -16,11 +17,9 @@ import com.aladdin.like.module.download.presenter.PictureDetailsPrestener;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.ImageLoaderUtils;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -30,13 +29,12 @@ import butterknife.OnClick;
  * Created by zxl on 2017/5/1 上午3:24.
  */
 public class PictureDetailsActivity extends BaseActivity implements PictureDetailsContract.View,XRecyclerView.LoadingListener{
-
     @BindView(R.id.back)
     ImageView mBack;
     @BindView(R.id.share)
     ImageView mShare;
     @BindView(R.id.picture)
-    ImageView mPicture;
+    SimpleDraweeView mPicture;
     @BindView(R.id.type_name)
     TextView mTypeName;
     @BindView(R.id.parise_num)
@@ -49,8 +47,7 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
 
     PictureDetailsAdapter mAdapter;
 
-    List<ThemeModes.Theme> mPrefectures = new ArrayList<>();
-    ThemeModes.Theme mPrefecture;
+    ThemeModes.Theme mTheme;
 
     String themeId;
     int page = 0;
@@ -66,16 +63,23 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
     @Override
     protected void initView() {
         mPrestener = new PictureDetailsPrestener(this);
-        mPrefecture = (ThemeModes.Theme) getIntent().getSerializableExtra("PREFECTURE");
-        themeId = mPrefecture.themeId;
+        mTheme = (ThemeModes.Theme) getIntent().getSerializableExtra("PREFECTURE");
+        themeId = mTheme.themeId;
 
-        ImageLoaderUtils.displayRoundNative(PictureDetailsActivity.this,mPicture,R.drawable.picture_11);
+        if (mAdapter != null && mAdapter.getItemCount() > 0){
+            mAdapter.clear();
+        }
 
-        mDownloadRecycle.setRefreshProgressStyle(ProgressStyle.BallClipRotate);
-        mDownloadRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallClipRotate);
+        mPrestener.getData(LikeAgent.getInstance().getUid(),themeId,page,page_num);
+
+        ImageLoaderUtils.loadResPic(PictureDetailsActivity.this, mPicture, R.drawable.picture_11);
+
+        mDownloadRecycle.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        mDownloadRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mDownloadRecycle.setArrowImageView(R.drawable.icon_refresh);
         mDownloadRecycle.setLoadingListener(this);
-        mDownloadRecycle.setRefreshing(true);
+        mDownloadRecycle.setRefreshing(false);
+        mDownloadRecycle.setPullRefreshEnabled(false);
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mAdapter = new PictureDetailsAdapter(PictureDetailsActivity.this);
@@ -139,26 +143,24 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
     }
 
     @Override
-    public void setData(ThemeDetail prefecture) {
+    public void setData(ThemeDetail themeDetail) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mAdapter.addAll(prefecture.imageList);
+                page = themeDetail.per_page;
+                mDownloadRecycle.refreshComplete();
+                mAdapter.addAll(themeDetail.imageList);
             }
         });
     }
 
     @Override
     public void onRefresh() {
-        if (mAdapter != null && mAdapter.getItemCount() > 0){
-            mAdapter.clear();
-        }
 
-        mPrestener.getData("",themeId,page,page_num);
     }
 
     @Override
     public void onLoadMore() {
-
+        mPrestener.getData(LikeAgent.getInstance().getUid(),themeId,page,page_num);
     }
 }

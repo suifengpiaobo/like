@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
-import com.aladdin.like.model.AtlasPicturePojo;
+import com.aladdin.like.model.ThemeModes;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
  * Created by zxl on 2017/5/20 下午11:29.
  * Email:444288256@qq.com
  */
-public class AtlasAdapter extends BaseAdapter<AtlasPicturePojo.AtlasPicture> {
+public class AtlasAdapter extends BaseAdapter<ThemeModes.Theme> {
     onItemClickListener mItemClickListener;
     private Context mContext;
 
@@ -41,14 +41,14 @@ public class AtlasAdapter extends BaseAdapter<AtlasPicturePojo.AtlasPicture> {
     }
 
     @Override
-    public void onBindCommon(RecyclerView.ViewHolder holder, AtlasPicturePojo.AtlasPicture item) {
+    public void onBindCommon(RecyclerView.ViewHolder holder, ThemeModes.Theme item) {
 
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
         HorizontalViewHolder viewHolder = (HorizontalViewHolder) holder;
-        AtlasPicturePojo.AtlasPicture item = getItemObject(position);
+        ThemeModes.Theme item = getItemObject(position);
 
         if (position == 11){
             viewHolder.mSearchSpace2.setVisibility(View.VISIBLE);
@@ -56,7 +56,7 @@ public class AtlasAdapter extends BaseAdapter<AtlasPicturePojo.AtlasPicture> {
             viewHolder.mSearchSpace2.setVisibility(View.GONE);
         }
         if (item != null) {
-            viewHolder.mHorizontalTypeName.setText(item.name);
+            viewHolder.mHorizontalTypeName.setText(item.themeName);
 
             ImageLoaderUtils.loadResPic(mContext, viewHolder.mSearchHorizontalBg, imgs[position]);
             viewHolder.mSearchHorizontalBg.setOnClickListener(new View.OnClickListener() {
@@ -84,7 +84,7 @@ public class AtlasAdapter extends BaseAdapter<AtlasPicturePojo.AtlasPicture> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
     }
 
-    public AtlasPicturePojo.AtlasPicture getItemObject(int position) {
+    public ThemeModes.Theme getItemObject(int position) {
         if (position < 0 || position > mDatas.size() - 1) return null;
         return mDatas.get(position);
     }
@@ -116,7 +116,7 @@ public class AtlasAdapter extends BaseAdapter<AtlasPicturePojo.AtlasPicture> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(AtlasPicturePojo.AtlasPicture item);
+        void onItemClick(ThemeModes.Theme item);
     }
 
 
