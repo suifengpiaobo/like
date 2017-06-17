@@ -3,6 +3,7 @@ package com.aladdin.like.module.atlas.presenter;
 import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.module.atlas.contract.AtlasContract;
 import com.aladdin.like.model.ThemeModes;
+import com.aladdin.utils.LogUtil;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 import java.util.List;
@@ -46,6 +47,7 @@ public class AtlasPresenter implements AtlasContract.Presenter {
             public void onSuccess(ThemeModes result) {
                 if (mView == null) return;
 
+                LogUtil.i(""+result);
                 mView.addThemeSuc();
             }
 

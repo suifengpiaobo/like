@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
 import com.aladdin.base.BaseFragment;
+import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.download.PictureDetailsActivity;
@@ -58,13 +59,14 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
             }
         });
 
-//        mPresenter.start();
-        mPresenter.loadData("");
     }
 
     @Override
     protected void lazyFetchData() {
-        mMainRecycle.setRefreshing(true);
+        if (mAdapter != null && mAdapter.getItemCount() > 0){
+            mAdapter.clear();
+        }
+        mPresenter.loadData(LikeAgent.getInstance().getUid());
     }
 
     @Override
@@ -109,15 +111,19 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
     @Override
     public void onRefresh() {
-        if (mAdapter != null && mAdapter.getItemCount() > 0){
-            mAdapter.clear();
-        }
-        mPresenter.start();
-        mPresenter.loadData("");
+
     }
 
     @Override
     public void onLoadMore() {
-        mPresenter.loadData("");
+//        mPresenter.loadData(LikeAgent.getInstance().getUid());
+        if (getActivity() == null) return;
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mMainRecycle.loadMoreComplete();
+            }
+        });
     }
 }

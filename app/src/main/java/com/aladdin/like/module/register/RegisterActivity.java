@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aladdin.base.BaseActivity;
+import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.constant.Constant;
 import com.aladdin.like.module.atlas.AtlasChooseActivity;
@@ -91,11 +92,13 @@ public class RegisterActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.wx_login:
-                startActivity(AtlasChooseActivity.class);
+                LikeAgent.getInstance().setUid("10000");
+                startThenKill(AtlasChooseActivity.class);
+
 //                loginWx();
                 break;
             case R.id.register_account:
-                startActivity(LoginAccountActivity.class);
+                startThenKill(LoginAccountActivity.class);
                 break;
             case R.id.login_wx_login:
                 if (mCurrent == 1){

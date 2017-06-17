@@ -1,10 +1,16 @@
 package com.aladdin.like.module.search;
 
 
+import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.KeyEvent;
+import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.aladdin.base.BaseFragment;
 import com.aladdin.like.LikeAgent;
@@ -15,7 +21,6 @@ import com.aladdin.like.module.search.adapter.SearchResultAdapter;
 import com.aladdin.like.module.search.contract.SearchContract;
 import com.aladdin.like.module.search.prestener.SearchPrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
-import com.aladdin.utils.LogUtil;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -26,7 +31,7 @@ import butterknife.OnClick;
  * Description 搜索
  * Created by zxl on 2017/4/28 下午2:56.
  */
-public class SearchFragment extends BaseFragment implements SearchContract.View,XRecyclerView.LoadingListener{
+public class SearchFragment extends BaseFragment implements SearchContract.View, XRecyclerView.LoadingListener {
     SearchContract.Presenter mPresenter;
 
     @BindView(R.id.search_horizontal)
@@ -39,6 +44,26 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
     HorizontalAdapter mHorizontalAdapter;
 
     SearchResultAdapter mResultAdapter;
+
+    private TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
+
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            if ((actionId == EditorInfo.IME_ACTION_SEARCH || actionId == 0) && event != null) {
+                /*隐藏软键盘*/
+                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (inputMethodManager.isActive()) {
+                    inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
+                }
+                if (mSearch.getText().toString().length() > 0) {
+                    mPresenter.searchData(LikeAgent.getInstance().getUid(), mSearch.getText().toString());
+                }
+                return true;
+            }
+            return false;
+        }
+    };
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_search;
@@ -46,9 +71,9 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
 
     @Override
     protected void initView() {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mPresenter = new SearchPrestener(this);
         mPresenter.loadData(LikeAgent.getInstance().getUid());
-        mPresenter.searchData(LikeAgent.getInstance().getUid(),"");
 
         mSearchResult.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mSearchResult.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
@@ -71,12 +96,29 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
     }
 
     @Override
-    protected void lazyFetchData() {
+    public void onResume() {
+        super.onResume();
 
     }
 
+    @Override
+    protected void lazyFetchData() {
+        mSearch.setOnEditorActionListener(onEditorActionListener);
+//        mSearch.requestFocus();
+    }
+
+
     @OnClick(R.id.search)
     public void onViewClicked() {
+        mSearch.setFocusable(true);
+        mSearch.requestFocus();
+//        showInputMethodManager(mSearch);
+        forceOpenSoftKeyboard(getActivity());
+    }
+
+    public void forceOpenSoftKeyboard(Context context) {
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     @Override
@@ -91,7 +133,7 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
 
     @Override
     public void showErrorTip(String msg) {
-        if (getActivity() ==null)
+        if (getActivity() == null)
             return;
 
         getActivity().runOnUiThread(new Runnable() {
@@ -135,4 +177,5 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
     public void onLoadMore() {
 
     }
+
 }

@@ -2,7 +2,8 @@ package com.aladdin.like.module.main.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +12,18 @@ import android.widget.TextView;
 
 import com.aladdin.like.R;
 import com.aladdin.like.model.ThemeModes;
-import com.aladdin.utils.ImageLoaderUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
+import com.facebook.common.executors.CallerThreadExecutor;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,14 +36,6 @@ import butterknife.ButterKnife;
 public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
     onItemClickListener mItemClickListener;
     private Context mContext;
-
-    private Integer[] imgs = {
-            R.drawable.picture_1, R.drawable.picture_2, R.drawable.picture_3,
-            R.drawable.picture_4,  R.drawable.picture_6,
-            R.drawable.picture_7, R.drawable.picture_8,
-            R.drawable.picture_10, R.drawable.picture_11, R.drawable.picture_12,
-            R.drawable.picture_1, R.drawable.picture_2
-    };
 
     public MainAdapter(Context context) {
         super(context);
@@ -52,14 +53,34 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
         ThemeModes.Theme item = getItemObject(position);
         if (item != null) {
             viewHolder.mMainTypeName.setText(item.themeName);
+            viewHolder.mMainTime.setText(item.createTimeStr);
 
-            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgs[position]);
-            int height = bitmap.getHeight();
+            Uri uri = Uri.parse(item.themeImgUrl);
+            ImageRequest imageRequest = ImageRequestBuilder
+                    .newBuilderWithSource(uri)
+                    .setProgressiveRenderingEnabled(true)
+                    .build();
 
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
-            params.height=height;
-            viewHolder.mMainImg.setLayoutParams(params);
-            ImageLoaderUtils.loadResPic(mContext, viewHolder.mMainImg, imgs[position]);
+            ImagePipeline imagePipeline = Fresco.getImagePipeline();
+            DataSource<CloseableReference<CloseableImage>>
+                    dataSource = imagePipeline.fetchDecodedImage(imageRequest, this);
+
+            dataSource.subscribe(new BaseBitmapDataSubscriber() {
+
+                                     @Override
+                                     public void onNewResultImpl(@Nullable Bitmap bitmap) {
+                                         int height = bitmap.getHeight();
+                                         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
+                                         params.height = height;
+                                         viewHolder.mMainImg.setLayoutParams(params);
+                                     }
+
+                                     @Override
+                                     public void onFailureImpl(DataSource dataSource) {
+                                     }
+                                 },
+                    CallerThreadExecutor.getInstance());
+            viewHolder.mMainImg.setImageURI(item.themeImgUrl);
             viewHolder.mMainItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

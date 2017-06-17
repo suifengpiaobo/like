@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.aladdin.like.R;
 import com.aladdin.like.model.ThemeModes;
-import com.aladdin.utils.ImageLoaderUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
@@ -26,13 +25,6 @@ public class ChooseAdapter extends BaseAdapter {
     List<ThemeModes.Theme> mAtlas = new ArrayList<>();
     List<ThemeModes.Theme> mChoose = new ArrayList<>(); //存放选中的图集
     LayoutInflater mInflater;
-
-    private Integer[] imgs = {
-            R.drawable.picture_1, R.drawable.picture_2, R.drawable.picture_3,
-            R.drawable.picture_4, R.drawable.picture_5, R.drawable.picture_6,
-            R.drawable.picture_7, R.drawable.picture_8, R.drawable.picture_9,
-            R.drawable.picture_10, R.drawable.picture_11, R.drawable.picture_12,
-    };
 
     public ChooseAdapter(Context context){
         this.mContext = context;
@@ -90,7 +82,7 @@ public class ChooseAdapter extends BaseAdapter {
             }else{
                 viewHolder.mAtlasChoose.setSelected(false);
             }
-            ImageLoaderUtils.loadResPic(mContext,viewHolder.mAtlasItemBg,imgs[position]);
+            viewHolder.mAtlasItemBg.setImageURI(item.themeImgUrl);
 
             viewHolder.mAtlasTypeName.setText(item.themeName);
 

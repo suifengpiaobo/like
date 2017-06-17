@@ -28,13 +28,6 @@ public class HorizontalAdapter extends BaseAdapter<ThemeModes.Theme> {
     onItemClickListener mItemClickListener;
     private Context mContext;
 
-    private Integer[] imgs = {
-            R.drawable.picture_1, R.drawable.picture_2, R.drawable.picture_3,
-            R.drawable.picture_4, R.drawable.picture_5, R.drawable.picture_6,
-            R.drawable.picture_7, R.drawable.picture_8, R.drawable.picture_9,
-            R.drawable.picture_10, R.drawable.picture_11, R.drawable.picture_12,
-    };
-
     public HorizontalAdapter(Context context) {
         super(context);
         this.mContext = context;
@@ -52,7 +45,7 @@ public class HorizontalAdapter extends BaseAdapter<ThemeModes.Theme> {
         if (item != null) {
             viewHolder.mHorizontalTypeName.setText(item.themeName);
 
-            ImageLoaderUtils.loadResPic(mContext, viewHolder.mSearchHorizontalBg, imgs[position]);
+            viewHolder.mSearchHorizontalBg.setImageURI(item.themeImgUrl);
             viewHolder.mSearchHorizontalBg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

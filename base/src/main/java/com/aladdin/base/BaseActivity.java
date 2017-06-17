@@ -11,11 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.aladdin.dialog.DialogTools;
 import com.aladdin.utils.AppManager;
 import com.aladdin.utils.ToastUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
 
@@ -25,7 +28,12 @@ import butterknife.ButterKnife;
  * Email:444288256@qq.com
  */
 public abstract class BaseActivity extends AppCompatActivity {
-//    private CompositeSubscription mSubscriptions;
+    //    private CompositeSubscription mSubscriptions;
+    protected Context mContext;
+    protected Context mApplicationContext;
+
+    private View baseView;
+    private View contentView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,10 +42,24 @@ public abstract class BaseActivity extends AppCompatActivity {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 //            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 //        }
+        mContext = this;
+        mApplicationContext = this.getApplicationContext();
+
         AppManager.instance.addActivity(this);
-        setContentView(getLayoutId());
+        baseView = View.inflate(mContext, R.layout.base_activity_container, null);
+        setContentView(baseView);
+        setupContentView();
+
         ButterKnife.bind(this);
         this.initView();
+    }
+    // 加载子类布局文件
+    private void setupContentView() {
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.root);
+        if (getLayoutId() != 0) {
+            contentView = View.inflate(mContext, getLayoutId(), null);
+            frameLayout.addView(contentView);
+        }
     }
 
     @Override
@@ -48,11 +70,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onResume(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     @Override
@@ -190,4 +214,30 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     //初始化布局和监听
     protected abstract void initView();
+
+    /**
+     * 点击空白隐藏软键盘
+     */
+    @Override
+    public boolean onTouchEvent(android.view.MotionEvent event) {
+        final View v = this.getWindow().peekDecorView();
+        return hiddenInputMethodManager(v);
+    }
+
+    protected boolean hiddenInputMethodManager(View v) {
+        if (v != null && v.getWindowToken() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            return imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
+
+        return false;
+    }
+
+    protected boolean showInputMethodManager(View v) {
+        if (v != null && v.getWindowToken() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
+        }
+        return false;
+    }
 }

@@ -9,10 +9,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.aladdin.dialog.DialogTools;
 import com.aladdin.utils.ToastUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
 //import rx.Subscription;
@@ -24,13 +27,18 @@ import butterknife.ButterKnife;
  * Email:444288256@qq.com
  */
 public abstract class BaseFragment extends Fragment {
+    protected BaseActivity mActivity;
     private boolean isViewPrepared; // 标识fragment视图已经初始化完毕
     private boolean hasFetchData; // 标识已经触发过懒加载数据
 //    private CompositeSubscription mSubscriptions;
 
+    private View rootView; //根布局 父类
+    private View contentView; // 根布局 子类
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mActivity = (BaseActivity) context;
     }
 
     @Override
@@ -41,11 +49,26 @@ public abstract class BaseFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(getLayoutId(), container, false);
+        rootView = inflater.inflate(R.layout.base_activity_container, container, false);
+        setupContentView();
         ButterKnife.bind(this, rootView);
         this.initView();
         isViewPrepared = true;
         return rootView;
+    }
+
+    // 加载子类布局文件
+    private void setupContentView() {
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.root);
+        if (getLayoutId() != 0) {
+            contentView = View.inflate(mActivity, getLayoutId(), null);
+            frameLayout.addView(contentView);
+        }
+    }
+
+    // 工具方法 用于获取某个View
+    public View findViewById(int resId) {
+        return rootView.findViewById(resId);
     }
 
     @Override
@@ -60,6 +83,7 @@ public abstract class BaseFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
 
         lazyFetchDataIfPrepared();
+        MobclickAgent.onResume(getActivity());
     }
 
     private void lazyFetchDataIfPrepared() {
@@ -82,6 +106,7 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        MobclickAgent.onPause(getActivity());
     }
 
     @Override
@@ -195,15 +220,25 @@ public abstract class BaseFragment extends Fragment {
         ToastUtil.sToastUtil.shortDuration(str).setToastBackground(Color.WHITE, R.drawable.toast_radius).show();
     }
 
-//    protected void addSubscription(Subscription subscription) {
-//        if (subscription == null) return;
-//        if (mSubscriptions == null) {
-//            mSubscriptions = new CompositeSubscription();
-//        }
-//        mSubscriptions.add(subscription);
-//    }
-
     protected abstract int getLayoutId();
     protected abstract void initView();
     protected abstract void lazyFetchData();
+
+    protected boolean hiddenInputMethodManager(View v) {
+        if (v != null && v.getWindowToken() != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            return imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
+
+        return false;
+    }
+
+    protected boolean showInputMethodManager(View v) {
+        if (v != null && v.getWindowToken() != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
+        }
+
+        return false;
+    }
 }

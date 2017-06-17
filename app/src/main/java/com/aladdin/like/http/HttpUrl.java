@@ -7,7 +7,7 @@ package com.aladdin.like.http;
  */
 public class HttpUrl {
     public static final String WEIXIN_GET_CODE_FROM_TOKEN = "https://api.weixin.qq.com/sns/oauth2/access_token";
-    public static final String API_URL = "";
+    public static final String API_URL = "http://103.228.131.203:8080/like-app/";
     //登录
     public static final String USER_LOGIN = API_URL+"wx/addUser";
     //获取全部主题

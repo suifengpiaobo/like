@@ -1,6 +1,5 @@
 package com.aladdin.like.module.download;
 
-import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -8,9 +7,11 @@ import android.widget.Toast;
 import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
 import com.aladdin.like.model.ThemeDetail;
+import com.aladdin.like.utils.FileUtils;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.download.DownloadTask;
+import com.umeng.analytics.MobclickAgent;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -48,9 +49,10 @@ public class DownLoadPictureActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.download_status:
+                MobclickAgent.onEvent(DownLoadPictureActivity.this,"DownLoad");
                 Aria.download(this)
                         .load(mTheme.imgeUrl)     //读取下载地址
-                        .setDownloadPath(Environment.getExternalStorageDirectory().getPath() + "/test.apk")    //设置文件保存的完整路径
+                        .setDownloadPath(FileUtils.getImageRootPath())    //设置文件保存的完整路径
                         .start();   //启动下载
                 break;
         }

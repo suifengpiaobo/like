@@ -1,5 +1,7 @@
 package com.aladdin.like.http;
 
+import android.text.TextUtils;
+
 import com.aladdin.http.HttpResultProcess;
 import com.aladdin.http.RequestType;
 import com.aladdin.like.model.CollectionImage;
@@ -7,6 +9,7 @@ import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.model.UserPojo;
+import com.aladdin.utils.LogUtil;
 import com.zxl.network_lib.HttpUtil;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
@@ -98,11 +101,15 @@ public enum HttpManager {
     public void getTheme(String openid, String themeName, HttpResultCallback<ThemeModes> callback){
         Map<String, Object> map = new HashMap<>();
         map.put("openid",openid);
-        map.put("themeName",themeName);
+        if (!TextUtils.isEmpty(themeName)){
+            map.put("themeName",themeName);
+        }
+
         String params = prepareParam(map);
         try{
-//            shortConnectRequest(HttpUrl.GET_ALL_THEME,params,RequestType.POST,callback,ThemeModes.class);
-            shortConnectRequest("http://www.mocky.io/v2/5933d9641300000e1ffa0bad","",RequestType.POST,callback,ThemeModes.class);
+            LogUtil.i("---url--->>>"+HttpUrl.GET_ALL_THEME);
+            shortConnectRequest(HttpUrl.GET_ALL_THEME,params,RequestType.POST,callback,ThemeModes.class);
+//            shortConnectRequest("http://www.mocky.io/v2/5933d9641300000e1ffa0bad","",RequestType.POST,callback,ThemeModes.class);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -118,8 +125,7 @@ public enum HttpManager {
         map.put("openid",openid);
         String params = prepareParam(map);
         try{
-//            shortConnectRequest(HttpUrl.GET_USER_THEME,params,RequestType.POST,callback,ThemeModes.class);
-            shortConnectRequest("http://www.mocky.io/v2/5933d9641300000e1ffa0bad","",RequestType.POST,callback,ThemeModes.class);
+            shortConnectRequest(HttpUrl.GET_USER_THEME,params,RequestType.POST,callback,ThemeModes.class);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -135,14 +141,14 @@ public enum HttpManager {
     public void addUserTheme(String openid, List<String> themeId,int operateType, HttpResultCallback<ThemeModes> callback){
         Map<String, Object> map = new HashMap<>();
         map.put("openid",openid);
-        if (themeId.toString().contains("[")){
-            themeId.toString().replace("[","");
-        }
-        if (themeId.toString().contains("]")){
-            themeId.toString().replace("]","");
-        }
         map.put("operateType",operateType);
-        map.put("themeId",themeId);
+
+        if (themeId.size() >0){
+            String tempThemeId = themeId.toString();
+            tempThemeId = tempThemeId.replace("[", "");
+            tempThemeId = tempThemeId.replace("]", "");
+            map.put("themeId",tempThemeId);
+        }
         String params = prepareParam(map);
         try{
             shortConnectRequest(HttpUrl.ADD_USER_THEME,params,RequestType.POST,callback,ThemeModes.class);

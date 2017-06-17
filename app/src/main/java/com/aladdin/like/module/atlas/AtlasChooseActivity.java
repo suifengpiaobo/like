@@ -2,7 +2,7 @@ package com.aladdin.like.module.atlas;
 
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.aladdin.base.BaseActivity;
 import com.aladdin.like.LikeAgent;
@@ -29,7 +29,7 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
     @BindView(R.id.atlas_choose)
     CustomGridView mAtlasChoose;
     @BindView(R.id.enter)
-    TextView mEnter;
+    ImageView mEnter;
 
     AtlasContract.Presenter mPresenter;
     ChooseAdapter mAdapter;
@@ -47,7 +47,7 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
     @Override
     protected void initView() {
         mPresenter = new AtlasPresenter(this);
-        mPresenter.loadData("","");
+        mPresenter.loadData(LikeAgent.getInstance().getUid(),"");
         showLoading();
 
         mAdapter = new ChooseAdapter(AtlasChooseActivity.this);
@@ -75,7 +75,9 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
     @OnClick(R.id.enter)
     public void onViewClicked() {
         mPresenter.addUserTheme(LikeAgent.getInstance().getUid(),mChooseId,1);
-        startActivity(MainActivity.class);
+        startThenKill(MainActivity.class);
+
+//        startActivity(TestActivity.class);
     }
 
     @Override
@@ -111,7 +113,6 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
                     mAdapter.setAtlas(mPicturePojo);
                     mAdapter.notifyDataSetChanged();
                 }
-                mEnter.setVisibility(View.VISIBLE);
             }
         });
 

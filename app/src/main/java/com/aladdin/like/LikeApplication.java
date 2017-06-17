@@ -18,4 +18,5 @@ public class LikeApplication extends BaseApplication {
         DensityUtils.setAppContext(this);
         Fresco.initialize(this);
     }
+
 }

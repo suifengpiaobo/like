@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,6 +12,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
         android:scrollbars="none"
         >
 
@@ -51,22 +52,16 @@
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="10dp"></com.aladdin.like.widget.CustomGridView>
 
-            <TextView
-                android:id="@+id/enter"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginLeft="60dp"
-                android:layout_marginRight="60dp"
-                android:background="@drawable/login_button_bg"
-                android:gravity="center"
-                android:paddingBottom="12dp"
-                android:paddingTop="12dp"
-                android:text="进入"
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:visibility="gone"
-                />
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+    <ImageView
+        android:id="@+id/enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/enter_icon"
+        android:layout_centerHorizontal="true"
+        />
+</RelativeLayout>
