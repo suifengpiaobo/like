@@ -330,11 +330,12 @@ public class RequestContent {
                         response.code();
                         str = response.body().string();
                         Log.i("RequestContent", "response.nody()-->" + "url-->" + request.toString() + "data-->" + str);
-                        if (TextUtils.isEmpty(str)) {
-                            i.onFailure("返回值为空！");
-                        } else {
-                            i.onSuccess(str);
-                        }
+//                        if (TextUtils.isEmpty(str)) {
+//                            i.onFailure("返回值为空！");
+//                        } else {
+//                            i.onSuccess(str);
+//                        }
+                        i.onSuccess(str);
                     } catch (Exception e) {
                         i.onFailure(e.getMessage());
                         e.printStackTrace();

@@ -25,7 +25,7 @@ public class MineThemePrestener implements MineThemeContract.Presenter {
 
     @Override
     public void getTheme(String openid) {
-        HttpManager.INSTANCE.getTheme(openid, "", new HttpResultCallback<ThemeModes>() {
+        HttpManager.INSTANCE.getUserTheme(openid,new HttpResultCallback<ThemeModes>() {
             @Override
             public void onSuccess(ThemeModes result) {
                 if (mView == null) return;
@@ -44,9 +44,9 @@ public class MineThemePrestener implements MineThemeContract.Presenter {
 
     @Override
     public void addUserTheme(String openid, List<String> themeId, int operateType) {
-        HttpManager.INSTANCE.addUserTheme(openid, themeId,operateType,new HttpResultCallback<ThemeModes>() {
+        HttpManager.INSTANCE.addUserTheme(openid, themeId,operateType,new HttpResultCallback<String>() {
             @Override
-            public void onSuccess(ThemeModes result) {
+            public void onSuccess(String result) {
                 if (mView == null) return;
 
                 mView.addThemeSuc();

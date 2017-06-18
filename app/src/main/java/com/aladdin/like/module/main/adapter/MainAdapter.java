@@ -2,9 +2,10 @@ package com.aladdin.like.module.main.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -12,18 +13,15 @@ import android.widget.TextView;
 
 import com.aladdin.like.R;
 import com.aladdin.like.model.ThemeModes;
+import com.aladdin.utils.DensityUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
-import com.facebook.common.executors.CallerThreadExecutor;
-import com.facebook.common.references.CloseableReference;
-import com.facebook.datasource.DataSource;
+import com.facebook.binaryresource.FileBinaryResource;
+import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.core.ImagePipeline;
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
-import com.facebook.imagepipeline.image.CloseableImage;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -56,30 +54,15 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
             viewHolder.mMainTime.setText(item.createTimeStr);
 
             Uri uri = Uri.parse(item.themeImgUrl);
-            ImageRequest imageRequest = ImageRequestBuilder
-                    .newBuilderWithSource(uri)
-                    .setProgressiveRenderingEnabled(true)
-                    .build();
+            Bitmap bitmap = returnBitmap(uri);
+            int width = bitmap.getWidth();//994
+            float scale = (DensityUtils.mScreenWidth/2-DensityUtils.dip2px(15))/(float)width;
+            int height = bitmap.getHeight();
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
+            params.height = (int) (height*scale);
+            params.weight = (int)(width*scale);
+            viewHolder.mMainImg.setLayoutParams(params);
 
-            ImagePipeline imagePipeline = Fresco.getImagePipeline();
-            DataSource<CloseableReference<CloseableImage>>
-                    dataSource = imagePipeline.fetchDecodedImage(imageRequest, this);
-
-            dataSource.subscribe(new BaseBitmapDataSubscriber() {
-
-                                     @Override
-                                     public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                         int height = bitmap.getHeight();
-                                         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
-                                         params.height = height;
-                                         viewHolder.mMainImg.setLayoutParams(params);
-                                     }
-
-                                     @Override
-                                     public void onFailureImpl(DataSource dataSource) {
-                                     }
-                                 },
-                    CallerThreadExecutor.getInstance());
             viewHolder.mMainImg.setImageURI(item.themeImgUrl);
             viewHolder.mMainItem.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -90,6 +73,19 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
                 }
             });
         }
+    }
+
+    private Bitmap returnBitmap(Uri uri) {
+        Bitmap bitmap = null;
+        FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getMainDiskStorageCache().getResource(new SimpleCacheKey(uri.toString()));
+        if (resource != null){
+            File file = resource.getFile();
+            if (file != null && !TextUtils.isEmpty(file.getPath())) {
+                bitmap = BitmapFactory.decodeFile(file.getPath());
+            }
+        }
+        return bitmap;
+
     }
 
 

@@ -26,8 +26,8 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
 
     MineDiaryAdapter mDiaryAdapter;
 
-    int page;
-    int page_num;
+    int page = 1;
+    int page_num = 10;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_mine_dirary;

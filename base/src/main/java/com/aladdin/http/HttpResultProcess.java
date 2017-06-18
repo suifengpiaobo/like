@@ -21,10 +21,17 @@ public class HttpResultProcess {
                     JSONObject response = new JSONObject(str);
                     int code = response.optInt("code");
                     if (code == 200) {
-                        JSONObject result = response.getJSONObject("data");
-                        httpResultCallback.onSuccess(RequestJsonUtils.getObj(uClass, result.toString()));
+                        try{
+                            JSONObject result = response.getJSONObject("data");
+                            httpResultCallback.onSuccess(RequestJsonUtils.getObj(uClass, result.toString()));
+                        }catch (JSONException e){
+                            httpResultCallback.onSuccess(RequestJsonUtils.getObj(uClass, "success"));
+                            e.printStackTrace();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
 
-                    } else{//网络请求不区分环境
+                    } else {//网络请求不区分环境
 
                         String errorMsg = response.optString("errorMsg");
                         String errorCode = response.optString("errorCode");

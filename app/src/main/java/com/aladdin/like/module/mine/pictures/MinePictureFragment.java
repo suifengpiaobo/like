@@ -29,8 +29,8 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
 
     PictureAdapter mPictureAdapter;
 
-    int page;
-    int page_num;
+    int page = 1;
+    int page_num =10;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_mine_picture;

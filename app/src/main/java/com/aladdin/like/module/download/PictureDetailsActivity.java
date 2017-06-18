@@ -1,9 +1,14 @@
 package com.aladdin.like.module.download;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aladdin.base.BaseActivity;
@@ -16,10 +21,15 @@ import com.aladdin.like.module.download.contract.PictureDetailsContract;
 import com.aladdin.like.module.download.presenter.PictureDetailsPrestener;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.like.widget.SpacesItemDecoration;
-import com.aladdin.utils.ImageLoaderUtils;
+import com.aladdin.utils.DensityUtils;
+import com.facebook.binaryresource.FileBinaryResource;
+import com.facebook.cache.common.SimpleCacheKey;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+
+import java.io.File;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -50,7 +60,7 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
     ThemeModes.Theme mTheme;
 
     String themeId;
-    int page = 0;
+    int page = 1;
     int page_num = 10;
 
     PictureDetailsContract.Prestener mPrestener;
@@ -72,7 +82,7 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
 
         mPrestener.getData(LikeAgent.getInstance().getUid(),themeId,page,page_num);
 
-        ImageLoaderUtils.loadResPic(PictureDetailsActivity.this, mPicture, R.drawable.picture_11);
+        setPicture();
 
         mDownloadRecycle.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mDownloadRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
@@ -88,6 +98,34 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
         mDownloadRecycle.setAdapter(mAdapter);
 
         bindEvent();
+    }
+
+    public void setPicture(){
+        Uri uri = Uri.parse(mTheme.themeImgUrl);
+        Bitmap bitmap = returnBitmap(uri);
+
+        int width = bitmap.getWidth();//994
+        float scale = (DensityUtils.mScreenWidth-DensityUtils.dip2px(20))/(float)width;
+        int height = bitmap.getHeight();
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mPicture.getLayoutParams();
+        params.height = (int) (height*scale);
+        params.weight = (int)(width*scale);
+        mPicture.setLayoutParams(params);
+        mPicture.setImageURI(mTheme.themeImgUrl);
+        mTypeName.setText(mTheme.themeName);
+//        mPariseNum.setText(mTheme.followSign);
+    }
+
+    private Bitmap returnBitmap(Uri uri) {
+        Bitmap bitmap = null;
+        FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getMainDiskStorageCache().getResource(new SimpleCacheKey(uri.toString()));
+        if (resource != null){
+            File file = resource.getFile();
+            if (file != null && !TextUtils.isEmpty(file.getPath())) {
+                bitmap = BitmapFactory.decodeFile(file.getPath());
+            }
+        }
+        return bitmap;
     }
 
     private void bindEvent() {
@@ -113,7 +151,9 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
                 shareDialog.show(getSupportFragmentManager(), "share_dialog");
                 break;
             case R.id.picture:
-                startActivity(DownLoadPictureActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("PREFECTURE", mTheme);
+                startActivity(DownLoadPictureActivity.class,bundle);
                 break;
             case R.id.click_praise:
                 break;

@@ -116,10 +116,21 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
     @Override
     public void setThemeData(ThemeModes theme) {
         if (getActivity() == null) return;
+
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 if (theme != null){
+                    mFollowThemes.clear();
+                    mNotFollowThemes.clear();
+                    if (mAtlasAdapter != null && mAtlasAdapter.getCommonItemCount()>0){
+                        mAtlasAdapter.clear();
+                    }
+
+                    if (mNotChooseAdapter != null && mNotChooseAdapter.getCommonItemCount()>0){
+                        mNotChooseAdapter.clear();
+                    }
+
                     for (ThemeModes.Theme themes : theme.themeList){
                         if (themes.followSign == 1){
                             mFollowThemes.add(themes);
@@ -143,6 +154,6 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
 
     @Override
     public void addThemeSuc() {
-
+        mPresenter.getTheme(LikeAgent.getInstance().getUid());
     }
 }

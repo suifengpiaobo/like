@@ -1,17 +1,36 @@
 package com.aladdin.like.module.download;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
-import com.aladdin.like.model.ThemeDetail;
+import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.utils.FileUtils;
-import com.aladdin.utils.ImageLoaderUtils;
+import com.aladdin.utils.LogUtil;
+import com.aladdin.utils.ToastUtil;
 import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.download.DownloadTask;
+import com.facebook.common.executors.CallerThreadExecutor;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.umeng.analytics.MobclickAgent;
+
+import java.io.File;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -25,11 +44,14 @@ public class DownLoadPictureActivity extends BaseActivity {
     @BindView(R.id.back)
     ImageView mBack;
     @BindView(R.id.picture)
-    ImageView mPicture;
+    SimpleDraweeView mPicture;
     @BindView(R.id.download_status)
     ImageView mDownloadStatus;
 
-    ThemeDetail.Theme mTheme;
+    ThemeModes.Theme mTheme;
+
+    File mFile;
+    String fileName;
     @Override
     protected int getLayoutId() {
         return R.layout.activity_down_load_picture;
@@ -37,9 +59,9 @@ public class DownLoadPictureActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        ImageLoaderUtils.displayRoundNative(DownLoadPictureActivity.this, mPicture, R.drawable.download_picture);
-
-        mTheme = (ThemeDetail.Theme) getIntent().getSerializableExtra("PREFECTURE");
+        mTheme = (ThemeModes.Theme) getIntent().getSerializableExtra("PREFECTURE");
+        mPicture.setImageURI(mTheme.themeImgUrl);
+        mFile = new File(FileUtils.getImageRootPath());
     }
 
     @OnClick({R.id.back, R.id.download_status})
@@ -50,12 +72,43 @@ public class DownLoadPictureActivity extends BaseActivity {
                 break;
             case R.id.download_status:
                 MobclickAgent.onEvent(DownLoadPictureActivity.this,"DownLoad");
-                Aria.download(this)
-                        .load(mTheme.imgeUrl)     //读取下载地址
-                        .setDownloadPath(FileUtils.getImageRootPath())    //设置文件保存的完整路径
-                        .start();   //启动下载
+                fileName = UUID.randomUUID().toString().substring(0,16)+".png";
+                savePicture();
+//                Aria.download(this)
+//                        .load(mTheme.themeImgUrl)     //读取下载地址
+//                        .setDownloadPath(mFile.getAbsolutePath()+"/"+fileName)    //设置文件保存的完整路径
+//                        .start();   //启动下载
                 break;
         }
+    }
+
+    public void savePicture(){
+        Uri uri = Uri.parse(mTheme.themeImgUrl);
+        ImageRequest imageRequest = ImageRequestBuilder
+                .newBuilderWithSource(uri)
+                .setProgressiveRenderingEnabled(true)
+                .build();
+
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        DataSource<CloseableReference<CloseableImage>>
+                dataSource = imagePipeline.fetchDecodedImage(imageRequest, this);
+
+        dataSource.subscribe(new BaseBitmapDataSubscriber() {
+
+                                 @Override
+                                 public void onNewResultImpl(@Nullable Bitmap bitmap) {
+                                     mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
+                                     Toast.makeText(DownLoadPictureActivity.this,"下载成功",Toast.LENGTH_SHORT).show();
+                                     MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "title", "description");
+                                 }
+
+                                 @Override
+                                 public void onFailureImpl(DataSource dataSource) {
+                                 }
+                             },
+                CallerThreadExecutor.getInstance());
+        mPicture.setImageURI(mTheme.themeImgUrl);
+//        mPariseNum.setText(mTheme.followSign);
     }
 
     @Override
@@ -83,14 +136,32 @@ public class DownLoadPictureActivity extends BaseActivity {
         @Override
         public void onTaskRunning(DownloadTask task) {
             super.onTaskRunning(task);
-            if (task.getDownloadEntity().isDownloadComplete()){
-                downloadSuc();
-            }
+        }
+
+        @Override
+        public void onTaskFail(DownloadTask task) {
+            super.onTaskFail(task);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                }
+            });
+            ToastUtil.sToastUtil.shortDuration("下载失败！");
+        }
+
+        @Override
+        public void onTaskComplete(DownloadTask task) {
+            super.onTaskComplete(task);
+            LogUtil.i("---onTaskComplete---"+task);
+            downloadSuc();
         }
     }
 
     public void downloadSuc(){
         mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
-        Toast.makeText(DownLoadPictureActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+        ToastUtil.sToastUtil.shortDuration("下载成功");
+
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(mFile.getAbsolutePath()+"/"+fileName))));
     }
 }

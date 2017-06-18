@@ -22,10 +22,11 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 public class ImageLoaderUtils {
     private static int placeholderId = R.drawable.ic_image_loading;
     private static int errorId = R.drawable.ic_empty_picture;
+
     /**
      * 加载图片
-     * */
-    public static void loadingImg(Context context, ImageView iv, String picUrl){
+     */
+    public static void loadingImg(Context context, ImageView iv, String picUrl) {
         Glide.with(context)
                 .load(picUrl)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -38,14 +39,14 @@ public class ImageLoaderUtils {
     /**
      * 加载gif图
      */
-    public static void loadGif(Context context,ImageView iv, String picUrl){
+    public static void loadGif(Context context, ImageView iv, String picUrl) {
         Glide.with(context)
                 .load(picUrl)
                 .asGif()
                 .into(iv);
     }
 
-    public static void loadingImg(Context context,ImageView iv, String picUrl,int placeholderAvatar){
+    public static void loadingImg(Context context, ImageView iv, String picUrl, int placeholderAvatar) {
         Glide.with(context)
                 .load(picUrl)
                 .placeholder(placeholderAvatar)
@@ -54,7 +55,8 @@ public class ImageLoaderUtils {
                 .dontAnimate()
                 .into(iv);
     }
-    public static void loadingImgWithError(Context context,ImageView iv, String picUrl,int errorAvatar){
+
+    public static void loadingImgWithError(Context context, ImageView iv, String picUrl, int errorAvatar) {
         Glide.with(context)
                 .load(picUrl)
                 .error(errorAvatar)
@@ -62,49 +64,52 @@ public class ImageLoaderUtils {
                 .dontAnimate()
                 .into(iv);
     }
-    public static void loadingImgWithBlur(Context context,ImageView iv,String picUrl){
+
+    public static void loadingImgWithBlur(Context context, ImageView iv, String picUrl) {
         Glide.with(context)
                 .load(picUrl)
                 .error(errorId)
-                .bitmapTransform(new BlurTransformation(context,Glide.get(context).getBitmapPool()))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .dontAnimate()
-                .into(iv);
-    }
-    public static void loadingImgWithBlur(Context context,ImageView iv,String picUrl,int error){
-        Glide.with(context)
-                .load(picUrl)
-                .error(error)
-                .bitmapTransform(new BlurTransformation(context,Glide.get(context).getBitmapPool()))
+                .bitmapTransform(new BlurTransformation(context, Glide.get(context).getBitmapPool()))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .dontAnimate()
                 .into(iv);
     }
 
-    public static void displayRound(Context context,ImageView imageView, String url) {
+    public static void loadingImgWithBlur(Context context, ImageView iv, String picUrl, int error) {
+        Glide.with(context)
+                .load(picUrl)
+                .error(error)
+                .bitmapTransform(new BlurTransformation(context, Glide.get(context).getBitmapPool()))
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .dontAnimate()
+                .into(iv);
+    }
+
+    public static void displayRound(Context context, ImageView imageView, String url) {
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(errorId)
                 .centerCrop()
-                .bitmapTransform(new RoundedCornersTransformation(context,30,0, RoundedCornersTransformation.CornerType.ALL))
-                .dontAnimate()
+                .bitmapTransform(new RoundedCornersTransformation(context, 30, 0, RoundedCornersTransformation.CornerType.ALL))
+//                .dontAnimate()
+                .crossFade(10)
                 .into(imageView);
     }
 
-    public static void displayRoundNative(Context context,ImageView imageView, int res){
+    public static void displayRoundNative(Context context, ImageView imageView, int res) {
         Glide.with(context)
                 .load(res)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(errorId)
                 .centerCrop()
-                .bitmapTransform(new RoundedCornersTransformation(context,30,0, RoundedCornersTransformation.CornerType.ALL))
+                .bitmapTransform(new RoundedCornersTransformation(context, 30, 0, RoundedCornersTransformation.CornerType.ALL))
                 .dontAnimate()
                 .crossFade(10)
                 .into(imageView);
     }
 
-    public static void displayCircle(Context context,ImageView imageView, String url) {
+    public static void displayCircle(Context context, ImageView imageView, String url) {
         Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -115,7 +120,7 @@ public class ImageLoaderUtils {
                 .into(imageView);
     }
 
-    public static void clear(Context context){
+    public static void clear(Context context) {
         clearImageDiskCache(context);
         Glide.get(context).clearDiskCache();
     }
@@ -142,6 +147,7 @@ public class ImageLoaderUtils {
 
     /**
      * 加载本地图片（drawable图片）
+     *
      * @param context
      * @param simpleDraweeView
      * @param id
@@ -155,9 +161,10 @@ public class ImageLoaderUtils {
 
     /**
      * 加载本地图片（assets图片）
+     *
      * @param context
      * @param simpleDraweeView
-     * @param nameWithSuffix 带后缀的名称
+     * @param nameWithSuffix   带后缀的名称
      */
     public static void loadAssetsPic(Context context, SimpleDraweeView simpleDraweeView, String nameWithSuffix) {
         Uri uri = Uri.parse("asset:///" +
@@ -167,6 +174,7 @@ public class ImageLoaderUtils {
 
     /**
      * 加载本地图片
+     *
      * @param context
      * @param simpleDraweeView
      * @param nameWithSuffix

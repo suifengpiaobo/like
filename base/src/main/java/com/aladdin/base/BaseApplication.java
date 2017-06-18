@@ -30,6 +30,9 @@ public abstract class BaseApplication extends MultiDexApplication {
         MobclickAgent.setDebugMode(false);
     }
 
+    public static BaseApplication getInstance(){
+        return instance;
+    }
 
     public static String getChannel() {
         String CHANNELID = "000000";

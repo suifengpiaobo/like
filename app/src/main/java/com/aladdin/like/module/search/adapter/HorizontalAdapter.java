@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.aladdin.like.R;
 import com.aladdin.like.model.ThemeModes;
-import com.aladdin.utils.ImageLoaderUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -37,7 +36,7 @@ public class HorizontalAdapter extends BaseAdapter<ThemeModes.Theme> {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
         HorizontalViewHolder viewHolder = (HorizontalViewHolder) holder;
         ThemeModes.Theme item = getItemObject(position);
-        if (position == 11){
+        if (position == getItemCount()-1){
             viewHolder.mSearchSpace2.setVisibility(View.VISIBLE);
         }else{
             viewHolder.mSearchSpace2.setVisibility(View.GONE);

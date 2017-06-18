@@ -25,7 +25,7 @@ public class ToastUtil {
      */
     public ToastUtil shortDuration(CharSequence message) {
         if (mToast == null) {
-            mToast = Toast.makeText(BaseApplication.instance, message, Toast.LENGTH_SHORT);
+            mToast = Toast.makeText(BaseApplication.getInstance(), message, Toast.LENGTH_SHORT);
         } else {
             mToast.setText(message);
             mToast.setDuration(Toast.LENGTH_SHORT);
@@ -38,7 +38,7 @@ public class ToastUtil {
      */
     public ToastUtil longDuration(CharSequence message) {
         if (mToast == null) {
-            mToast = Toast.makeText(BaseApplication.instance, message, Toast.LENGTH_LONG);
+            mToast = Toast.makeText(BaseApplication.getInstance(), message, Toast.LENGTH_LONG);
         } else {
             mToast.setText(message);
             mToast.setDuration(Toast.LENGTH_LONG);
@@ -124,7 +124,7 @@ public class ToastUtil {
      * @param view
      */
     public ToastUtil(View view) {
-        mToast = new Toast(BaseApplication.instance);
+        mToast = new Toast(BaseApplication.getInstance());
         mToast.setView(view);
         mToast.setDuration(Toast.LENGTH_SHORT);
         mToast.show();

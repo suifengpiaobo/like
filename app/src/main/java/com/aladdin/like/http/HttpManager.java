@@ -138,7 +138,7 @@ public enum HttpManager {
      * @param operateType 1、添加  2删除
      * @param callback
      */
-    public void addUserTheme(String openid, List<String> themeId,int operateType, HttpResultCallback<ThemeModes> callback){
+    public void addUserTheme(String openid, List<String> themeId,int operateType, HttpResultCallback<String> callback){
         Map<String, Object> map = new HashMap<>();
         map.put("openid",openid);
         map.put("operateType",operateType);
@@ -151,7 +151,7 @@ public enum HttpManager {
         }
         String params = prepareParam(map);
         try{
-            shortConnectRequest(HttpUrl.ADD_USER_THEME,params,RequestType.POST,callback,ThemeModes.class);
+            shortConnectRequest(HttpUrl.ADD_USER_THEME,params,RequestType.POST,callback,String.class);
         }catch (Exception e){
             e.printStackTrace();
         }
