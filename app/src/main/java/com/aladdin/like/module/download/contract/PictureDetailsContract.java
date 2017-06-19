@@ -12,9 +12,13 @@ import com.aladdin.like.model.ThemeDetail;
 public interface PictureDetailsContract {
     interface View extends BaseView{
         void setData(ThemeDetail themeDetail);
+
+        void collectionResult(String result);
     }
 
     interface Prestener extends BasePresenter{
         void getData(String openid,String themeId, int page, int page_num);
+
+        void collectionImage(String openid,String imageId);
     }
 }

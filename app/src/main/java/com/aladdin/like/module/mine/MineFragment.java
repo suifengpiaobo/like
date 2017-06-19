@@ -13,6 +13,7 @@ import com.aladdin.like.module.mine.atlas.MineAtlasFragment;
 import com.aladdin.like.module.mine.diary.MineDiraryFragment;
 import com.aladdin.like.module.mine.pictures.MinePictureFragment;
 import com.aladdin.like.module.set.SettingActivity;
+import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
@@ -61,6 +62,11 @@ public class MineFragment extends BaseFragment {
     @Override
     protected void lazyFetchData() {
 
+    }
+
+    @Override
+    protected void onvisible() {
+        LogUtil.i("---Mine---onvisible---");
     }
 
     void setMineTitle() {

@@ -2,7 +2,9 @@ package com.aladdin.like.module.diary.prestener;
 
 import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.module.diary.contract.PublishContract;
-import com.zxl.network_lib.Inteface.HttpResultCallback;
+import com.zxl.network_lib.Inteface.HttpResultListener;
+
+import java.io.File;
 
 /**
  * Description
@@ -22,19 +24,19 @@ public class PublishPrestener implements PublishContract.Presenter{
 
     @Override
     public void publishPic(String openid, String image, String diaryTitle, String diaryContent) {
-        HttpManager.INSTANCE.addUserDiary(openid, image, diaryTitle, diaryContent, new HttpResultCallback<String>() {
+
+        HttpManager.INSTANCE.addUserDiary(openid, image, new File(image), diaryTitle, diaryContent, new HttpResultListener() {
             @Override
-            public void onSuccess(String result) {
+            public void onSuccess(String str) {
                 if (mView == null) return;
 
-                mView.showErrorTip(result);
+                mView.publishSuc(str);
             }
 
             @Override
-            public void onFailure(String code, String msg) {
+            public void onFailure(String str) {
                 if (mView == null) return;
-
-                mView.showErrorTip(msg);
+                mView.publishFail(str);
             }
         });
     }

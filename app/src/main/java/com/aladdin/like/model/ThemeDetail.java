@@ -45,6 +45,8 @@ public class ThemeDetail implements Serializable{
         public String imageName;
         public String createTime;
         public String createTimeStr;
+        public int width;
+        public int height;
 
         @Override
         public String toString() {

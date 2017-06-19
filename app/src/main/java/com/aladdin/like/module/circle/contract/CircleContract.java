@@ -2,6 +2,7 @@ package com.aladdin.like.module.circle.contract;
 
 import com.aladdin.base.BasePresenter;
 import com.aladdin.base.BaseView;
+import com.aladdin.like.model.DiaryDetail;
 
 /**
  * Description
@@ -10,9 +11,9 @@ import com.aladdin.base.BaseView;
  */
 public interface CircleContract {
     interface View extends BaseView {
-        void setData();
+        void setData(DiaryDetail data);
     }
     interface Presenter extends BasePresenter {
-        void getData(String openid);
+        void getData(String openid,int page,int page_num);
     }
 }

@@ -48,7 +48,7 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
     protected void initView() {
         mPresenter = new AtlasPresenter(this);
         mPresenter.loadData(LikeAgent.getInstance().getUid(),"");
-        showLoading();
+//        showLoading();
 
         mAdapter = new ChooseAdapter(AtlasChooseActivity.this);
         mAdapter.setChoose(mChoose);

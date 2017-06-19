@@ -94,7 +94,6 @@ public class RegisterActivity extends BaseActivity {
             case R.id.wx_login:
                 LikeAgent.getInstance().setUid("10000");
                 startThenKill(AtlasChooseActivity.class);
-
 //                loginWx();
                 break;
             case R.id.register_account:

@@ -19,6 +19,8 @@ public class CollectionImage {
         public String imageName;
         public String themeName;
         public String recordTimeStr;
+        public int width;
+        public int height;
 
         @Override
         public String toString() {

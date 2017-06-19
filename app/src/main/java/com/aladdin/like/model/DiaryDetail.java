@@ -19,6 +19,8 @@ public class DiaryDetail {
         public String diaryTimeStr;
         public String diaryTitle;//日志题目
         public String diaryContent;//日志内容
+        public int width;
+        public int height;
 
         @Override
         public String toString() {

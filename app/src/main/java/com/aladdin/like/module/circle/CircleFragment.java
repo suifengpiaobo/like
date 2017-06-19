@@ -1,18 +1,17 @@
 package com.aladdin.like.module.circle;
 
 
-import android.os.Bundle;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.widget.TextView;
 
 import com.aladdin.base.BaseFragment;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
-import com.aladdin.like.model.ThemeModes;
+import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.module.circle.adapter.CircleAdapter;
 import com.aladdin.like.module.circle.contract.CircleContract;
 import com.aladdin.like.module.circle.prestener.Circlrprestener;
-import com.aladdin.like.module.download.PictureDetailsActivity;
+import com.aladdin.like.module.diary.PublishDiaryFragment;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
@@ -35,6 +34,10 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
     @BindView(R.id.publish)
     TextView mPublish;
 
+    int total = 1;
+    int page = 1;
+    int page_num = 10;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_circle;
@@ -43,7 +46,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
     @Override
     protected void initView() {
         mPresenter = new Circlrprestener(this);
-        mPresenter.getData(LikeAgent.getInstance().getUid());
+        mPresenter.getData(LikeAgent.getInstance().getUid(),1,page_num);
 
         mCircle.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mCircle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
@@ -57,21 +60,28 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
         mAdapter = new CircleAdapter(getActivity());
         mCircle.setAdapter(mAdapter);
 
-
-        mAdapter.setItemClickListener(new CircleAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(ThemeModes.Theme item) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("PREFECTURE", item);
-                startActivity(PictureDetailsActivity.class, bundle);
-            }
-        });
+//        mAdapter.setItemClickListener(new CircleAdapter.onItemClickListener() {
+//            @Override
+//            public void onItemClick(DiaryDetail.Diary item) {
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("PREFECTURE", item);
+//                startActivity(PictureDetailsActivity.class, bundle);
+//            }
+//        });
 
     }
 
     @Override
     protected void lazyFetchData() {
+    }
 
+    @Override
+    protected void onvisible() {
+        page = 1;
+        if (mAdapter != null && mAdapter.getCommonItemCount()>0){
+            mAdapter.clear();
+        }
+        mPresenter.getData(LikeAgent.getInstance().getUid(),page,page_num);
     }
 
     @Override
@@ -80,11 +90,17 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
 
     @Override
     public void onLoadMore() {
+        if (page<total){
+            mPresenter.getData(LikeAgent.getInstance().getUid(),page,page_num);
+        }else{
+            mCircle.loadMoreComplete();
+        }
 
     }
 
     @OnClick(R.id.publish)
     public void onViewClicked() {
+        startActivity(PublishDiaryFragment.class);
     }
 
     @Override
@@ -111,7 +127,17 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
     }
 
     @Override
-    public void setData() {
-
+    public void setData(DiaryDetail data) {
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mCircle.refreshComplete();
+                mCircle.loadMoreComplete();
+                mAdapter.addAll(data.diaryList);
+                page = data.per_page;
+                total = data.total;
+            }
+        });
     }
 }

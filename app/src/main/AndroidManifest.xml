@@ -89,6 +89,8 @@
         </activity>
         <activity android:name=".module.download.CorrelationActivity">
         </activity>
+        <activity android:name=".module.diary.PublishDiaryFragment">
+        </activity>
     </application>
 
 </manifest>

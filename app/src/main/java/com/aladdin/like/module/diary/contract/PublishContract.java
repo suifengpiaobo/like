@@ -10,8 +10,8 @@ import com.aladdin.base.BaseView;
  */
 public interface PublishContract {
     interface View extends BaseView {
-//        void publishSuc();
-//        void publishFail();
+        void publishSuc(String str);
+        void publishFail(String str);
     }
 
     interface Presenter extends BasePresenter {

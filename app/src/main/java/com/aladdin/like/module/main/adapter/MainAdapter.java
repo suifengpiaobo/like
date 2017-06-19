@@ -1,11 +1,7 @@
 package com.aladdin.like.module.main.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -16,12 +12,7 @@ import com.aladdin.like.model.ThemeModes;
 import com.aladdin.utils.DensityUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
-import com.facebook.binaryresource.FileBinaryResource;
-import com.facebook.cache.common.SimpleCacheKey;
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,20 +42,17 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
         ThemeModes.Theme item = getItemObject(position);
         if (item != null) {
             viewHolder.mMainImg.setImageURI(item.themeImgUrl);
+            float scale = (DensityUtils.mScreenWidth/2-DensityUtils.dip2px(15))/(float)item.width;
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
+            params.height = (int) (item.height*scale);
+            params.weight = (int)(item.width*scale);
+            viewHolder.mMainImg.setLayoutParams(params);
+
+            viewHolder.mMainImg.setImageURI(item.themeImgUrl);
+
             viewHolder.mMainTypeName.setText(item.themeName);
             viewHolder.mMainTime.setText(item.createTimeStr);
 
-            Uri uri = Uri.parse(item.themeImgUrl);
-            Bitmap bitmap = returnBitmap(uri);
-            int width = bitmap.getWidth();//994
-            float scale = (DensityUtils.mScreenWidth/2-DensityUtils.dip2px(15))/(float)width;
-            int height = bitmap.getHeight();
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
-            params.height = (int) (height*scale);
-            params.weight = (int)(width*scale);
-            viewHolder.mMainImg.setLayoutParams(params);
-
-//            viewHolder.mMainImg.setImageURI(item.themeImgUrl);
             viewHolder.mMainItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -75,20 +63,6 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
             });
         }
     }
-
-    private Bitmap returnBitmap(Uri uri) {
-        Bitmap bitmap = null;
-        FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getMainDiskStorageCache().getResource(new SimpleCacheKey(uri.toString()));
-        if (resource != null){
-            File file = resource.getFile();
-            if (file != null && !TextUtils.isEmpty(file.getPath())) {
-                bitmap = BitmapFactory.decodeFile(file.getPath());
-            }
-        }
-        return bitmap;
-
-    }
-
 
     @Override
     public void onBindCommon(RecyclerView.ViewHolder holder, ThemeModes.Theme item) {

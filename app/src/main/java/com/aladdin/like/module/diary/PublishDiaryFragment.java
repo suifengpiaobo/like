@@ -1,22 +1,36 @@
 package com.aladdin.like.module.diary;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.os.Environment;
+import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.aladdin.base.BaseFragment;
+import com.aladdin.base.BaseActivity;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.module.diary.contract.PublishContract;
 import com.aladdin.like.module.diary.prestener.PublishPrestener;
-import com.aladdin.like.module.main.MainActivity;
+import com.aladdin.like.utils.FileUtils;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.yalantis.ucrop.ui.AlbumDirectoryActivity;
+import com.yalantis.ucrop.ui.ImageGridActivity;
 import com.yalantis.ucrop.util.Constants;
 import com.yalantis.ucrop.util.LocalMediaLoader;
 import com.yalantis.ucrop.util.Options;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -25,7 +39,7 @@ import butterknife.OnClick;
  * Description 发布日记页面
  * Created by zxl on 2017/5/21 下午9:25.
  */
-public class PublishDiaryFragment extends BaseFragment implements PublishContract.View{
+public class PublishDiaryFragment extends BaseActivity implements PublishContract.View {
     PublishContract.Presenter mPresenter;
 
     @BindView(R.id.back)
@@ -38,6 +52,8 @@ public class PublishDiaryFragment extends BaseFragment implements PublishContrac
     ImageView mAddPicture;
     @BindView(R.id.description)
     EditText mDescription;
+    @BindView(R.id.root_view)
+    LinearLayout mRootView;
 
     private int selectType = LocalMediaLoader.TYPE_IMAGE;
     private int copyMode = Constants.COPY_MODEL_DEFAULT;
@@ -55,29 +71,46 @@ public class PublishDiaryFragment extends BaseFragment implements PublishContrac
         mPresenter = new PublishPrestener(this);
 
 
-        ((MainActivity) getActivity()).setOnChoosePictureListener(new MainActivity.onChoosePictureListener() {
-            @Override
-            public void onChooseListener(String path) {
-                mPath = path;
-                mAddPicture.setVisibility(View.GONE);
-                ImageLoaderUtils.loadLocalsPic(getActivity(), mShoosePicture, path);
-            }
-        });
+//        ((MainActivity) getActivity()).setOnChoosePictureListener(new MainActivity.onChoosePictureListener() {
+//            @Override
+//            public void onChooseListener(String path) {
+//                mAddPicture.setVisibility(View.GONE);
+//                ImageLoaderUtils.loadLocalsPic(getActivity(), mShoosePicture, path);
+//            }
+//        });
     }
 
     @Override
-    protected void lazyFetchData() {
-
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case ImageGridActivity.REQUEST_IMAGE:
+                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
+                    if (result != null) {
+                        mAddPicture.setVisibility(View.GONE);
+                        ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mShoosePicture, result.get(0));
+                    }
+                    break;
+            }
+        }
     }
+
+
+    final Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            viewSaveToImage(mRootView);
+        }
+    };
 
     @OnClick({R.id.back, R.id.finish, R.id.add_picture})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back:
+                finish();
                 break;
             case R.id.finish:
-                mPresenter.publishPic(LikeAgent.getInstance().getUid(),mPath,"","");
-//                ToastUtil.sToastUtil.shortDuration("发布成功!");
+                new Handler().post(runnable);
                 break;
             case R.id.add_picture:
                 choosePicture();
@@ -107,7 +140,68 @@ public class PublishDiaryFragment extends BaseFragment implements PublishContrac
         options.setEnablePreview(true);
         options.setEnableCrop(false);
         options.setPreviewVideo(false);
-        AlbumDirectoryActivity.startPhoto(getActivity(), options);
+        AlbumDirectoryActivity.startPhoto(PublishDiaryFragment.this, options);
+    }
+
+    public void viewSaveToImage(View view) {
+        view.setDrawingCacheEnabled(true);
+        view.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
+        view.setDrawingCacheBackgroundColor(Color.WHITE);
+
+        // 把一个View转换成图片
+        Bitmap cachebmp = loadBitmapFromView(view);
+
+        // 添加水印
+//        Bitmap bitmap = Bitmap.createBitmap(createWatermarkBitmap(cachebmp,
+//                "@ Zhang Phil"));
+
+        FileOutputStream fos;
+        try {
+            // 判断手机设备是否有SD卡
+            boolean isHasSDCard = Environment.getExternalStorageState().equals(
+                    android.os.Environment.MEDIA_MOUNTED);
+            if (isHasSDCard) {
+                // SD卡根目录
+                File sdRoot = new File(FileUtils.getImageRootPath());
+                File file = new File(sdRoot, UUID.randomUUID().toString().substring(0,16)+".png");
+                mPath = file.getAbsolutePath();
+                fos = new FileOutputStream(file);
+            } else
+                throw new Exception("创建文件失败!");
+
+            cachebmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
+
+            fos.flush();
+            fos.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        view.destroyDrawingCache();
+        mPresenter.publishPic(LikeAgent.getInstance().getUid(), mPath, "", mDescription.getText().toString());
+
+
+        mPath = "";
+        mDescription.setText("");
+        mShoosePicture.setImageURI("");
+        mAddPicture.setVisibility(View.VISIBLE);
+    }
+
+    private Bitmap loadBitmapFromView(View v) {
+        int w = v.getWidth();
+        int h = v.getHeight();
+
+        Bitmap bmp = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(bmp);
+
+        c.drawColor(Color.WHITE);
+        /** 如果不设置canvas画布为白色，则生成透明 */
+
+        v.layout(0, 0, w, h);
+        v.draw(c);
+
+        return bmp;
     }
 
     @Override
@@ -122,11 +216,35 @@ public class PublishDiaryFragment extends BaseFragment implements PublishContrac
 
     @Override
     public void showErrorTip(String msg) {
-        if (getActivity() == null) return;
-        getActivity().runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 showToast(msg);
+            }
+        });
+    }
+
+    @Override
+    public void publishSuc(String str) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(PublishDiaryFragment.this,"发布成功",Toast.LENGTH_SHORT).show();
+                mPath = "";
+                mDescription.setText("");
+                mShoosePicture.setImageURI("");
+                mAddPicture.setVisibility(View.VISIBLE);
+                finish();
+            }
+        });
+    }
+
+    @Override
+    public void publishFail(String str) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showToast(str);
             }
         });
     }

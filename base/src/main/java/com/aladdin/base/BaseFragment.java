@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +29,10 @@ import butterknife.ButterKnife;
  */
 public abstract class BaseFragment extends Fragment {
     protected BaseActivity mActivity;
-    private boolean isViewPrepared; // 标识fragment视图已经初始化完毕
-    private boolean hasFetchData; // 标识已经触发过懒加载数据
-//    private CompositeSubscription mSubscriptions;
+
+    private boolean hasCreateView; //rootView是否初始化标志
+    private boolean isFragmentVisible; // 当前Fragment是否处于可见状态标志
+    private volatile boolean isFirst; // 是否初次可见
 
     private View rootView; //根布局 父类
     private View contentView; // 根布局 子类
@@ -44,6 +46,14 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        initVariable();
+    }
+
+    // 初始状态
+    private void initVariable() {
+        hasCreateView = false;
+        isFragmentVisible = false;
+        isFirst = true;
     }
 
     @Nullable
@@ -53,8 +63,79 @@ public abstract class BaseFragment extends Fragment {
         setupContentView();
         ButterKnife.bind(this, rootView);
         this.initView();
-        isViewPrepared = true;
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+//        Log.d("BaseFragment", this.getClass().getSimpleName() + "--> onViewCreated: View-创建成功");
+        super.onViewCreated(view, savedInstanceState);
+        if (!hasCreateView && getUserVisibleHint()) {
+            isFirst = true;
+            onVisibleChange(true);
+            isFragmentVisible = true;
+        }
+    }
+
+    /* 在这里实现Fragment数据的缓加载.
+*
+        * @param isVisibleToUser
+*/
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        Log.d("BaseFragment", this.getClass().getSimpleName() + "--> isVisibleToUser: " + isVisibleToUser);
+        if (rootView == null) {
+            return;
+        }
+
+        hasCreateView = true;
+//        if (isVisibleToUser) {
+        if (getUserVisibleHint()) {
+            onVisibleChange(true);
+            isFragmentVisible = true;
+            return;
+        }
+        if (isFragmentVisible) {
+            onVisibleChange(false);
+            isFragmentVisible = false;
+        }
+    }
+
+    /**
+     * @param isVisible true 不可见-->可见
+     *                  false 可见-->不可见
+     */
+    protected void onVisibleChange(boolean isVisible) {
+        Log.d("BaseFragment", this.getClass().getSimpleName() + "--> isVisible: " + isVisible);
+        if (isVisible) {
+            if (isFirst) {
+                Log.d("BaseFragment", this.getClass().getSimpleName() + "--> 首次可见 懒加载");
+                lazyFetchData();
+                isFirst = false;
+                return;
+            }
+            Log.d("BaseFragment", this.getClass().getSimpleName() + "--> 非首次 不加载");
+            onvisible();
+        } else {
+            onInvisible();
+        }
+    }
+
+    // 子类根据需求 选择实现
+    protected void onvisible() {
+        if (getActivity() == null)
+            return;
+        MobclickAgent.onResume(getActivity());
+        // Log.e("BaseFragment", this.getClass().getSimpleName() + "--> 可见 onvisible");
+    }
+
+    // 子类根据需求 选择实现
+    protected void onInvisible() {
+        if (getActivity() == null)
+            return;
+        MobclickAgent.onPause(getActivity());
+        // Log.e("BaseFragment", this.getClass().getSimpleName() + "--> 不可见 onInvisible");
     }
 
     // 加载子类布局文件
@@ -69,28 +150,6 @@ public abstract class BaseFragment extends Fragment {
     // 工具方法 用于获取某个View
     public View findViewById(int resId) {
         return rootView.findViewById(resId);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        lazyFetchDataIfPrepared();
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-
-        lazyFetchDataIfPrepared();
-        MobclickAgent.onResume(getActivity());
-    }
-
-    private void lazyFetchDataIfPrepared() {
-        if (isViewPrepared && getUserVisibleHint() && !hasFetchData) {
-            lazyFetchData();
-            hasFetchData = true;
-        }
     }
 
     @Override
@@ -122,11 +181,6 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        hasFetchData = false;
-        isViewPrepared = false;
-//        if (mSubscriptions != null) {
-//            mSubscriptions.clear();
-//        }
     }
 
     @Override
@@ -187,6 +241,7 @@ public abstract class BaseFragment extends Fragment {
         startActivity(clazz, bundle);
         getActivity().finish();
     }
+
     /**
      * 开启加载效果
      */
@@ -205,8 +260,8 @@ public abstract class BaseFragment extends Fragment {
      * 显示错误的dialog
      */
     public void showErrorHint(String errorContent) {
-        View errorView = LayoutInflater.from(getActivity()).inflate(R.layout.app_error_tip,null);
-        TextView tvContent = (TextView)errorView.findViewById(R.id.content);
+        View errorView = LayoutInflater.from(getActivity()).inflate(R.layout.app_error_tip, null);
+        TextView tvContent = (TextView) errorView.findViewById(R.id.content);
         tvContent.setText(errorContent);
         new ToastUtil(errorView);
     }
@@ -221,7 +276,9 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected abstract int getLayoutId();
+
     protected abstract void initView();
+
     protected abstract void lazyFetchData();
 
     protected boolean hiddenInputMethodManager(View v) {

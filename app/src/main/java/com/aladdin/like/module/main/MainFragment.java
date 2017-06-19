@@ -63,9 +63,11 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
     @Override
     protected void lazyFetchData() {
-        if (mAdapter != null && mAdapter.getItemCount() > 0){
-            mAdapter.clear();
-        }
+        mPresenter.loadData(LikeAgent.getInstance().getUid());
+    }
+
+    @Override
+    protected void onvisible() {
         mPresenter.loadData(LikeAgent.getInstance().getUid());
     }
 
@@ -103,6 +105,9 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (mAdapter != null && mAdapter.getItemCount() > 0){
+                    mAdapter.clear();
+                }
                 mMainRecycle.refreshComplete();
                 for (ThemeModes.Theme theme :data.themeList){
                     if (theme.followSign == 1){

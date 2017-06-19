@@ -39,4 +39,23 @@ public class PictureDetailsPrestener implements PictureDetailsContract.Prestener
             }
         });
     }
+
+    @Override
+    public void collectionImage(String openid, String imageId) {
+        HttpManager.INSTANCE.collectionImage(openid, imageId, new HttpResultCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                if (mView == null) return;
+
+                mView.collectionResult(result);
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                if (mView == null) return;
+
+                mView.collectionResult(msg);
+            }
+        });
+    }
 }

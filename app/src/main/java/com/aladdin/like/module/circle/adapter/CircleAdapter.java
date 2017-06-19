@@ -1,8 +1,6 @@
 package com.aladdin.like.module.circle.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +8,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
-import com.aladdin.like.model.ThemeModes;
-import com.aladdin.utils.ImageLoaderUtils;
+import com.aladdin.like.model.DiaryDetail;
+import com.aladdin.utils.DensityUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -26,16 +24,9 @@ import butterknife.ButterKnife;
  * Created by zxl on 2017/5/1 上午9:47.
  * Email:444288256@qq.com
  */
-public class CircleAdapter extends BaseAdapter<ThemeModes.Theme> {
+public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
     onItemClickListener mItemClickListener;
     private Context mContext;
-
-    private Integer[] imgs = {
-            R.drawable.picture_1, R.drawable.picture_2, R.drawable.picture_3,
-            R.drawable.picture_4,  R.drawable.picture_6,
-            R.drawable.picture_7, R.drawable.picture_8,
-            R.drawable.picture_10, R.drawable.picture_11, R.drawable.picture_12,
-    };
 
     public CircleAdapter(Context context) {
         super(context);
@@ -43,7 +34,7 @@ public class CircleAdapter extends BaseAdapter<ThemeModes.Theme> {
     }
 
     @Override
-    public void onBindCommon(RecyclerView.ViewHolder holder, ThemeModes.Theme item) {
+    public void onBindCommon(RecyclerView.ViewHolder holder, DiaryDetail.Diary item) {
 
     }
 
@@ -59,20 +50,22 @@ public class CircleAdapter extends BaseAdapter<ThemeModes.Theme> {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         CircleViewHolder viewHolder = (CircleViewHolder) holder;
-        ThemeModes.Theme item = getItemObject(position);
+        DiaryDetail.Diary item = getItemObject(position);
         if (item != null) {
-            viewHolder.mMainTypeName.setText(item.themeName);
+//            viewHolder.mMainTypeName.setText(item.themeName);
 
-            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgs[position]);
-            int height = bitmap.getHeight();
+            if (item != null){
+                float scale = (DensityUtils.mScreenWidth/2-DensityUtils.dip2px(15))/(float)item.width;
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
+                params.height = (int) (item.height*scale);
+                params.weight = (int)(item.width*scale);
+                viewHolder.mMainImg.setLayoutParams(params);
 
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
-            params.height=height;
-            viewHolder.mMainImg.setLayoutParams(params);
+                viewHolder.mMainImg.setImageURI(item.diaryImage.substring(29));
+            }
 
-            ImageLoaderUtils.loadResPic(mContext, viewHolder.mMainImg, imgs[position]);
             viewHolder.mMainItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -84,7 +77,12 @@ public class CircleAdapter extends BaseAdapter<ThemeModes.Theme> {
         }
     }
 
-    public ThemeModes.Theme getItemObject(int position) {
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
+
+    }
+
+    public DiaryDetail.Diary getItemObject(int position) {
         if (position < 0 || position > mDatas.size() - 1) return null;
         return mDatas.get(position);
     }
@@ -110,6 +108,6 @@ public class CircleAdapter extends BaseAdapter<ThemeModes.Theme> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(ThemeModes.Theme item);
+        void onItemClick(DiaryDetail.Diary item);
     }
 }

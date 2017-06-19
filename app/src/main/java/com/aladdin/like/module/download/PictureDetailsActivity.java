@@ -156,6 +156,7 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
                 startActivity(DownLoadPictureActivity.class,bundle);
                 break;
             case R.id.click_praise:
+//                mPrestener.collectionImage(LikeAgent.getInstance().getUid(),mTheme.themeId);
                 break;
         }
     }
@@ -192,6 +193,11 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
                 mAdapter.addAll(themeDetail.imageList);
             }
         });
+    }
+
+    @Override
+    public void collectionResult(String result) {
+
     }
 
     @Override

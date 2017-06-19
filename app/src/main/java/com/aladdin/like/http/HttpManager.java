@@ -9,14 +9,17 @@ import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.model.UserPojo;
-import com.aladdin.utils.LogUtil;
 import com.zxl.network_lib.HttpUtil;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
+import com.zxl.network_lib.Inteface.HttpResultListener;
 import com.zxl.network_lib.OkHttpHeadersInit;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Headers;
 
 
 /**
@@ -110,9 +113,7 @@ public enum HttpManager {
 
         String params = prepareParam(map);
         try{
-            LogUtil.i("---url--->>>"+HttpUrl.GET_ALL_THEME);
             shortConnectRequest(HttpUrl.GET_ALL_THEME,params,RequestType.POST,callback,ThemeModes.class);
-//            shortConnectRequest("http://www.mocky.io/v2/5933d9641300000e1ffa0bad","",RequestType.POST,callback,ThemeModes.class);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -227,8 +228,15 @@ public enum HttpManager {
      * @param diaryTitle
      * @param diaryContent
      */
-    public void addUserDiary(String openid, String image, String diaryTitle, String diaryContent,HttpResultCallback<String> callback){
-
+    public void addUserDiary(String openid, String image, File file, String diaryTitle, String diaryContent, HttpResultListener callback){
+        Map<String, Object> map = new HashMap<>();
+        map.put("openid",openid);
+        map.put("image",image);
+        map.put("diaryTitle",diaryTitle);
+        map.put("diaryContent",diaryContent);
+        String params = prepareParam(map);
+        HttpUtil.getInstance().upLoadPic(HttpUrl.USER_ADD_DIARY,image, Headers.of("token","likeApp1qaz2wsx"),file,callback,
+                "openid",openid,"image",image,"diaryTitle",diaryTitle,"diaryContent",diaryContent);
     }
 
     /**

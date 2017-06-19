@@ -1,6 +1,10 @@
 package com.aladdin.like.module.circle.prestener;
 
+import com.aladdin.like.http.HttpManager;
+import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.module.circle.contract.CircleContract;
+import com.aladdin.utils.LogUtil;
+import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 /**
  * Description
@@ -18,7 +22,22 @@ public class Circlrprestener implements CircleContract.Presenter{
     }
 
     @Override
-    public void getData(String openid) {
+    public void getData(String openid,int page,int page_num) {
+        LogUtil.i(""+page+"----"+page_num);
+        HttpManager.INSTANCE.getUserDiary(openid, page, page_num, new HttpResultCallback<DiaryDetail>() {
+            @Override
+            public void onSuccess(DiaryDetail result) {
+                if (mView == null) return;
 
+                mView.setData(result);
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                if (mView == null) return;
+
+                mView.showErrorTip(msg);
+            }
+        });
     }
 }

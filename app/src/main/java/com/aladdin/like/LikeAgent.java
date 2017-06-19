@@ -34,10 +34,10 @@ public class LikeAgent {
     private LikeAgent() {
     }
 
-    public static LikeAgent getInstance(){
-        if (instance == null){
-            synchronized (LikeAgent.class){
-                if (instance == null){
+    public static LikeAgent getInstance() {
+        if (instance == null) {
+            synchronized (LikeAgent.class) {
+                if (instance == null) {
                     instance = new LikeAgent();
                 }
             }
@@ -65,9 +65,11 @@ public class LikeAgent {
 
     public void setUid(String uid) {
         this.uid = uid;
+        SharedPreferencesUtil.INSTANCE.putString(Constant.User.LAST_ID, uid);
     }
 
-    public String getUid(){
+    public String getUid() {
+        uid = SharedPreferencesUtil.INSTANCE.getString(Constant.User.LAST_ID, "");
         return uid;
     }
 
@@ -99,6 +101,7 @@ public class LikeAgent {
         SharedPreferencesUtil.INSTANCE.remove(Constant.User.USER_INFO);
         userPojo = null;
     }
+
     /**
      * 自动登陆
      */
@@ -129,7 +132,7 @@ public class LikeAgent {
         logout();
     }
 
-    public void logout(){
+    public void logout() {
 
     }
 }

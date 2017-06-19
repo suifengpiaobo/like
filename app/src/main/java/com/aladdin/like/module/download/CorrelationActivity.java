@@ -71,6 +71,14 @@ public class CorrelationActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.download_status:
+//                HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getUid(), mTheme.imageId, new HttpResultCallback<String>() {
+//                    @Override
+//                    public void onSuccess(String result) {
+//                    }
+//                    @Override
+//                    public void onFailure(String code, String msg) {
+//                    }
+//                });
                 MobclickAgent.onEvent(CorrelationActivity.this, "DownLoad");
                 fileName = UUID.randomUUID().toString().substring(0, 16) + ".png";
                 savePicture();

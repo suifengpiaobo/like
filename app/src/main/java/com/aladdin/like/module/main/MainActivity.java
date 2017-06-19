@@ -1,7 +1,6 @@
 package com.aladdin.like.module.main;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,11 +11,10 @@ import com.aladdin.base.BaseActivity;
 import com.aladdin.base.BaseFragment;
 import com.aladdin.base.BaseFragmentAdapter;
 import com.aladdin.like.R;
-import com.aladdin.like.module.diary.PublishDiaryFragment;
+import com.aladdin.like.module.circle.CircleFragment;
 import com.aladdin.like.module.mine.MineFragment;
 import com.aladdin.like.module.search.SearchFragment;
 import com.aladdin.like.widget.NoScrollViewPager;
-import com.yalantis.ucrop.ui.ImageGridActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +41,7 @@ public class MainActivity extends BaseActivity {
     private List<BaseFragment> mFragments;
     private MainFragment mMainFragment;
     private SearchFragment mSearchFragment;
-    private PublishDiaryFragment mCircleFragment;
+    private CircleFragment mCircleFragment;
     private MineFragment mMineFragment;
     private BaseFragmentAdapter mAdapter;
 
@@ -65,7 +63,7 @@ public class MainActivity extends BaseActivity {
         mFragments = new ArrayList<>();
         mMainFragment = new MainFragment();
         mSearchFragment = new SearchFragment();
-        mCircleFragment = new PublishDiaryFragment();
+        mCircleFragment = new CircleFragment();
         mMineFragment = new MineFragment();
 
         mFragments.add(mMainFragment);
@@ -155,23 +153,6 @@ public class MainActivity extends BaseActivity {
     public boolean onTouchEvent(MotionEvent event) {
         final View v = this.getWindow().peekDecorView();
         return hiddenInputMethodManager(v);
-    }
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            switch (requestCode) {
-                case ImageGridActivity.REQUEST_IMAGE:
-                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
-                    if (result != null) {
-                        if (mOnChoosePictureListener != null){
-                            mOnChoosePictureListener.onChooseListener(result.get(0));
-                        }
-                    }
-                    break;
-            }
-        }
     }
 
     public onChoosePictureListener getOnChoosePictureListener() {

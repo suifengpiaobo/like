@@ -10,6 +10,7 @@ import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.module.mine.diary.contract.DiaryContract;
 import com.aladdin.like.module.mine.diary.prestener.DiaryPrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
+import com.aladdin.utils.LogUtil;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -53,7 +54,17 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
 
     @Override
     protected void lazyFetchData() {
+    }
 
+    @Override
+    protected void onvisible() {
+        page = 1;
+        mPresenter.getUserDiary(LikeAgent.getInstance().getUid(),page,page_num);
+    }
+
+    @Override
+    protected void onInvisible() {
+        LogUtil.i("---MineDiraryFragment--onInvisible---");
     }
 
     @Override

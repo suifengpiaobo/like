@@ -62,6 +62,11 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
         bindEvent();
     }
 
+    @Override
+    protected void onvisible() {
+        mPresenter.getTheme(LikeAgent.getInstance().getUid());
+    }
+
     private void bindEvent() {
         mAtlasAdapter.setItemClickListener(new AtlasAdapter.onItemClickListener() {
             @Override
@@ -86,7 +91,7 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
 
     @Override
     protected void lazyFetchData() {
-
+        LogUtil.i("---MineAtlasFragment--lazyFetchData---");
     }
 
     @Override

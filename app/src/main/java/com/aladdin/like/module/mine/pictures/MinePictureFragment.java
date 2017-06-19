@@ -11,6 +11,7 @@ import com.aladdin.like.module.mine.pictures.adapter.PictureAdapter;
 import com.aladdin.like.module.mine.pictures.contract.PictureContract;
 import com.aladdin.like.module.mine.pictures.prestener.PicturePrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
+import com.aladdin.utils.LogUtil;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -56,7 +57,13 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
 
     @Override
     protected void lazyFetchData() {
+        LogUtil.i("---MinePictureFragment--lazyFetchData---");
+    }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        LogUtil.i("---MinePictureFragment--setUserVisibleHint---");
     }
 
     @Override

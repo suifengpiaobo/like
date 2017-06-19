@@ -38,8 +38,8 @@ public class RequestContent {
 
     static {
         OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
-        okHttpClientBuilder.connectTimeout(30, TimeUnit.SECONDS);  //设置连接超时时间
-        okHttpClientBuilder.readTimeout(30, TimeUnit.SECONDS);    //设置读取超时时间
+        okHttpClientBuilder.connectTimeout(60, TimeUnit.SECONDS);  //设置连接超时时间
+        okHttpClientBuilder.readTimeout(60, TimeUnit.SECONDS);    //设置读取超时时间
         okHttpClientBuilder.writeTimeout(60, TimeUnit.SECONDS);  //设置写入超时时间
         mOkHttpClient = okHttpClientBuilder.build();
     }
@@ -154,13 +154,17 @@ public class RequestContent {
     public static Request createPostPicRequest(String url, String name, File file, Headers header, String... params) {
         checkUrl(url);
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-        builder.addFormDataPart(name, file.getName(), RequestBody.create(MEDIA_TYPE_PNG, file));
+        builder.addFormDataPart("image", file.getName(), RequestBody.create(MEDIA_TYPE_PNG, file));
         if (params != null && params.length % 2 == 0) {
-            for (int i = 0; i < params.length; i += 2)
+            for (int i = 0; i < params.length; i += 2){
                 builder.addFormDataPart(params[i], params[i+1]);
+                Log.i("--upload-AA->>","--params--"+params[i]+"---"+params[i+1]);
+            }
         }
         MultipartBody requestBody = builder.build();
         Request.Builder requestBuilder = new Request.Builder();
+        Log.i("--upload-->>","--url-->>"+url+"   --name--"+name);
+        Log.i("--upload-AA->>","--file-->>"+file.getAbsolutePath()+"   --header--"+header);
         requestBuilder.url(url);
         requestBuilder.post(requestBody);
         if (header != null)
