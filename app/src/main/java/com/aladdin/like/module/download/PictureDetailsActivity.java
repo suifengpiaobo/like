@@ -133,8 +133,8 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
             @Override
             public void onItemClick(ThemeDetail.Theme item) {
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("PREFECTURE", item);
-                startActivity(DownLoadPictureActivity.class, bundle);
+                bundle.putSerializable("CORRELATION", item);
+                startActivity(CorrelationActivity.class, bundle);
             }
         });
 
@@ -152,7 +152,7 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
                 break;
             case R.id.picture:
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("PREFECTURE", mTheme);
+                bundle.putSerializable("THEME", mTheme);
                 startActivity(DownLoadPictureActivity.class,bundle);
                 break;
             case R.id.click_praise:

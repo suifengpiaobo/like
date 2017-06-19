@@ -104,7 +104,12 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
             @Override
             public void run() {
                 mMainRecycle.refreshComplete();
-                mAdapter.addAll(data.themeList);
+                for (ThemeModes.Theme theme :data.themeList){
+                    if (theme.followSign == 1){
+                        mAdapter.addItem(theme);
+                    }
+                }
+                mAdapter.notifyDataSetChanged();
             }
         });
     }

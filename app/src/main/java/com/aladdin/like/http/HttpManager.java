@@ -12,6 +12,7 @@ import com.aladdin.like.model.UserPojo;
 import com.aladdin.utils.LogUtil;
 import com.zxl.network_lib.HttpUtil;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
+import com.zxl.network_lib.OkHttpHeadersInit;
 
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +46,8 @@ public enum HttpManager {
         } else {
 //            url.append(HttpUrl.API_URL).append(path);
         }
+
+        OkHttpHeadersInit.initOkHttpHeaders("token", "likeApp1qaz2wsx");
         if (requestType == RequestType.POST) {
             HttpUtil.getInstance().POST(url.toString(), param, HttpResultProcess.httpResultListener(httpResultCallback, uClass));
 

@@ -50,6 +50,7 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
         MainViewHolder viewHolder = (MainViewHolder) holder;
         ThemeModes.Theme item = getItemObject(position);
         if (item != null) {
+            viewHolder.mMainImg.setImageURI(item.themeImgUrl);
             viewHolder.mMainTypeName.setText(item.themeName);
             viewHolder.mMainTime.setText(item.createTimeStr);
 
@@ -63,7 +64,7 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
             params.weight = (int)(width*scale);
             viewHolder.mMainImg.setLayoutParams(params);
 
-            viewHolder.mMainImg.setImageURI(item.themeImgUrl);
+//            viewHolder.mMainImg.setImageURI(item.themeImgUrl);
             viewHolder.mMainItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

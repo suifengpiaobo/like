@@ -26,7 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-
         <activity android:name=".module.register.RegisterActivity">
         </activity>
 
@@ -87,6 +86,8 @@
         <activity android:name=".module.download.DownLoadPictureActivity">
         </activity>
         <activity android:name=".module.TestActivity">
+        </activity>
+        <activity android:name=".module.download.CorrelationActivity">
         </activity>
     </application>
 

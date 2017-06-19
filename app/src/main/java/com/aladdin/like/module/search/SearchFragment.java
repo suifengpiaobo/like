@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.KeyEvent;
-import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -25,7 +24,6 @@ import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * Description 搜索
@@ -71,7 +69,6 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
 
     @Override
     protected void initView() {
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         mPresenter = new SearchPrestener(this);
         mPresenter.loadData(LikeAgent.getInstance().getUid());
 
@@ -93,6 +90,8 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         mSearchResult.setLayoutManager(staggered);
         mSearchResult.addItemDecoration(new SpacesItemDecoration(10));
         mSearchResult.setAdapter(mResultAdapter);
+
+        mSearch.setOnEditorActionListener(onEditorActionListener);
     }
 
     @Override
@@ -103,22 +102,6 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
 
     @Override
     protected void lazyFetchData() {
-        mSearch.setOnEditorActionListener(onEditorActionListener);
-//        mSearch.requestFocus();
-    }
-
-
-    @OnClick(R.id.search)
-    public void onViewClicked() {
-        mSearch.setFocusable(true);
-        mSearch.requestFocus();
-//        showInputMethodManager(mSearch);
-        forceOpenSoftKeyboard(getActivity());
-    }
-
-    public void forceOpenSoftKeyboard(Context context) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     @Override
@@ -162,6 +145,9 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (mResultAdapter != null && mResultAdapter.getCommonItemCount()>0){
+                    mResultAdapter.clear();
+                }
                 mResultAdapter.addAll(data.themeList);
                 mResultAdapter.notifyDataSetChanged();
             }

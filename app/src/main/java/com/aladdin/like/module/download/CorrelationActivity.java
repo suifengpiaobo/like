@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
-import com.aladdin.like.model.ThemeModes;
+import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.utils.FileUtils;
 import com.aladdin.utils.ToastUtil;
 import com.arialyy.aria.core.Aria;
@@ -34,12 +34,11 @@ import java.util.UUID;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-/**
- * Description 点击图片下载页
- * Created by zxl on 2017/5/21 下午11:21.
- */
-public class DownLoadPictureActivity extends BaseActivity {
-
+/*
+ *Description 相关图片下载页
+ *Created by zxl on 2017/6/19下午4:43.
+*/
+public class CorrelationActivity extends BaseActivity {
     @BindView(R.id.back)
     ImageView mBack;
     @BindView(R.id.picture)
@@ -47,19 +46,21 @@ public class DownLoadPictureActivity extends BaseActivity {
     @BindView(R.id.download_status)
     ImageView mDownloadStatus;
 
-    ThemeModes.Theme mTheme;
+    ThemeDetail.Theme mTheme;
 
     File mFile;
     String fileName;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_down_load_picture;
     }
 
+
     @Override
     protected void initView() {
-        mTheme = (ThemeModes.Theme) getIntent().getSerializableExtra("THEME");
-        mPicture.setImageURI(mTheme.themeImgUrl);
+        mTheme = (ThemeDetail.Theme) getIntent().getSerializableExtra("CORRELATION");
+        mPicture.setImageURI(mTheme.imageUrl);
         mFile = new File(FileUtils.getImageRootPath());
     }
 
@@ -70,8 +71,8 @@ public class DownLoadPictureActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.download_status:
-                MobclickAgent.onEvent(DownLoadPictureActivity.this,"DownLoad");
-                fileName = UUID.randomUUID().toString().substring(0,16)+".png";
+                MobclickAgent.onEvent(CorrelationActivity.this, "DownLoad");
+                fileName = UUID.randomUUID().toString().substring(0, 16) + ".png";
                 savePicture();
 //                Aria.download(this)
 //                        .load(mTheme.themeImgUrl)     //读取下载地址
@@ -81,8 +82,8 @@ public class DownLoadPictureActivity extends BaseActivity {
         }
     }
 
-    public void savePicture(){
-        Uri uri = Uri.parse(mTheme.themeImgUrl);
+    public void savePicture() {
+        Uri uri = Uri.parse(mTheme.imageUrl);
         ImageRequest imageRequest = ImageRequestBuilder
                 .newBuilderWithSource(uri)
                 .setProgressiveRenderingEnabled(true)
@@ -97,7 +98,7 @@ public class DownLoadPictureActivity extends BaseActivity {
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
                                      mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
-                                     Toast.makeText(DownLoadPictureActivity.this,"下载成功",Toast.LENGTH_SHORT).show();
+                                     Toast.makeText(CorrelationActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
                                      MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "title", "description");
                                  }
 
@@ -106,14 +107,14 @@ public class DownLoadPictureActivity extends BaseActivity {
                                  }
                              },
                 CallerThreadExecutor.getInstance());
-        mPicture.setImageURI(mTheme.themeImgUrl);
+        mPicture.setImageURI(mTheme.imageUrl);
 //        mPariseNum.setText(mTheme.followSign);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Aria.download(DownLoadPictureActivity.this).addSchedulerListener(new MySchedulerListener());
+        Aria.download(CorrelationActivity.this).addSchedulerListener(new MySchedulerListener());
     }
 
     final class MySchedulerListener extends Aria.DownloadSchedulerListener {
@@ -156,10 +157,10 @@ public class DownLoadPictureActivity extends BaseActivity {
         }
     }
 
-    public void downloadSuc(){
+    public void downloadSuc() {
         mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
         ToastUtil.sToastUtil.shortDuration("下载成功");
 
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(mFile.getAbsolutePath()+"/"+fileName))));
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(mFile.getAbsolutePath() + "/" + fileName))));
     }
 }
