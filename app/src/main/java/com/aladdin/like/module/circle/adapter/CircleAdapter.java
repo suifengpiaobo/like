@@ -63,7 +63,7 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
                 params.weight = (int)(item.width*scale);
                 viewHolder.mMainImg.setLayoutParams(params);
 
-                viewHolder.mMainImg.setImageURI(item.diaryImage.substring(29));
+                viewHolder.mMainImg.setImageURI(item.diaryImage);
             }
 
             viewHolder.mMainItem.setOnClickListener(new View.OnClickListener() {

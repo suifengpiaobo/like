@@ -43,7 +43,7 @@ public class MineDiaryAdapter extends BaseAdapter<DiaryDetail.Diary> {
             params.weight = (int)(item.width*scale);
             viewHolder.mMinePictureImg.setLayoutParams(params);
 
-            viewHolder.mMinePictureImg.setImageURI(item.diaryImage.substring(29));
+            viewHolder.mMinePictureImg.setImageURI(item.diaryImage);
         }
     }
 
