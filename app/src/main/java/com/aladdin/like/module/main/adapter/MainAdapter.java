@@ -61,6 +61,8 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
                     }
                 }
             });
+
+            viewHolder.setIsRecyclable(true);
         }
     }
 

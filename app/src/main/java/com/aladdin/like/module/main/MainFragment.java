@@ -13,7 +13,6 @@ import com.aladdin.like.module.main.adapter.MainAdapter;
 import com.aladdin.like.module.main.contract.MainContract;
 import com.aladdin.like.module.main.presenter.MainPresenter;
 import com.aladdin.like.widget.SpacesItemDecoration;
-import com.aladdin.utils.LogUtil;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -41,9 +40,8 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
         mMainRecycle.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mMainRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mMainRecycle.setArrowImageView(R.drawable.icon_refresh);
+//        mMainRecycle.setArrowImageView(R.drawable.icon_refresh);
         mMainRecycle.setLoadingListener(this);
-        mMainRecycle.setPullRefreshEnabled(false);
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mMainRecycle.setLayoutManager(staggered);
@@ -64,12 +62,12 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
     @Override
     protected void lazyFetchData() {
-        mPresenter.loadData(LikeAgent.getInstance().getUid());
+        mMainRecycle.setRefreshing(true);
     }
 
     @Override
     protected void onvisible() {
-        mPresenter.loadData(LikeAgent.getInstance().getUid());
+        mMainRecycle.setRefreshing(true);
     }
 
     @Override
@@ -106,7 +104,6 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                LogUtil.i("result--data--->>>"+data.themeList);
                 if (mAdapter != null && mAdapter.getItemCount() > 0){
                     mAdapter.clear();
                 }
@@ -123,7 +120,7 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
     @Override
     public void onRefresh() {
-
+        mPresenter.loadData(LikeAgent.getInstance().getUid());
     }
 
     @Override

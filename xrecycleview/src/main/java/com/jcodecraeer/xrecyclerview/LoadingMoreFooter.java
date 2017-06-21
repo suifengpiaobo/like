@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.jcodecraeer.xrecyclerview.progressindicator.AVLoadingIndicatorView;
 
@@ -20,7 +19,7 @@ public class LoadingMoreFooter extends LinearLayout {
     public final static int STATE_LOADING = 0;
     public final static int STATE_COMPLETE = 1;
     public final static int STATE_NOMORE = 2;
-    private TextView mText;
+//    private TextView mText;
     private ImageView mImageView;
 
     public LoadingMoreFooter(Context context) {
@@ -43,7 +42,7 @@ public class LoadingMoreFooter extends LinearLayout {
         setBackgroundColor(Color.parseColor("#F0F0F0"));
         int dip10 = (int) getResources().getDimension(R.dimen.textandiconmargin);
         int dip30 = (int) getResources().getDimension(com.jcodecraeer.xrecyclerview.R.dimen.bottomTopmargin);
-        setPadding(0, dip30, 0, dip10);
+        setPadding(0, dip10, 0, dip10);
 //        setPadding(0, dip10, 0, dip10);
         setLayoutParams(new RecyclerView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -52,22 +51,21 @@ public class LoadingMoreFooter extends LinearLayout {
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
         AVLoadingIndicatorView progressView = new AVLoadingIndicatorView(this.getContext());
-        progressView.setIndicatorColor(0xff4A4A4A);
+//        progressView.setIndicatorColor(0xff4A4A4A);
+        progressView.setIndicatorColor(0xFF0000);
         progressView.setIndicatorId(ProgressStyle.BallSpinFadeLoader);
         progressCon.setView(progressView);
         addView(progressCon);
-        mText = new TextView(getContext());
-        mText.setText("正在加载...");
 
-        mImageView = new ImageView(getContext());
-        mImageView.setImageResource(R.drawable.icon_fooder_logo);
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins((int) getResources().getDimension(R.dimen.textandiconmargin), 0, 0, 0);
-
-        mText.setLayoutParams(layoutParams);
-        addView(mText);
-        addView(mImageView);
+//        mText = new TextView(getContext());
+//        mText.setText("正在加载...");
+//        mImageView = new ImageView(getContext());
+//        mImageView.setImageResource(R.drawable.icon_fooder_logo);
+//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//        layoutParams.setMargins((int) getResources().getDimension(R.dimen.textandiconmargin), 0, 0, 0);
+//        mText.setLayoutParams(layoutParams);
+//        addView(mText);
+//        addView(mImageView);
     }
 
     public void setProgressStyle(int style) {
@@ -75,7 +73,8 @@ public class LoadingMoreFooter extends LinearLayout {
             progressCon.setView(new ProgressBar(getContext(), null, android.R.attr.progressBarStyle));
         } else {
             AVLoadingIndicatorView progressView = new AVLoadingIndicatorView(this.getContext());
-            progressView.setIndicatorColor(0xff4A4A4A);
+//            progressView.setIndicatorColor(0xff4A4A4A);
+            progressView.setIndicatorColor(0xFF0000);
             progressView.setIndicatorId(style);
             progressCon.setView(progressView);
         }
@@ -84,25 +83,25 @@ public class LoadingMoreFooter extends LinearLayout {
     public void setState(int state) {
         switch (state) {
             case STATE_LOADING:
-                mText.setVisibility(View.VISIBLE);
-                mImageView.setVisibility(View.GONE);
+//                mText.setVisibility(View.VISIBLE);
+//                mImageView.setVisibility(View.GONE);
                 progressCon.setVisibility(View.VISIBLE);
 
-                mText.setText(getContext().getText(R.string.listview_loading));
+//                mText.setText(getContext().getText(R.string.listview_loading));
                 this.setVisibility(View.VISIBLE);
                 break;
             case STATE_COMPLETE:
-                mText.setVisibility(View.VISIBLE);
-                mImageView.setVisibility(View.GONE);
+//                mText.setVisibility(View.VISIBLE);
+//                mImageView.setVisibility(View.GONE);
 
-                mText.setText(getContext().getText(R.string.listview_loading));
+//                mText.setText(getContext().getText(R.string.listview_loading));
 
                 this.setVisibility(View.GONE);
                 break;
             case STATE_NOMORE:
-                mText.setVisibility(View.GONE);
+//                mText.setVisibility(View.GONE);
                 progressCon.setVisibility(View.GONE);
-                mImageView.setVisibility(View.VISIBLE);
+//                mImageView.setVisibility(View.VISIBLE);
                 this.setVisibility(View.VISIBLE);
                 break;
         }

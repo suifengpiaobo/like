@@ -12,7 +12,7 @@ import com.aladdin.base.BaseFragment;
 import com.aladdin.base.BaseFragmentAdapter;
 import com.aladdin.like.R;
 import com.aladdin.like.module.circle.CircleFragment;
-import com.aladdin.like.module.mine.MineFragment;
+import com.aladdin.like.module.mine.MineFragment2;
 import com.aladdin.like.module.search.SearchFragment;
 import com.aladdin.like.widget.NoScrollViewPager;
 
@@ -42,7 +42,7 @@ public class MainActivity extends BaseActivity {
     private MainFragment mMainFragment;
     private SearchFragment mSearchFragment;
     private CircleFragment mCircleFragment;
-    private MineFragment mMineFragment;
+    private MineFragment2 mMineFragment;
     private BaseFragmentAdapter mAdapter;
 
     onSearchClickListener mSearchClickListener;
@@ -64,7 +64,7 @@ public class MainActivity extends BaseActivity {
         mMainFragment = new MainFragment();
         mSearchFragment = new SearchFragment();
         mCircleFragment = new CircleFragment();
-        mMineFragment = new MineFragment();
+        mMineFragment = new MineFragment2();
 
         mFragments.add(mMainFragment);
         mFragments.add(mSearchFragment);

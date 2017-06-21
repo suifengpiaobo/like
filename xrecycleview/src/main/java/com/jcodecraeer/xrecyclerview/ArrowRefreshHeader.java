@@ -68,7 +68,8 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
         //init the progress view
 		mProgressBar = (SimpleViewSwitcher)findViewById(R.id.listview_header_progressbar);
         AVLoadingIndicatorView progressView = new  AVLoadingIndicatorView(getContext());
-        progressView.setIndicatorColor(0xff4A4A4A);
+//        progressView.setIndicatorColor(0xff4A4A4A);
+        progressView.setIndicatorColor(0xFF0000);
         progressView.setIndicatorId(ProgressStyle.BallSpinFadeLoader);
         mProgressBar.setView(progressView);
 
@@ -92,7 +93,8 @@ public class ArrowRefreshHeader extends LinearLayout implements BaseRefreshHeade
             mProgressBar.setView(new ProgressBar(getContext(), null, android.R.attr.progressBarStyle));
         }else{
             AVLoadingIndicatorView progressView = new  AVLoadingIndicatorView(this.getContext());
-            progressView.setIndicatorColor(0xff4A4A4A);
+//            progressView.setIndicatorColor(0xff4A4A4A);
+            progressView.setIndicatorColor(0xFF0000);
             progressView.setIndicatorId(style);
             mProgressBar.setView(progressView);
         }

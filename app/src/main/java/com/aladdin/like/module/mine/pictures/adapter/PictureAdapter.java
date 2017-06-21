@@ -1,8 +1,6 @@
 package com.aladdin.like.module.mine.pictures.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +8,7 @@ import android.widget.LinearLayout;
 
 import com.aladdin.like.R;
 import com.aladdin.like.model.CollectionImage;
-import com.aladdin.utils.ImageLoaderUtils;
+import com.aladdin.utils.DensityUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -24,13 +22,6 @@ import butterknife.ButterKnife;
  * Email:444288256@qq.com
  */
 public class PictureAdapter extends BaseAdapter<CollectionImage.Collection> {
-
-    private Integer[] imgs = {
-            R.drawable.picture_1, R.drawable.picture_2, R.drawable.picture_3,
-            R.drawable.picture_4, R.drawable.picture_6,
-            R.drawable.picture_7, R.drawable.picture_8,
-            R.drawable.picture_10, R.drawable.picture_11, R.drawable.picture_12,
-    };
 
     public PictureAdapter(Context mContext) {
         super(mContext);
@@ -46,15 +37,13 @@ public class PictureAdapter extends BaseAdapter<CollectionImage.Collection> {
         PictureViewHolder viewHolder = (PictureViewHolder) holder;
         CollectionImage.Collection item= getItemObject(position);
         if (item != null){
-
-            Bitmap bitmap = BitmapFactory.decodeResource(mContext.getResources(), imgs[position]);
-            int height = bitmap.getHeight();
-
+            float scale = (DensityUtils.mScreenWidth/2-DensityUtils.dip2px(15))/(float)item.width;
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMinePictureImg.getLayoutParams();
-            params.height=height;
+            params.height = (int) (item.height*scale);
+            params.weight = (int)(item.width*scale);
             viewHolder.mMinePictureImg.setLayoutParams(params);
 
-            ImageLoaderUtils.loadResPic(mContext, viewHolder.mMinePictureImg, imgs[position]);
+            viewHolder.mMinePictureImg.setImageURI(item.imageUrl);
         }
     }
 

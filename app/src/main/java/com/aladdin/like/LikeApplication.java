@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
 import com.aladdin.base.BaseApplication;
+import com.aladdin.like.utils.FontsOverrideUtil;
 import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.DensityUtils;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -21,6 +22,8 @@ public class LikeApplication extends BaseApplication {
 
     @Override
     public void initConfig() {
+        //替换字体
+        FontsOverrideUtil.init(this);
         ContextUtils.getInstance().setContext(this.getApplicationContext()); // Must!! First call this method.
         DensityUtils.setAppContext(this);
         Fresco.initialize(this);

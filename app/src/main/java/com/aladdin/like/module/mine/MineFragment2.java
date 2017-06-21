@@ -1,18 +1,17 @@
 package com.aladdin.like.module.mine;
 
 
-import android.view.View;
-import android.view.ViewTreeObserver;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aladdin.base.BaseFragment;
 import com.aladdin.like.R;
-import com.aladdin.like.widget.ScrollViewPager;
-import com.aladdin.like.widget.SlidingTabLayout;
-import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.LogUtil;
+import com.aladdin.like.module.mine.atlas.MineAtlasFragment;
+import com.aladdin.like.module.mine.diary.MineDiraryFragment;
+import com.aladdin.like.module.mine.pictures.MinePictureFragment;
+import com.aladdin.like.module.set.SettingActivity;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
@@ -23,24 +22,21 @@ import butterknife.OnClick;
  * Created by zxl on 2017/5/24 下午8:18.
  */
 public class MineFragment2 extends BaseFragment {
-
     @BindView(R.id.user_avatar)
     SimpleDraweeView mUserAvatar;
     @BindView(R.id.user_name)
     TextView mUserName;
     @BindView(R.id.description)
     TextView mDescription;
-    @BindView(R.id.slidingTabLayout)
-    SlidingTabLayout mSlidingTabLayout;
     @BindView(R.id.mine_info_viewpager)
-    ScrollViewPager mMineInfoViewpager;
-    @BindView(R.id.root_view)
-    LinearLayout mRootView;
+    ViewPager mMineInfoViewpager;
     @BindView(R.id.set)
     ImageView mSet;
+    @BindView(R.id.tabLayout)
+    TabLayout mTabLayout;
 
+    Mine2PagerAdapter mAdapter;
 
-    MineAdapter mAdapter;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_mine_fragment2;
@@ -48,45 +44,43 @@ public class MineFragment2 extends BaseFragment {
 
     @Override
     protected void initView() {
-        ViewTreeObserver vto = mRootView.getViewTreeObserver();
-        vto.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                mRootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int slidingTabLayoutHeight = DensityUtils.dip2px(47);
-                int mScreenHeigth = mRootView.getHeight()-DensityUtils.dip2px(48);
+        mAdapter = new Mine2PagerAdapter(getFragmentManager());
+        mAdapter.addFragment(new MineAtlasFragment(),"主题");
+        mAdapter.addFragment(new MinePictureFragment(),"图片");
+        mAdapter.addFragment(new MineDiraryFragment(),"日记");
+        mMineInfoViewpager.setAdapter(mAdapter);
 
-                int height = mScreenHeigth - slidingTabLayoutHeight;
-                LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mMineInfoViewpager.getLayoutParams();
-                layoutParams.width = DensityUtils.mScreenWidth;
-                layoutParams.height = height;
-                mMineInfoViewpager.setLayoutParams(layoutParams);
-                LogUtil.i("height--->>>"+height);
-            }
-        });
+        mTabLayout.addTab(mTabLayout.newTab().setText("主题"));//给TabLayout添加Tab
+        mTabLayout.addTab(mTabLayout.newTab().setText("图片"));
+        mTabLayout.addTab(mTabLayout.newTab().setText("日记"));
 
-        mSlidingTabLayout.setTabTitleTextSize(15);
-        mSlidingTabLayout.setTabStripWidth(DensityUtils.dip2px(80));
-        mSlidingTabLayout.setCustomTabView(R.layout.layout_tab_indicator, android.R.id.text1);
-        mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.color_1F2427));
-        mSlidingTabLayout.setSlidingTabStripCenter();
-        mSlidingTabLayout.setTitleTextColor(getResources().getColor(R.color.color_1F2427), getResources().getColor(R.color.color_82879A));
-        mSlidingTabLayout.setDistributeEvenly(true);
+        mTabLayout.setupWithViewPager(mMineInfoViewpager);
+//        mMineInfoViewpager.CURRENT_PAGE = 0;
     }
 
     @Override
     protected void lazyFetchData() {
-        mAdapter = new MineAdapter(getFragmentManager());
-        mSlidingTabLayout.setVisibility(View.VISIBLE);
-        mMineInfoViewpager.setVisibility(View.VISIBLE);
+        mMineInfoViewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-        mMineInfoViewpager.setAdapter(mAdapter);
-        mSlidingTabLayout.setViewPager(mMineInfoViewpager);
-//        mMineInfoViewpager.setOffscreenPageLimit(3);
-        mAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+//                mMineInfoViewpager.CURRENT_PAGE = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
     }
 
     @OnClick(R.id.set)
     public void onViewClicked() {
+        startActivity(SettingActivity.class);
     }
 }

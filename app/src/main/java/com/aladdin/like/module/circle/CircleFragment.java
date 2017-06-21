@@ -46,13 +46,12 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
     @Override
     protected void initView() {
         mPresenter = new Circlrprestener(this);
-        mPresenter.getData(LikeAgent.getInstance().getUid(),1,page_num);
 
         mCircle.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mCircle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mCircle.setArrowImageView(R.drawable.icon_refresh);
+//        mCircle.setArrowImageView(R.drawable.icon_refresh);
         mCircle.setLoadingListener(this);
-        mCircle.setPullRefreshEnabled(false);
+        mCircle.setRefreshing(true);
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mCircle.setLayoutManager(staggered);
@@ -86,6 +85,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
 
     @Override
     public void onRefresh() {
+        mPresenter.getData(LikeAgent.getInstance().getUid(),1,page_num);
     }
 
     @Override
@@ -132,6 +132,11 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (page == 1){
+                    if (mAdapter != null && mAdapter.getItemCount() > 0){
+                        mAdapter.clear();
+                    }
+                }
                 mCircle.refreshComplete();
                 mCircle.loadMoreComplete();
                 mAdapter.addAll(data.diaryList);
