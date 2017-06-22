@@ -5,30 +5,6 @@
               android:orientation="vertical"
              tools:context="com.aladdin.like.module.main.MainFragment">
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="48dp"-->
-        <!--android:orientation="vertical"-->
-        <!--android:background="@color/white"-->
-        <!--&gt;</LinearLayout>-->
-
-    <!--<com.jcodecraeer.xrecyclerview.XRecyclerView-->
-        <!--android:id="@+id/main_recycle"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_marginTop="10dp"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="10dp"-->
-        <!--&gt;-->
-    <!--</com.jcodecraeer.xrecyclerview.XRecyclerView>-->
-    <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:id="@+id/main_recycle"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_marginBottom="100dp"-->
-        <!--android:layout_marginTop="10dp"-->
-        <!--android:layout_marginLeft="10dp"-->
-        <!--android:layout_marginRight="10dp"></android.support.v7.widget.RecyclerView>-->
 
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/main_recycle"

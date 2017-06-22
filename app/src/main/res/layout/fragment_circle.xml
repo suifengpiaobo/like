@@ -24,12 +24,6 @@
             android:layout_centerVertical="true"
             />
     </RelativeLayout>
-    <!--<com.jcodecraeer.xrecyclerview.XRecyclerView-->
-        <!--android:id="@+id/circle_recycleview"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--&gt;-->
-    <!--</com.jcodecraeer.xrecyclerview.XRecyclerView>-->
 
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/circle_recycleview"

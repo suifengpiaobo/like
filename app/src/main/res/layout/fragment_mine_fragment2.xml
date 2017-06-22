@@ -107,15 +107,20 @@
         <!--android:scrollbars="none"-->
         <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
-        <android.support.v4.view.ViewPager
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+        <com.aladdin.like.widget.HViewPager
             android:id="@+id/mine_info_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@color/white"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             >
-        </android.support.v4.view.ViewPager>
-
+        </com.aladdin.like.widget.HViewPager>
+    </android.support.v4.widget.NestedScrollView>
     <!--</LinearLayout>-->
 
 </android.support.design.widget.CoordinatorLayout>

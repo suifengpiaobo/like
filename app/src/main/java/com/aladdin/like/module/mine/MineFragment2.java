@@ -12,6 +12,7 @@ import com.aladdin.like.module.mine.atlas.MineAtlasFragment;
 import com.aladdin.like.module.mine.diary.MineDiraryFragment;
 import com.aladdin.like.module.mine.pictures.MinePictureFragment;
 import com.aladdin.like.module.set.SettingActivity;
+import com.aladdin.like.widget.HViewPager;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
@@ -29,7 +30,7 @@ public class MineFragment2 extends BaseFragment {
     @BindView(R.id.description)
     TextView mDescription;
     @BindView(R.id.mine_info_viewpager)
-    ViewPager mMineInfoViewpager;
+    HViewPager mMineInfoViewpager;
     @BindView(R.id.set)
     ImageView mSet;
     @BindView(R.id.tabLayout)

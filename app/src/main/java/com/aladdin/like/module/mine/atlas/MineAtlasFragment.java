@@ -52,7 +52,8 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
         mAtlasAdapter = new AtlasAdapter(getActivity());
         mMyChooseAtlas.setAdapter(mAtlasAdapter);
 
-
+        mMyChooseAtlas.setNestedScrollingEnabled(false);
+        mMyNotAtlas.setNestedScrollingEnabled(false);
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(getActivity());
         linearLayoutManager2.setOrientation(LinearLayoutManager.HORIZONTAL);
         mMyNotAtlas.setLayoutManager(linearLayoutManager2);

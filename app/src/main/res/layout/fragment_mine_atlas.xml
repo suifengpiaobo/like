@@ -4,44 +4,43 @@
              android:layout_height="match_parent"
               android:orientation="vertical"
              tools:context="com.aladdin.like.module.mine.atlas.MineAtlasFragment">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:textSize="16sp"
+                android:textColor="@color/Black"
+                android:text="我的主题"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:textSize="16sp"
-        android:textColor="@color/Black"
-        android:text="我的主题"/>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/my_choose_atlas"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="10dp"
+                />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_choose_atlas"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginTop="10dp"
-        />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/main_color"
+                android:layout_marginTop="10dp"
+                />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/main_color"
-        android:layout_marginTop="10dp"
-        />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp"
+                android:textSize="16sp"
+                android:textColor="@color/main_color"
+                android:text="等着我关注的主题"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="15dp"
-        android:textSize="16sp"
-        android:textColor="@color/main_color"
-        android:text="等着我关注的主题"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_not_atlas"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="70dp"
-        />
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/my_not_atlas"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="60dp"
+                />
 </LinearLayout>

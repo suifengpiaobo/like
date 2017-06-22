@@ -3,9 +3,7 @@ package com.aladdin.like.widget;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-
-import com.aladdin.utils.LogUtil;
+import android.view.View;
 
 /**
  * Description
@@ -27,37 +25,17 @@ public class HViewPager extends ViewPager {
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        LogUtil.i("CURRENT_PAGE--->>"+CURRENT_PAGE);
-        boolean intercepted = false;
-        int x = (int) ev.getX();
-        int y = (int) ev.getY();
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                intercepted = false;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (CURRENT_PAGE == 0){
-                    if (Math.abs(y - lastY) > Math.abs(x - lastX)) {
-                        intercepted = true;
-                    }else{
-                        intercepted = false;
-                    }
-                }else{
-                    intercepted = false;
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                intercepted = false;
-                break;
-            default:
-                break;
+        int height = 0;
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            child.measure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+            int h = child.getMeasuredHeight();
+            if (h > height) height = h;
         }
-
-        lastX = x;
-        lastY = y;
-        LogUtil.i("intercepted--->>>"+intercepted);
-        return intercepted;
+        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }
