@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:src="@drawable/back_icon"
+            android:src="@drawable/back_selector"
             android:padding="15dp"
             />
 
@@ -30,7 +30,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:background="@drawable/share_icon"
+            android:background="@drawable/share_selector"
             />
     </RelativeLayout>
 

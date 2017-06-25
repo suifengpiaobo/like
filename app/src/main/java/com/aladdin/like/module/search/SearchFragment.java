@@ -20,6 +20,7 @@ import com.aladdin.like.module.search.adapter.SearchResultAdapter;
 import com.aladdin.like.module.search.contract.SearchContract;
 import com.aladdin.like.module.search.prestener.SearchPrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
+import com.aladdin.utils.DensityUtils;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -88,7 +89,7 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mResultAdapter = new SearchResultAdapter(getActivity());
         mSearchResult.setLayoutManager(staggered);
-        mSearchResult.addItemDecoration(new SpacesItemDecoration(10));
+        mSearchResult.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(11.5f),DensityUtils.dip2px(7.5f)));
         mSearchResult.setAdapter(mResultAdapter);
 
         mSearch.setOnEditorActionListener(onEditorActionListener);
@@ -134,8 +135,17 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (mHorizontalAdapter != null && mHorizontalAdapter.getCommonItemCount()>0){
+                    mHorizontalAdapter.clear();
+                }
                 mHorizontalAdapter.addAll(data.themeList);
                 mHorizontalAdapter.notifyDataSetChanged();
+
+//                if (mResultAdapter != null && mResultAdapter.getCommonItemCount()>0){
+//                    mResultAdapter.clear();
+//                }
+//                mResultAdapter.addAll(data.themeList);
+//                mResultAdapter.notifyDataSetChanged();
             }
         });
     }

@@ -17,44 +17,49 @@
     </com.aladdin.like.widget.NoScrollViewPager>
 
     <LinearLayout
+        android:id="@+id/buttom_ll"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
-        android:background="@color/white"
-        android:gravity="center_vertical"
+        android:background="@color/color_e6ffffff"
+        android:gravity="center"
         >
-        <Button
+        <ImageView
             android:id="@+id/main_page"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             style="?android:attr/borderlessButtonStyle"
-            android:drawableTop="@drawable/home_selector"
+            android:src="@drawable/home_selector"
             />
-        <Button
+        <ImageView
             android:id="@+id/search_page"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             style="?android:attr/borderlessButtonStyle"
-            android:drawableTop="@drawable/search_selector"
+            android:src="@drawable/search_selector"
             />
-        <Button
+        <ImageView
             android:id="@+id/circle_page"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             style="?android:attr/borderlessButtonStyle"
-            android:drawableTop="@drawable/picture_selector"
+            android:src="@drawable/picture_selector"
             />
-        <Button
+        <ImageView
             android:id="@+id/mine_page"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             style="?android:attr/borderlessButtonStyle"
-            android:drawableTop="@drawable/mine_selector"
+            android:src="@drawable/mine_selector"
             />
     </LinearLayout>
 </RelativeLayout>

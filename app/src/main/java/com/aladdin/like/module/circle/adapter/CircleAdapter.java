@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.aladdin.like.R;
 import com.aladdin.like.model.DiaryDetail;
@@ -45,7 +44,7 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
 
     @Override
     public RecyclerView.ViewHolder onCreateCommon(ViewGroup parent, int viewType) {
-        View mView = View.inflate(mContext, R.layout.layout_main_prefecture, null);
+        View mView = View.inflate(mContext, R.layout.layout_circle, null);
         return new CircleViewHolder(mView);
     }
 
@@ -54,8 +53,6 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
         CircleViewHolder viewHolder = (CircleViewHolder) holder;
         DiaryDetail.Diary item = getItemObject(position);
         if (item != null) {
-//            viewHolder.mMainTypeName.setText(item.themeName);
-
             if (item != null){
                 float scale = (DensityUtils.mScreenWidth/2-DensityUtils.dip2px(15))/(float)item.width;
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
@@ -90,10 +87,6 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
     static class CircleViewHolder extends BaseViewHolder {
         @BindView(R.id.main_img)
         SimpleDraweeView mMainImg;
-        @BindView(R.id.main_type_name)
-        TextView mMainTypeName;
-        @BindView(R.id.main_time)
-        TextView mMainTime;
         @BindView(R.id.main_item)
         LinearLayout mMainItem;
 

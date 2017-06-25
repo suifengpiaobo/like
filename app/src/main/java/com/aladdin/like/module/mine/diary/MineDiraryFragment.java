@@ -10,6 +10,7 @@ import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.module.mine.diary.contract.DiaryContract;
 import com.aladdin.like.module.mine.diary.prestener.DiaryPrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
+import com.aladdin.utils.DensityUtils;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -47,7 +48,7 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
         GridLayoutManager staggered = new GridLayoutManager(getActivity(), 2);
         mDiaryAdapter = new MineDiaryAdapter(getActivity());
         mMineDiary.setLayoutManager(staggered);
-        mMineDiary.addItemDecoration(new SpacesItemDecoration(10));
+        mMineDiary.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(7.5f),DensityUtils.dip2px(7.5f)));
         mMineDiary.setAdapter(mDiaryAdapter);
     }
 

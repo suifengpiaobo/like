@@ -35,6 +35,11 @@
             android:name="UMENG_APPKEY"
             android:value="59434c6f99f0c756230005a0"/>
 
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="fe8e0ac65910c33b0ab0006e98781dcd">
+        </meta-data>
+
         <activity
             android:name=".module.login.LoginAccountActivity"
             android:screenOrientation="portrait">

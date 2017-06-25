@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
+        android:layout_marginBottom="50dp"
         >
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,18 +28,18 @@
                 <ImageView
                     android:id="@+id/bg"
                     android:layout_width="match_parent"
-                    android:layout_height="260dp"
+                    android:layout_height="220dp"
                     android:background="@drawable/mine_title"
                     android:scaleType="fitCenter"
                     />
 
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/user_avatar"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:background="@drawable/avatar"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="195dp"
+                    android:layout_marginTop="175dp"
                     fresco:roundAsCircle="true"
                     fresco:actualImageScaleType="focusCrop"
                     fresco:roundingBorderWidth="2dp"
@@ -140,10 +141,20 @@
             android:id="@+id/set"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/setting_icon"
+            android:src="@drawable/setting_icon"
+            android:padding="15dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
+            />
+
+        <ImageView
+            android:id="@+id/new_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_message"
+            android:layout_alignLeft="@+id/set"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="13dp"
             />
     </RelativeLayout>
 

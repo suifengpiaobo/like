@@ -8,17 +8,17 @@
     
     <android.support.v4.widget.Space
         android:id="@+id/search_space_1"
-        android:layout_width="10dp"
+        android:layout_width="15dp"
         android:layout_height="match_parent"/>
 
     <RelativeLayout
-        android:layout_width="120dp"
-        android:layout_height="120dp">
+        android:layout_width="100dp"
+        android:layout_height="100dp">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/search_horizontal_bg"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:scaleType="centerCrop"
             fresco:placeholderImageScaleType="focusCrop"
             fresco:roundedCornerRadius="10dp"
@@ -36,6 +36,6 @@
 
     <android.support.v4.widget.Space
         android:id="@+id/search_space_2"
-        android:layout_width="10dp"
+        android:layout_width="15dp"
         android:layout_height="match_parent"/>
 </LinearLayout>

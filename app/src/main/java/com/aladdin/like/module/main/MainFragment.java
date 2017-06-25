@@ -13,6 +13,7 @@ import com.aladdin.like.module.main.adapter.MainAdapter;
 import com.aladdin.like.module.main.contract.MainContract;
 import com.aladdin.like.module.main.presenter.MainPresenter;
 import com.aladdin.like.widget.SpacesItemDecoration;
+import com.aladdin.utils.DensityUtils;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -45,7 +46,7 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mMainRecycle.setLayoutManager(staggered);
-        mMainRecycle.addItemDecoration(new SpacesItemDecoration(10));
+        mMainRecycle.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(11.5f),DensityUtils.dip2px(7.5f)));
         mAdapter = new MainAdapter(getActivity());
         mMainRecycle.setAdapter(mAdapter);
 
@@ -57,7 +58,6 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
                 startActivity(PictureDetailsActivity.class,bundle);
             }
         });
-
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.aladdin.like.module.circle.contract.CircleContract;
 import com.aladdin.like.module.circle.prestener.Circlrprestener;
 import com.aladdin.like.module.diary.PublishDiaryFragment;
 import com.aladdin.like.widget.SpacesItemDecoration;
+import com.aladdin.utils.DensityUtils;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -55,7 +56,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mCircle.setLayoutManager(staggered);
-        mCircle.addItemDecoration(new SpacesItemDecoration(10));
+        mCircle.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(7.5f),DensityUtils.dip2px(7.5f)));
         mAdapter = new CircleAdapter(getActivity());
         mCircle.setAdapter(mAdapter);
 

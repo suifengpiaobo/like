@@ -35,11 +35,11 @@ public class WXUtils {
         api.registerApp(appid);
 
         if (!api.isWXAppInstalled()) {
-            ToastUtil.sToastUtil.shortDuration("未安装微信客户端");
+            ToastUtil.showToast("未安装微信客户端");
             return false;
         }
         if (!api.isWXAppSupportAPI()) {
-            ToastUtil.sToastUtil.shortDuration("当前的微信版本过低，请先更新");
+            ToastUtil.showToast("当前的微信版本过低，请先更新");
             return false;
         }
 

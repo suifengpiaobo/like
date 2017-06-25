@@ -11,6 +11,7 @@ import com.aladdin.like.module.mine.pictures.adapter.PictureAdapter;
 import com.aladdin.like.module.mine.pictures.contract.PictureContract;
 import com.aladdin.like.module.mine.pictures.prestener.PicturePrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
+import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.LogUtil;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
@@ -51,7 +52,7 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mPictureAdapter = new PictureAdapter(getActivity());
         mPicture.setLayoutManager(staggered);
-        mPicture.addItemDecoration(new SpacesItemDecoration(10));
+        mPicture.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(11.5f),DensityUtils.dip2px(7.5f)));
         mPicture.setAdapter(mPictureAdapter);
     }
 

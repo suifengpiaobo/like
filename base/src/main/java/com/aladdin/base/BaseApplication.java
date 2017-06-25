@@ -5,7 +5,10 @@ import android.content.pm.PackageManager;
 import android.support.multidex.MultiDexApplication;
 
 import com.aladdin.utils.ContextUtils;
+import com.aladdin.utils.LogUtil;
 import com.umeng.analytics.MobclickAgent;
+import com.umeng.message.IUmengRegisterCallback;
+import com.umeng.message.PushAgent;
 
 /**
  * Description
@@ -28,6 +31,27 @@ public abstract class BaseApplication extends MultiDexApplication {
         MobclickAgent.startWithConfigure(umAnalyticsConfig);
         MobclickAgent.setCatchUncaughtExceptions(false);
         MobclickAgent.setDebugMode(false);
+        //消息推送
+//        initPushMessage();
+    }
+
+    //消息推送
+    public void initPushMessage() {
+        PushAgent mPushAgent = PushAgent.getInstance(this);
+        //注册推送服务，每次调用register方法都会回调该接口
+        mPushAgent.register(new IUmengRegisterCallback() {
+
+            @Override
+            public void onSuccess(String deviceToken) {
+                //注册成功会返回device token
+                LogUtil.i("deviceToken--->>>"+deviceToken);
+            }
+
+            @Override
+            public void onFailure(String s, String s1) {
+
+            }
+        });
     }
 
     public static BaseApplication getInstance(){

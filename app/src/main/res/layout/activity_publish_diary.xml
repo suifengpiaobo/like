@@ -19,8 +19,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:background="@drawable/back_icon"
+            android:padding="15dp"
+            android:src="@drawable/back_selector"
             />
 
         <TextView
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
+            android:padding="15dp"
             android:gravity="center"
             android:text="完成"
             android:textColor="@color/main_color"
@@ -38,67 +38,94 @@
             />
     </RelativeLayout>
 
-    <LinearLayout
-        android:id="@+id/root_view"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="75dp"
+        android:layout_marginBottom="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginTop="15dp"
-        android:background="@drawable/shape_publish_diary"
-        android:orientation="vertical"
+        android:scrollbars="none"
         >
 
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/root_view"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_publish_diary"
+            android:orientation="vertical"
             >
 
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/shoose_picture"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                fresco:roundTopLeft="true"
-                fresco:roundTopRight="true"
-                fresco:roundedCornerRadius="10dp"
-                fresco:roundBottomLeft="false"
-                fresco:roundBottomRight="false"
-                />
+                android:layout_height="wrap_content"
+                android:minHeight="250dp"
+                >
 
-            <ImageView
-                android:id="@+id/add_picture"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/add_picture"
-                />
-        </RelativeLayout>
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/shoose_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    fresco:roundTopLeft="true"
+                    fresco:roundTopRight="true"
+                    fresco:roundedCornerRadius="10dp"
+                    fresco:roundBottomLeft="false"
+                    fresco:roundBottomRight="false"
+                    />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:background="@color/Gray"/>
+                <ImageView
+                    android:id="@+id/add_picture"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/add_picture"
+                    android:padding="50dp"
+                    />
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            >
-
-            <EditText
-                android:id="@+id/description"
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@null"
-                android:gravity="left|top"
-                android:hint="此刻你想说点什么..."
-                android:padding="15dp"
-                />
-        </RelativeLayout>
+                android:layout_height="0.5dp"
+                android:background="@color/Gray"/>
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+
+                <EditText
+                    android:id="@+id/title_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:gravity="center|top"
+                    android:hint="请输入标题"
+                    android:padding="10dp"
+                    android:textSize="16sp"
+                    android:textColor="@color/Gray"
+                    />
+
+
+                <EditText
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="100dp"
+                    android:background="@null"
+                    android:gravity="center|top"
+                    android:hint="此刻你想说点什么..."
+                    android:paddingRight="15dp"
+                    android:paddingLeft="15dp"
+                    android:paddingBottom="15dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/Gray"
+                    />
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

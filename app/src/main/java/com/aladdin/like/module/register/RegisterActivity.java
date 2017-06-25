@@ -16,6 +16,7 @@ import com.aladdin.like.constant.Constant;
 import com.aladdin.like.module.atlas.AtlasChooseActivity;
 import com.aladdin.like.module.login.LoginAccountActivity;
 import com.aladdin.like.wxapi.WXEntryActivity;
+import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.ToastUtil;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -108,21 +109,21 @@ public class RegisterActivity extends BaseActivity {
     }
 
     public void loginWx(){
-        IWXAPI api = WXAPIFactory.createWXAPI(getApplicationContext(), WCHAT_APPID);
-        api.registerApp(WCHAT_APPID);
 
+        IWXAPI api = WXAPIFactory.createWXAPI(getApplicationContext(), WCHAT_APPID,true);
+        api.registerApp(WCHAT_APPID);
+        LogUtil.i("---wx_login---"+WCHAT_APPID);
         if (!api.isWXAppInstalled()) {
-            ToastUtil.sToastUtil.shortDuration("未安装微信客户端");
+            ToastUtil.showToast("未安装微信客户端");
             return;
         }
-
+        LogUtil.i("---supportAPI--BB-->>>"+api.getWXAppSupportAPI());
         if (!api.isWXAppSupportAPI()) {
-            ToastUtil.sToastUtil.shortDuration("当前的微信版本太低，请先更新微信");
+            ToastUtil.showToast("当前的微信版本太低，请先更新微信");
             return;
         }
 
         Constant.IS_AUTH_WCHAT = true;
-
         startProgressDialog();
         final SendAuth.Req req = new SendAuth.Req();
         req.scope = SCOPE;

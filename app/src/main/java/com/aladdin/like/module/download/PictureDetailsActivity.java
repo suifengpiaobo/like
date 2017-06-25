@@ -54,7 +54,6 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
     @BindView(R.id.download_recycle)
     XRecyclerView mDownloadRecycle;
 
-
     PictureDetailsAdapter mAdapter;
 
     ThemeModes.Theme mTheme;
@@ -94,7 +93,7 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mAdapter = new PictureDetailsAdapter(PictureDetailsActivity.this);
         mDownloadRecycle.setLayoutManager(staggered);
-        mDownloadRecycle.addItemDecoration(new SpacesItemDecoration(10));
+        mDownloadRecycle.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(11.5f),DensityUtils.dip2px(7.5f)));
         mDownloadRecycle.setAdapter(mAdapter);
 
         bindEvent();

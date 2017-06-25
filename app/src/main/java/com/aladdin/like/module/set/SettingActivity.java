@@ -3,6 +3,7 @@ package com.aladdin.like.module.set;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
@@ -22,7 +23,7 @@ public class SettingActivity extends BaseActivity {
     @BindView(R.id.back)
     ImageView mBack;
     @BindView(R.id.mine_message)
-    LinearLayout mMineMessage;
+    RelativeLayout mMineMessage;
     @BindView(R.id.mine_picture)
     LinearLayout mMinePicture;
     @BindView(R.id.mine_about)

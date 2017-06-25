@@ -51,24 +51,24 @@ android {
             manifestPlaceholders = [CHANNEL_VALUE: "2010341075"]
             buildConfigField "boolean", "IS_DEBUG", "true"
             buildConfigField "boolean", "IS_RUNLEAKS", "false"
-            resValue "string", "wx_appid", "wx506f2c76b39d74fd"
-            resValue "string", "wx_secret", "feba33f6ead244883dc8d8180668bb43"
+            resValue "string", "wx_appid", "wxcd27b7e580be7978"
+            resValue "string", "wx_secret", "568726a48b5ffdd81ca6f7726b2f62f0"
         }
 
         w_test {
             manifestPlaceholders = [CHANNEL_VALUE: "2010341075"]
             buildConfigField "boolean", "IS_DEBUG", "false"
             buildConfigField "boolean", "IS_RUNLEAKS", "false"
-            resValue "string", "wx_appid", "wx506f2c76b39d74fd"
-            resValue "string", "wx_secret", "feba33f6ead244883dc8d8180668bb43"
+            resValue "string", "wx_appid", "wxcd27b7e580be7978"
+            resValue "string", "wx_secret", "568726a48b5ffdd81ca6f7726b2f62f0"
         }
 
         w_reasse {
             manifestPlaceholders = [CHANNEL_VALUE: "2010341075"]
             buildConfigField "boolean", "IS_DEBUG", "false"
             buildConfigField "boolean", "IS_RUNLEAKS", "false"
-            resValue "string", "wx_appid", "wx506f2c76b39d74fd"
-            resValue "string", "wx_secret", "feba33f6ead244883dc8d8180668bb43"
+            resValue "string", "wx_appid", "wxcd27b7e580be7978"
+            resValue "string", "wx_secret", "568726a48b5ffdd81ca6f7726b2f62f0"
         }
     }
 
@@ -80,16 +80,14 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-//    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-//        exclude group: 'com.android.support', module: 'support-annotations'
-//    })
+    //    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    //        exclude group: 'com.android.support', module: 'support-annotations'
+    //    })
     compile project(':base')
     compile project(':picture_library')
     compile project(':network_lib')
     compile project(':ease')
     compile project(':xrecycleview')
-
-
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:+'
     compile 'com.android.support:support-v4:25.3.0'

@@ -45,7 +45,7 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
             float scale = (DensityUtils.mScreenWidth/2-DensityUtils.dip2px(15))/(float)item.width;
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
             params.height = (int) (item.height*scale);
-            params.weight = (int)(item.width*scale);
+            params.width = (int)(item.width*scale);
             viewHolder.mMainImg.setLayoutParams(params);
 
             viewHolder.mMainImg.setImageURI(item.themeImgUrl);
@@ -82,7 +82,7 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
         return new MainViewHolder(mView);
     }
 
-    static class MainViewHolder extends BaseViewHolder {
+    class MainViewHolder extends BaseViewHolder implements View.OnClickListener{
         @BindView(R.id.main_img)
         SimpleDraweeView mMainImg;
         @BindView(R.id.main_type_name)
@@ -91,10 +91,18 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
         TextView mMainTime;
         @BindView(R.id.main_item)
         LinearLayout mMainItem;
+        ThemeModes.Theme item;
 
         MainViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            mMainImg.setOnClickListener(this);
+            mMainItem.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+//            mItemClickListener.onItemClick(v,mMainImg,mMainItem,item);
         }
     }
 
@@ -104,6 +112,7 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
 
     public interface onItemClickListener {
         void onItemClick(ThemeModes.Theme item);
+//        void onItemClick(View v,SimpleDraweeView mMainImg,LinearLayout mMainItem,ThemeModes.Theme item);
     }
 
 }

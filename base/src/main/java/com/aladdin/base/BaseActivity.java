@@ -52,6 +52,9 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         this.initView();
+
+        //统计应用启动数据
+//        PushAgent.getInstance(mContext).onAppStart();
     }
     // 加载子类布局文件
     private void setupContentView() {
@@ -197,7 +200,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         View errorView = LayoutInflater.from(this).inflate(R.layout.app_error_tip, null);
         TextView tvContent = (TextView) errorView.findViewById(R.id.content);
         tvContent.setText(errorContent);
-        new ToastUtil(errorView);
     }
 
     /**
@@ -206,7 +208,7 @@ public abstract class BaseActivity extends AppCompatActivity {
      * @return
      */
     public void showToast(String str) {
-        ToastUtil.sToastUtil.shortDuration(str).setToastBackground(Color.WHITE, R.drawable.toast_radius).show();
+        ToastUtil.showToast(str);
     }
 
     //获取布局

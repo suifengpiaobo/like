@@ -3,6 +3,7 @@
              android:layout_width="match_parent"
              android:layout_height="match_parent"
               android:orientation="vertical"
+              android:background="@color/white"
              tools:context="com.aladdin.like.module.mine.atlas.MineAtlasFragment">
             <TextView
                 android:layout_width="wrap_content"
@@ -16,7 +17,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/my_choose_atlas"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="10dp"
                 />
 
@@ -39,8 +40,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/my_not_atlas"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="60dp"
                 />
 </LinearLayout>

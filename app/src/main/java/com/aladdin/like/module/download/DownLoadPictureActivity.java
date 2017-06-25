@@ -146,7 +146,7 @@ public class DownLoadPictureActivity extends BaseActivity {
 
                 }
             });
-            ToastUtil.sToastUtil.shortDuration("下载失败！");
+            ToastUtil.showToast("下载失败！");
         }
 
         @Override
@@ -158,7 +158,7 @@ public class DownLoadPictureActivity extends BaseActivity {
 
     public void downloadSuc(){
         mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
-        ToastUtil.sToastUtil.shortDuration("下载成功");
+        ToastUtil.showToast("下载成功");
 
         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(mFile.getAbsolutePath()+"/"+fileName))));
     }

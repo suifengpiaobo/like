@@ -2,6 +2,7 @@ package com.aladdin.like.module.diary;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.os.Environment;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import com.aladdin.like.R;
 import com.aladdin.like.module.diary.contract.PublishContract;
 import com.aladdin.like.module.diary.prestener.PublishPrestener;
 import com.aladdin.like.utils.FileUtils;
+import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.yalantis.ucrop.ui.AlbumDirectoryActivity;
@@ -52,6 +55,8 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
     ImageView mAddPicture;
     @BindView(R.id.description)
     EditText mDescription;
+    @BindView(R.id.title_content)
+    EditText mContent;
     @BindView(R.id.root_view)
     LinearLayout mRootView;
 
@@ -69,15 +74,6 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
     @Override
     protected void initView() {
         mPresenter = new PublishPrestener(this);
-
-
-//        ((MainActivity) getActivity()).setOnChoosePictureListener(new MainActivity.onChoosePictureListener() {
-//            @Override
-//            public void onChooseListener(String path) {
-//                mAddPicture.setVisibility(View.GONE);
-//                ImageLoaderUtils.loadLocalsPic(getActivity(), mShoosePicture, path);
-//            }
-//        });
     }
 
     @Override
@@ -88,6 +84,14 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                     ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
                     if (result != null) {
                         mAddPicture.setVisibility(View.GONE);
+                        Bitmap bitmap = BitmapFactory.decodeFile(result.get(0));
+                        int width = bitmap.getWidth();
+                        int height = bitmap.getHeight();
+                        float scale = (DensityUtils.mScreenWidth-DensityUtils.dip2px(30))/(float)width;
+                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShoosePicture.getLayoutParams();
+                        params.height = (int) (height*scale);
+                        params.width = (int)(width*scale);
+                        mShoosePicture.setLayoutParams(params);
                         ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mShoosePicture, result.get(0));
                     }
                     break;
@@ -110,6 +114,9 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 finish();
                 break;
             case R.id.finish:
+                mFinish.requestFocus();
+                mContent.setEnabled(false);
+                mDescription.setEnabled(false);
                 new Handler().post(runnable);
                 break;
             case R.id.add_picture:
@@ -141,6 +148,10 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         options.setEnableCrop(false);
         options.setPreviewVideo(false);
         AlbumDirectoryActivity.startPhoto(PublishDiaryFragment.this, options);
+    }
+
+    public void showDialog(){
+
     }
 
     public void viewSaveToImage(View view) {
@@ -182,10 +193,10 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         mPresenter.publishPic(LikeAgent.getInstance().getUid(), mPath, "", mDescription.getText().toString());
 
 
-        mPath = "";
-        mDescription.setText("");
-        mShoosePicture.setImageURI("");
-        mAddPicture.setVisibility(View.VISIBLE);
+//        mPath = "";
+//        mDescription.setText("");
+//        mShoosePicture.setImageURI("");
+//        mAddPicture.setVisibility(View.VISIBLE);
     }
 
     private Bitmap loadBitmapFromView(View v) {
@@ -232,6 +243,13 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 Toast.makeText(PublishDiaryFragment.this,"发布成功",Toast.LENGTH_SHORT).show();
                 mPath = "";
                 mDescription.setText("");
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShoosePicture.getLayoutParams();
+                params.height = (int) DensityUtils.dip2px(250);
+                params.width = (int)(DensityUtils.mScreenWidth-DensityUtils.dip2px(30));
+                mShoosePicture.setLayoutParams(params);
+
+                mContent.setEnabled(true);
+                mDescription.setEnabled(true);
                 mShoosePicture.setImageURI("");
                 mAddPicture.setVisibility(View.VISIBLE);
                 finish();

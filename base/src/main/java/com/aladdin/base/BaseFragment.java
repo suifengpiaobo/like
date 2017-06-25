@@ -2,7 +2,6 @@ package com.aladdin.base;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -263,7 +262,7 @@ public abstract class BaseFragment extends Fragment {
         View errorView = LayoutInflater.from(getActivity()).inflate(R.layout.app_error_tip, null);
         TextView tvContent = (TextView) errorView.findViewById(R.id.content);
         tvContent.setText(errorContent);
-        new ToastUtil(errorView);
+//        new ToastUtil(errorView);
     }
 
     /**
@@ -272,7 +271,7 @@ public abstract class BaseFragment extends Fragment {
      * @return
      */
     public void showToast(String str) {
-        ToastUtil.sToastUtil.shortDuration(str).setToastBackground(Color.WHITE, R.drawable.toast_radius).show();
+        ToastUtil.showToast(str);
     }
 
     protected abstract int getLayoutId();

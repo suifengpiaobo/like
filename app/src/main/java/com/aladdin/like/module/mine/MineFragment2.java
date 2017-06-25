@@ -2,7 +2,6 @@ package com.aladdin.like.module.mine;
 
 
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -61,22 +60,6 @@ public class MineFragment2 extends BaseFragment {
 
     @Override
     protected void lazyFetchData() {
-        mMineInfoViewpager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-//                mMineInfoViewpager.CURRENT_PAGE = position;
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
 
     }
 

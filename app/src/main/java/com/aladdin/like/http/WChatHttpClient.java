@@ -36,6 +36,7 @@ public class WChatHttpClient {
     }
 
     private static void httpClientGetRequest(String param) throws IllegalStateException, IOException {
+        LogUtil.i("param--->>>"+param);
         HttpUtil.getInstance().GET(param, new HttpResultListener() {
             @Override
             public void onSuccess(String str) {

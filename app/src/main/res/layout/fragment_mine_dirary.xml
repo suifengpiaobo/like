@@ -2,13 +2,13 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
+             android:background="@color/white"
              tools:context="com.aladdin.like.module.mine.diary.MineDiraryFragment">
 
     <com.jcodecraeer.xrecyclerview.XRecyclerView
         android:id="@+id/mine_diary_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="60dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         ></com.jcodecraeer.xrecyclerview.XRecyclerView>

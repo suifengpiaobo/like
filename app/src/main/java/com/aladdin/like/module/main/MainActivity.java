@@ -5,7 +5,8 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.aladdin.base.BaseActivity;
 import com.aladdin.base.BaseFragment;
@@ -30,13 +31,15 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.main_view_pager)
     NoScrollViewPager mMainViewPager;
     @BindView(R.id.main_page)
-    Button mMainPage;
+    ImageView mMainPage;
     @BindView(R.id.search_page)
-    Button mSearchPadge;
+    ImageView mSearchPadge;
     @BindView(R.id.circle_page)
-    Button mCirclePage;
+    ImageView mCirclePage;
     @BindView(R.id.mine_page)
-    Button mMinePage;
+    ImageView mMinePage;
+    @BindView(R.id.buttom_ll)
+    LinearLayout mLayout;
 
     private List<BaseFragment> mFragments;
     private MainFragment mMainFragment;
@@ -47,8 +50,6 @@ public class MainActivity extends BaseActivity {
 
     onSearchClickListener mSearchClickListener;
     onCircleClickListener mOnCircleClickListener;
-
-    onChoosePictureListener mOnChoosePictureListener;
 
     int currentTabPosition = 0;
     public static final String CURRENT_TAB_POSITION = "HOME_CURRENT_TAB_POSITION";
@@ -74,6 +75,7 @@ public class MainActivity extends BaseActivity {
         mAdapter = new BaseFragmentAdapter(getSupportFragmentManager(),mFragments);
         mMainViewPager.setAdapter(mAdapter);
         mMainViewPager.setCurrentItem(currentTabPosition);
+        mLayout.setBackgroundColor(getResources().getColor(R.color.color_e6ffffff));
         mMainPage.setSelected(true);
     }
 
@@ -117,6 +119,9 @@ public class MainActivity extends BaseActivity {
                 currentTabPosition = 3;
                 mMinePage.setSelected(true);
                 break;
+            default:
+                mLayout.setBackgroundColor(getResources().getColor(R.color.color_e6ffffff));
+                break;
         }
         mMainViewPager.setCurrentItem(currentTabPosition, false);
     }
@@ -134,8 +139,6 @@ public class MainActivity extends BaseActivity {
     }
 
     public interface onCircleClickListener{
-//        void onChoose();
-//        void onTakePhoto();
         void onClick();
     }
 
@@ -153,17 +156,5 @@ public class MainActivity extends BaseActivity {
     public boolean onTouchEvent(MotionEvent event) {
         final View v = this.getWindow().peekDecorView();
         return hiddenInputMethodManager(v);
-    }
-
-    public onChoosePictureListener getOnChoosePictureListener() {
-        return mOnChoosePictureListener;
-    }
-
-    public void setOnChoosePictureListener(onChoosePictureListener onChoosePictureListener) {
-        mOnChoosePictureListener = onChoosePictureListener;
-    }
-
-    public interface onChoosePictureListener{
-        void onChooseListener(String path);
     }
 }

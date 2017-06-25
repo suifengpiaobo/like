@@ -17,13 +17,13 @@
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/back_icon"
+            android:src="@drawable/back_selector"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
+            android:padding="15dp"
             />
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/mine_message"
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -33,20 +33,33 @@
         >
 
         <ImageView
+            android:id="@+id/message_img"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/message_icon"
             android:layout_centerVertical="true"
             />
+        <ImageView
+            android:id="@+id/new_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_message"
+            android:layout_alignRight="@+id/message_img"
+            android:layout_alignTop="@+id/message_img"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/message_img"
             android:text="我的消息"
             android:textSize="16sp"
             android:textColor="@color/Gray"
             android:layout_centerVertical="true"
             />
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/mine_picture"

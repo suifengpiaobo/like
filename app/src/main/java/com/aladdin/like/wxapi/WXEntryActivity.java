@@ -58,7 +58,7 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
                 break;
             case ConstantsAPI.COMMAND_SHOWMESSAGE_FROM_WX:
                 runOnUiThread(()->{
-                    ToastUtil.sToastUtil.shortDuration(goToShowMsg((ShowMessageFromWX.Req)req));
+                    ToastUtil.showToast(goToShowMsg((ShowMessageFromWX.Req)req));
                 });
                 break;
             default:
