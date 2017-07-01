@@ -9,16 +9,30 @@
     android:background="@color/color_4d"
     tools:context="com.aladdin.like.module.diarydetails.DiaryDetailsActivity">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/dirary_img"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        fresco:roundedCornerRadius="10dp"
-        fresco:placeholderImageScaleType="focusCrop"
-        android:transitionName="transition_animation_circe_photos"
-        android:layout_gravity="center"
-        />
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            >
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/dirary_img"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                fresco:roundedCornerRadius="10dp"
+                fresco:placeholderImageScaleType="focusCrop"
+                android:transitionName="transition_animation_circe_photos"
+                android:layout_gravity="center"
+                />
+        </LinearLayout>
+
+    </ScrollView>
+
 
     <RelativeLayout
         android:id="@+id/title"
@@ -46,6 +60,36 @@
             />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/picture_info"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:layout_gravity="bottom"
+        >
+
+        <TextView
+            android:id="@+id/collection_times"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:drawableLeft="@drawable/parise_icon"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="15人喜欢了此图片"
+            />
+
+        <ImageView
+            android:id="@+id/collection_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/parise_icon"
+            android:layout_alignParentRight="true"
+            android:padding="5dp"
+            android:layout_marginRight="5dp"
+            />
+    </RelativeLayout>
 
 
 </FrameLayout>

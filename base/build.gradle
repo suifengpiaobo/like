@@ -47,6 +47,4 @@ dependencies {
     compile 'com.jakewharton:butterknife-compiler:8.5.1'
     compile project(path: ':network_lib')
     compile 'com.facebook.fresco:fresco:0.13.0'
-
-    compile files('libs/universal-image-loader-1.9.5.jar')
 }

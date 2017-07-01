@@ -100,7 +100,6 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                         params.width = (int)(width*scale);
                         mShoosePicture.setLayoutParams(params);
                         ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mShoosePicture, result.get(0));
-//                        ImageloaderUtil.getInstance().loadFromSDCard(result.get(0),mShoosePicture,0,10);
                     }
                     break;
                 case ChooseCollectionActivity.CHOOSE_COLLECTION:
@@ -205,13 +204,13 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
             if (isHasSDCard) {
                 // SD卡根目录
                 File sdRoot = new File(FileUtils.getImageRootPath());
-                File file = new File(sdRoot, UUID.randomUUID().toString().substring(0,16)+".png");
+                File file = new File(sdRoot, UUID.randomUUID().toString().substring(0,16)+".jepg");
                 mPath = file.getAbsolutePath();
                 fos = new FileOutputStream(file);
             } else
                 throw new Exception("创建文件失败!");
 
-            cachebmp.compress(Bitmap.CompressFormat.PNG, 90, fos);
+            cachebmp.compress(Bitmap.CompressFormat.JPEG, 90, fos);
 
             fos.flush();
             fos.close();

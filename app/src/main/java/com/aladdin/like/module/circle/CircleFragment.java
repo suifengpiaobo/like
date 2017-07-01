@@ -22,7 +22,6 @@ import com.aladdin.like.module.diary.PublishDiaryFragment;
 import com.aladdin.like.module.diarydetails.DiaryDetailsActivity;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
@@ -74,7 +73,6 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
             @Override
             public void onItemClick(View view, SimpleDraweeView simpleDraweeView, DiaryDetail.Diary item) {
                 startDiaryDetailsActivity(simpleDraweeView,item);
-                LogUtil.i("----onItemClick---"+item);
             }
         });
 
@@ -117,7 +115,8 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
 
     @Override
     public void onRefresh() {
-        mPresenter.getData(LikeAgent.getInstance().getUid(),1,page_num);
+        page = 1;
+        mPresenter.getData(LikeAgent.getInstance().getUid(),page,page_num);
     }
 
     @Override

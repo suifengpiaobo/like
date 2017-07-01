@@ -192,7 +192,8 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back:
-                finish();
+//                finish();
+                super.onBackPressed();
                 break;
             case R.id.share:
                 ShareDialog shareDialog = new ShareDialog();

@@ -1,7 +1,6 @@
 package com.aladdin.like;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -11,10 +10,6 @@ import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.tencent.android.tpush.XGIOperateCallback;
 import com.tencent.android.tpush.XGPushManager;
 import com.umeng.analytics.MobclickAgent;
@@ -38,7 +33,6 @@ public class LikeApplication extends Application {
             isFirst = true;
             instance = this;
             initConfig();
-            initImageLoader(this.getApplicationContext());
 
             //消息推送
             initPushMessage();
@@ -75,21 +69,6 @@ public class LikeApplication extends Application {
             }
         });
     }
-
-
-    public void initImageLoader(Context context){
-        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
-        config.threadPriority(Thread.NORM_PRIORITY - 2);
-        config.denyCacheImageMultipleSizesInMemory();
-        config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
-        config.diskCacheSize(10 * 1024 * 1024); // 10 MiB
-        config.tasksProcessingOrder(QueueProcessingType.LIFO);
-        config.writeDebugLogs(); // Remove for release app
-
-        // Initialize ImageLoader with configuration.
-        ImageLoader.getInstance().init(config.build());
-    }
-
 
 
     public static LikeApplication getInstance(){

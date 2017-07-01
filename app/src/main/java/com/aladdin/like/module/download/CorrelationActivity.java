@@ -117,7 +117,7 @@ public class CorrelationActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back:
-                finish();
+                super.onBackPressed();
                 break;
             case R.id.download_status:
 //                HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getUid(), mTheme.imageId, new HttpResultCallback<String>() {
@@ -129,7 +129,7 @@ public class CorrelationActivity extends BaseActivity {
 //                    }
 //                });
                 MobclickAgent.onEvent(CorrelationActivity.this, "DownLoad");
-                fileName = UUID.randomUUID().toString().substring(0, 16) + ".png";
+                fileName = UUID.randomUUID().toString().substring(0, 16) + ".jpeg";
                 savePicture();
 //                Aria.download(this)
 //                        .load(mTheme.themeImgUrl)     //读取下载地址
