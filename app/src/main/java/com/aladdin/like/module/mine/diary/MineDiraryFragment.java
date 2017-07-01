@@ -3,9 +3,9 @@ package com.aladdin.like.module.mine.diary;
 
 import android.support.v7.widget.GridLayoutManager;
 
-import com.aladdin.base.BaseFragment;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseFragment;
 import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.module.mine.diary.contract.DiaryContract;
 import com.aladdin.like.module.mine.diary.prestener.DiaryPrestener;
@@ -29,6 +29,7 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
 
     int page = 1;
     int page_num = 10;
+    int total_page = 1;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_mine_dirary;
@@ -58,6 +59,9 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
 
     @Override
     protected void onvisible() {
+        if (mDiaryAdapter != null && mDiaryAdapter.getCommonItemCount()>0){
+            mDiaryAdapter.clear();
+        }
         page = 1;
         mPresenter.getUserDiary(LikeAgent.getInstance().getUid(),page,page_num);
     }
@@ -94,6 +98,7 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
                 mMineDiary.loadMoreComplete();
                 mDiaryAdapter.addAll(detail.diaryList);
                 page = detail.per_page;
+                total_page = detail.total;
             }
         });
     }
@@ -105,6 +110,8 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
 
     @Override
     public void onLoadMore() {
-        mPresenter.getUserDiary(LikeAgent.getInstance().getUid(),page,page_num);
+        if (page < total_page){
+            mPresenter.getUserDiary(LikeAgent.getInstance().getUid(),page,page_num);
+        }
     }
 }

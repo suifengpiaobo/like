@@ -9,8 +9,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.utils.FileUtils;
 import com.aladdin.utils.ToastUtil;
@@ -51,6 +51,7 @@ public class DownLoadPictureActivity extends BaseActivity {
 
     File mFile;
     String fileName;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_down_load_picture;

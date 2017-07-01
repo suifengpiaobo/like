@@ -4,9 +4,9 @@ package com.aladdin.like.module.mine.atlas;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import com.aladdin.base.BaseFragment;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseFragment;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.mine.atlas.adapter.AtlasAdapter;
 import com.aladdin.like.module.mine.atlas.adapter.AtlasNotChooseAdapter;

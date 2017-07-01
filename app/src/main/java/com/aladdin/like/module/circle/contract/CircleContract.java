@@ -1,7 +1,7 @@
 package com.aladdin.like.module.circle.contract;
 
-import com.aladdin.base.BasePresenter;
-import com.aladdin.base.BaseView;
+import com.aladdin.like.base.BasePresenter;
+import com.aladdin.like.base.BaseView;
 import com.aladdin.like.model.DiaryDetail;
 
 /**

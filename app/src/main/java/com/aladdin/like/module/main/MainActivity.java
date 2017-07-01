@@ -8,10 +8,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.aladdin.base.BaseActivity;
-import com.aladdin.base.BaseFragment;
-import com.aladdin.base.BaseFragmentAdapter;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseActivity;
+import com.aladdin.like.base.BaseFragment;
+import com.aladdin.like.base.BaseFragmentAdapter;
 import com.aladdin.like.module.circle.CircleFragment;
 import com.aladdin.like.module.mine.MineFragment2;
 import com.aladdin.like.module.search.SearchFragment;

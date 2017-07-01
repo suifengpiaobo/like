@@ -1,14 +1,23 @@
 package com.aladdin.like;
 
+import android.app.Application;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
-import com.aladdin.base.BaseApplication;
 import com.aladdin.like.utils.FontsOverrideUtil;
 import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.tencent.android.tpush.XGIOperateCallback;
+import com.tencent.android.tpush.XGPushManager;
+import com.umeng.analytics.MobclickAgent;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
@@ -18,15 +27,95 @@ import java.security.SecureRandom;
  * Created by zxl on 2017/4/28 下午5:16.
  * Email:444288256@qq.com
  */
-public class LikeApplication extends BaseApplication {
-
+public class LikeApplication extends Application {
+    public static LikeApplication instance;
+    private boolean isFirst = false;
     @Override
+    public void onCreate() {
+        super.onCreate();
+
+        if (!isFirst){
+            isFirst = true;
+            instance = this;
+            initConfig();
+            initImageLoader(this.getApplicationContext());
+
+            //消息推送
+            initPushMessage();
+
+            //友盟统计
+            MobclickAgent.UMAnalyticsConfig  umAnalyticsConfig = new MobclickAgent.UMAnalyticsConfig(getApplicationContext(),"59434c6f99f0c756230005a0",getChannel());
+            MobclickAgent.startWithConfigure(umAnalyticsConfig);
+            MobclickAgent.setCatchUncaughtExceptions(false);
+            MobclickAgent.setDebugMode(false);
+        }
+    }
+
     public void initConfig() {
         //替换字体
         FontsOverrideUtil.init(this);
         ContextUtils.getInstance().setContext(this.getApplicationContext()); // Must!! First call this method.
         DensityUtils.setAppContext(this);
         Fresco.initialize(this);
+    }
+
+    //消息推送
+    public void initPushMessage() {
+        XGPushManager.registerPush(getApplicationContext(), new XGIOperateCallback() {
+            @Override
+            public void onSuccess(Object data, int flag) {
+                LogUtil.i("+++ register push sucess. token:" + data+"flag" +flag);
+            }
+
+            @Override
+            public void onFail(Object data, int errCode, String msg) {
+                LogUtil.i("+++ register push fail. token:" + data
+                        + ", errCode:" + errCode + ",msg:"
+                        + msg);
+            }
+        });
+    }
+
+
+    public void initImageLoader(Context context){
+        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
+        config.threadPriority(Thread.NORM_PRIORITY - 2);
+        config.denyCacheImageMultipleSizesInMemory();
+        config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
+        config.diskCacheSize(10 * 1024 * 1024); // 10 MiB
+        config.tasksProcessingOrder(QueueProcessingType.LIFO);
+        config.writeDebugLogs(); // Remove for release app
+
+        // Initialize ImageLoader with configuration.
+        ImageLoader.getInstance().init(config.build());
+    }
+
+
+
+    public static LikeApplication getInstance(){
+        return instance;
+    }
+
+    public static String getChannel() {
+        String CHANNELID = "000000";
+        try {
+            ApplicationInfo ai = ContextUtils.getInstance().getApplicationContext().getPackageManager()
+                    .getApplicationInfo(
+                            ContextUtils.getInstance().getApplicationContext().getPackageName(), PackageManager.GET_META_DATA);
+            Object value = ai.metaData.get("CHANNEL");
+            if (value != null) {
+                CHANNELID = value.toString();
+            }
+        } catch (Exception e) {
+        }
+
+        return CHANNELID;
+    }
+
+    @Override
+    public void onLowMemory() {
+        android.os.Process.killProcess(android.os.Process.myPid());
+        super.onLowMemory();
     }
 
     public static String UDID() {
@@ -50,21 +139,5 @@ public class LikeApplication extends BaseApplication {
 
         }
         return null;
-    }
-
-    public static String getChannel() {
-        String CHANNELID = "000000";
-        try {
-            ApplicationInfo ai = ContextUtils.getInstance().getApplicationContext().getPackageManager()
-                    .getApplicationInfo(
-                            ContextUtils.getInstance().getApplicationContext().getPackageName(), PackageManager.GET_META_DATA);
-            Object value = ai.metaData.get("CHANNEL");
-            if (value != null) {
-                CHANNELID = value.toString();
-            }
-        } catch (Exception e) {
-        }
-
-        return CHANNELID;
     }
 }

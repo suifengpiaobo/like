@@ -1,5 +1,6 @@
 package com.aladdin.like.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,13 +8,13 @@ import java.util.List;
  * Created by zxl on 2017/6/4 下午7:28.
  * Email:444288256@qq.com
  */
-public class DiaryDetail {
+public class DiaryDetail implements Serializable{
     public int total;
     public int per_page;
 
     public List<Diary> diaryList;
 
-    public class Diary{
+    public class Diary implements Serializable{
         public String diaryId;
         public String diaryImage;
         public String diaryTimeStr;

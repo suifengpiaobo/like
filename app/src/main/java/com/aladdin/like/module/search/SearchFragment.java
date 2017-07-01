@@ -11,9 +11,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.aladdin.base.BaseFragment;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseFragment;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.search.adapter.HorizontalAdapter;
 import com.aladdin.like.module.search.adapter.SearchResultAdapter;

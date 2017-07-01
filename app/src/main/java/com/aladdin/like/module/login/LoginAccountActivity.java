@@ -2,8 +2,8 @@ package com.aladdin.like.module.login;
 
 import android.view.View;
 
-import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseActivity;
 import com.aladdin.widget.NormalTitleBar;
 
 import butterknife.BindView;

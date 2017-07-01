@@ -1,7 +1,7 @@
 package com.aladdin.like.module.message;
 
-import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseActivity;
 
 /**
  * Description 消息

@@ -4,8 +4,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;

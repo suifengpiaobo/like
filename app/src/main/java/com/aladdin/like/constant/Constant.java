@@ -10,6 +10,8 @@ public class Constant {
 
     public static boolean isScroll = false;
 
+    public static final String TRANSITION_ANIMATION_NEWS_PHOTOS = "transition_animation_photos";
+
     public class User {
 
         public final static String USER_INFO = "USER_INFO";

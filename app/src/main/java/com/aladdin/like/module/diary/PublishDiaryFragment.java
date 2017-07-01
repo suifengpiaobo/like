@@ -15,12 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aladdin.base.BaseActivity;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.module.diary.contract.PublishContract;
 import com.aladdin.like.module.diary.prestener.PublishPrestener;
+import com.aladdin.like.module.publishcollection.ChooseCollectionActivity;
 import com.aladdin.like.utils.FileUtils;
+import com.aladdin.like.widget.PublishDialog;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -37,6 +39,8 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static android.R.attr.width;
 
 /**
  * Description 发布日记页面
@@ -66,6 +70,9 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
     String mPath;
 
+    PublishDialog mDialog;
+
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_publish_diary;
@@ -93,7 +100,17 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                         params.width = (int)(width*scale);
                         mShoosePicture.setLayoutParams(params);
                         ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mShoosePicture, result.get(0));
+//                        ImageloaderUtil.getInstance().loadFromSDCard(result.get(0),mShoosePicture,0,10);
                     }
+                    break;
+                case ChooseCollectionActivity.CHOOSE_COLLECTION:
+                    mAddPicture.setVisibility(View.GONE);
+                    float scale = (DensityUtils.mScreenWidth-DensityUtils.dip2px(30))/(float)data.getIntExtra("width",0);
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShoosePicture.getLayoutParams();
+                    params.height = (int) (data.getIntExtra("height",0)*scale);
+                    params.width = (int)(width*scale);
+                    mShoosePicture.setLayoutParams(params);
+                    mShoosePicture.setImageURI(data.getStringExtra("url"));
                     break;
             }
         }
@@ -120,7 +137,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 new Handler().post(runnable);
                 break;
             case R.id.add_picture:
-                choosePicture();
+                showDialog();
                 break;
         }
     }
@@ -151,7 +168,21 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
     }
 
     public void showDialog(){
+        mDialog = new PublishDialog();
+        mDialog.show(getSupportFragmentManager(),"share_dialog");
+        mDialog.setDialogListener(new PublishDialog.onDialogListener() {
+            @Override
+            public void onLikeCollection() {
+                mDialog.dismiss();
+                startActivityForResult(ChooseCollectionActivity.class,ChooseCollectionActivity.CHOOSE_COLLECTION);
+            }
 
+            @Override
+            public void onPhone() {
+                mDialog.dismiss();
+                choosePicture();
+            }
+        });
     }
 
     public void viewSaveToImage(View view) {

@@ -1,17 +1,19 @@
 package com.aladdin.like.module.circle;
 
 
+import android.os.Bundle;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.widget.TextView;
 
-import com.aladdin.base.BaseFragment;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseFragment;
 import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.module.circle.adapter.CircleAdapter;
 import com.aladdin.like.module.circle.contract.CircleContract;
 import com.aladdin.like.module.circle.prestener.Circlrprestener;
 import com.aladdin.like.module.diary.PublishDiaryFragment;
+import com.aladdin.like.module.diarydetails.DiaryDetailsActivity;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
@@ -60,14 +62,14 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
         mAdapter = new CircleAdapter(getActivity());
         mCircle.setAdapter(mAdapter);
 
-//        mAdapter.setItemClickListener(new CircleAdapter.onItemClickListener() {
-//            @Override
-//            public void onItemClick(DiaryDetail.Diary item) {
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("PREFECTURE", item);
-//                startActivity(PictureDetailsActivity.class, bundle);
-//            }
-//        });
+        mAdapter.setItemClickListener(new CircleAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(DiaryDetail.Diary item) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("DIARY", item);
+                startActivity(DiaryDetailsActivity.class, bundle);
+            }
+        });
 
     }
 

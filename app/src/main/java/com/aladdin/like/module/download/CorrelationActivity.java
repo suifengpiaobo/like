@@ -1,18 +1,24 @@
 package com.aladdin.like.module.download;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
+import android.transition.Transition;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseActivity;
+import com.aladdin.like.constant.Constant;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.utils.FileUtils;
+import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.ToastUtil;
 import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.download.DownloadTask;
@@ -51,6 +57,8 @@ public class CorrelationActivity extends BaseActivity {
     File mFile;
     String fileName;
 
+    public static final String TRANSIT_PIC = "picture";
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_down_load_picture;
@@ -59,9 +67,52 @@ public class CorrelationActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        ViewCompat.setTransitionName(mPicture, Constant.TRANSITION_ANIMATION_NEWS_PHOTOS);
+
         mTheme = (ThemeDetail.Theme) getIntent().getSerializableExtra("CORRELATION");
-        mPicture.setImageURI(mTheme.imageUrl);
+        initImage();
         mFile = new File(FileUtils.getImageRootPath());
+    }
+
+    public static Intent getPhotoDetailIntent(Context context, ThemeDetail.Theme theme){
+        Intent intent = new Intent(context,CorrelationActivity.class);
+        intent.putExtra("CORRELATION",theme);
+        return intent;
+    }
+
+    public void initImage(){
+        LogUtil.i("---mTheme--->>>"+mTheme);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mPicture.setImageURI(mTheme.imageUrl);
+            getWindow().getEnterTransition().addListener(new Transition.TransitionListener() {
+                @Override
+                public void onTransitionStart(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    mPicture.setImageURI(mTheme.imageUrl);
+                }
+
+                @Override
+                public void onTransitionCancel(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionPause(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionResume(Transition transition) {
+
+                }
+            });
+        }else{
+            mPicture.setImageURI(mTheme.imageUrl);
+        }
     }
 
     @OnClick({R.id.back, R.id.download_status})

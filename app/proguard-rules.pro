@@ -57,3 +57,10 @@
    public static *** i(...);
    public static *** w(...);
  }
+
+ #信鸽推送
+ -keep public class * extends android.app.Service
+ -keep public class * extends android.content.BroadcastReceiver
+ -keep class com.tencent.android.tpush.** {* ;}
+ -keep class com.tencent.mid.** {* ;}
+ -keep public class * extends com.qq.taf.jce.JceStruct{*;}

@@ -2,8 +2,8 @@ package com.aladdin.like.module;
 
 import android.text.TextUtils;
 
-import com.aladdin.base.BaseActivity;
 import com.aladdin.like.LikeAgent;
+import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.module.main.MainActivity;
 import com.aladdin.like.module.register.RegisterActivity;
 

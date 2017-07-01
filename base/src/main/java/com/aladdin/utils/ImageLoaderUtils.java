@@ -91,9 +91,9 @@ public class ImageLoaderUtils {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(errorId)
                 .centerCrop()
-                .bitmapTransform(new RoundedCornersTransformation(context, 30, 0, RoundedCornersTransformation.CornerType.ALL))
-//                .dontAnimate()
-                .crossFade(10)
+                .bitmapTransform(new RoundedCornersTransformation(context, 20, 0, RoundedCornersTransformation.CornerType.RIGHT))
+                .dontAnimate()
+                .crossFade(30)
                 .into(imageView);
     }
 

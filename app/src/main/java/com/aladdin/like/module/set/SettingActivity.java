@@ -5,8 +5,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.module.about.AboutActivity;
 import com.aladdin.like.module.message.MineMessageActivity;
 import com.aladdin.like.module.watermark.WaterMarkActivity;

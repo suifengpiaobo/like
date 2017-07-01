@@ -41,11 +41,11 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
         MainViewHolder viewHolder = (MainViewHolder) holder;
         ThemeModes.Theme item = getItemObject(position);
         if (item != null) {
-            viewHolder.mMainImg.setImageURI(item.themeImgUrl);
+            viewHolder.item = item;
             float scale = (DensityUtils.mScreenWidth/2-DensityUtils.dip2px(15))/(float)item.width;
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
             params.height = (int) (item.height*scale);
-            params.width = (int)(item.width*scale);
+            params.weight = (int)(item.width*scale);
             viewHolder.mMainImg.setLayoutParams(params);
 
             viewHolder.mMainImg.setImageURI(item.themeImgUrl);
@@ -53,16 +53,6 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
             viewHolder.mMainTypeName.setText(item.themeName);
             viewHolder.mMainTime.setText(item.createTimeStr);
 
-            viewHolder.mMainItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mItemClickListener != null) {
-                        mItemClickListener.onItemClick(item);
-                    }
-                }
-            });
-
-            viewHolder.setIsRecyclable(true);
         }
     }
 
@@ -102,7 +92,7 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
 
         @Override
         public void onClick(View v) {
-//            mItemClickListener.onItemClick(v,mMainImg,mMainItem,item);
+            mItemClickListener.onItemClick(v,mMainImg,mMainItem,item);
         }
     }
 
@@ -111,8 +101,8 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(ThemeModes.Theme item);
-//        void onItemClick(View v,SimpleDraweeView mMainImg,LinearLayout mMainItem,ThemeModes.Theme item);
+//        void onItemClick(ThemeModes.Theme item);
+        void onItemClick(View v,SimpleDraweeView mMainImg,LinearLayout mMainItem,ThemeModes.Theme item);
     }
 
 }

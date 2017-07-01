@@ -3,16 +3,15 @@ package com.aladdin.like.module.mine.pictures;
 
 import android.support.v7.widget.StaggeredGridLayoutManager;
 
-import com.aladdin.base.BaseFragment;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseFragment;
 import com.aladdin.like.model.CollectionImage;
 import com.aladdin.like.module.mine.pictures.adapter.PictureAdapter;
 import com.aladdin.like.module.mine.pictures.contract.PictureContract;
 import com.aladdin.like.module.mine.pictures.prestener.PicturePrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.LogUtil;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -45,7 +44,7 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
 
         mPicture.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mPicture.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mPicture.setArrowImageView(R.drawable.icon_refresh);
+//        mPicture.setArrowImageView(R.drawable.icon_refresh);
         mPicture.setLoadingListener(this);
         mPicture.setPullRefreshEnabled(false);
 
@@ -58,13 +57,6 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
 
     @Override
     protected void lazyFetchData() {
-        LogUtil.i("---MinePictureFragment--lazyFetchData---");
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        LogUtil.i("---MinePictureFragment--setUserVisibleHint---");
     }
 
     @Override

@@ -5,6 +5,7 @@ android {
     buildToolsVersion "25.0.2"
 
     defaultConfig {
+
         minSdkVersion 17
         targetSdkVersion 22
         versionCode 1
@@ -26,10 +27,10 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.3.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.orhanobut:logger:1.15'
     compile 'com.android.support:recyclerview-v7:25.3.0'
-    compile 'com.android.support:design:25.3.0'
+    compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:multidex:1.0.1'
     //    compile 'com.trello.rxlifecycle2:rxlifecycle:2.0.1'
     //    compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.0.1'
@@ -46,7 +47,6 @@ dependencies {
     compile 'com.jakewharton:butterknife-compiler:8.5.1'
     compile project(path: ':network_lib')
     compile 'com.facebook.fresco:fresco:0.13.0'
-    //友盟统计
-    compile 'com.umeng.analytics:analytics:latest.integration'
-    compile project(':PushSDK')
+
+    compile files('libs/universal-image-loader-1.9.5.jar')
 }

@@ -41,6 +41,7 @@ public class PictureDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
         MainViewHolder viewHolder = (MainViewHolder) holder;
         ThemeDetail.Theme item = getItemObject(position);
         if (item != null) {
+            viewHolder.item = item;
             float scale = (DensityUtils.mScreenWidth/2-DensityUtils.dip2px(15))/(float)item.width;
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mPrefectureBg.getLayoutParams();
             params.height = (int) (item.height*scale);
@@ -51,14 +52,14 @@ public class PictureDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
             viewHolder.mTime.setText(item.collectionTimes + "");
 
 
-            viewHolder.mPrefectureBg.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(item);
-                    }
-                }
-            });
+//            viewHolder.mPrefectureBg.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (mOnItemClickListener != null) {
+//                        mOnItemClickListener.onItemClick(item);
+//                    }
+//                }
+//            });
         }
     }
 
@@ -79,21 +80,33 @@ public class PictureDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
 
     @Override
     public RecyclerView.ViewHolder onCreateCommon(ViewGroup parent, int viewType) {
-        View mView = View.inflate(mContext, R.layout.layout_main_prefecture, null);
+        View mView = View.inflate(mContext, R.layout.layout_pic_details, null);
         return new MainViewHolder(mView);
     }
 
-    static class MainViewHolder extends BaseViewHolder {
+    class MainViewHolder extends BaseViewHolder implements View.OnClickListener{
         @BindView(R.id.main_img)
         SimpleDraweeView mPrefectureBg;
         @BindView(R.id.main_type_name)
         TextView mTypeName;
         @BindView(R.id.main_time)
         TextView mTime;
+        @BindView(R.id.main_item)
+        LinearLayout mLayout;
+
+        ThemeDetail.Theme item;
 
         MainViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            mPrefectureBg.setOnClickListener(this);
+            mLayout.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+//            mOnItemClickListener.onItemClick(v,mPrefectureBg,mLayout,item);
+            mOnItemClickListener.onItemClick(v,mPrefectureBg,item);
         }
     }
 
@@ -102,6 +115,10 @@ public class PictureDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(ThemeDetail.Theme item);
+        void onItemClick(View v, SimpleDraweeView mPrefectureBg, LinearLayout mLayout,ThemeDetail.Theme item);
+
+        void onItemClick(View v, SimpleDraweeView mPrefectureBg,ThemeDetail.Theme item);
+
+        void onItemLongClick(ThemeDetail.Theme item,int width,int height);
     }
 }

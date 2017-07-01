@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.aladdin.base.BaseActivity;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.constant.Constant;
 import com.aladdin.like.module.atlas.AtlasChooseActivity;
 import com.aladdin.like.module.login.LoginAccountActivity;

@@ -1,8 +1,8 @@
 package com.aladdin.like.module.register;
 
 
-import com.aladdin.base.BaseFragment;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseFragment;
 
 /**
  * Description 登录注册

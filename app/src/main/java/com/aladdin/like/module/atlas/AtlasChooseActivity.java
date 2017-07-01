@@ -4,9 +4,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 
-import com.aladdin.base.BaseActivity;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.atlas.adapter.ChooseAdapter;
 import com.aladdin.like.module.atlas.contract.AtlasContract;

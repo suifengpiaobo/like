@@ -2,8 +2,8 @@ package com.aladdin.like.module.about;
 
 import android.widget.ImageView;
 
-import com.aladdin.base.BaseActivity;
 import com.aladdin.like.R;
+import com.aladdin.like.base.BaseActivity;
 
 import butterknife.BindView;
 import butterknife.OnClick;
