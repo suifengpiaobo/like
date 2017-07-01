@@ -54,10 +54,12 @@ public class ThemeDetail implements Serializable{
                     "imageId='" + imageId + '\'' +
                     ", themeId='" + themeId + '\'' +
                     ", imageUrl='" + imageUrl + '\'' +
-                    ", collectionTimes='" + collectionTimes + '\'' +
+                    ", collectionTimes=" + collectionTimes +
                     ", imageName='" + imageName + '\'' +
                     ", createTime='" + createTime + '\'' +
                     ", createTimeStr='" + createTimeStr + '\'' +
+                    ", width=" + width +
+                    ", height=" + height +
                     '}';
         }
     }

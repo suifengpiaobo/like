@@ -48,18 +48,10 @@ public class PictureDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
             params.weight = (int)(item.width*scale);
             viewHolder.mPrefectureBg.setLayoutParams(params);
             viewHolder.mPrefectureBg.setImageURI(item.imageUrl);
+//            viewHolder.mPrefectureBg.setBackgroundResource(R.drawable.register_2);
             viewHolder.mTypeName.setText(item.imageName);
             viewHolder.mTime.setText(item.collectionTimes + "");
 
-
-//            viewHolder.mPrefectureBg.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (mOnItemClickListener != null) {
-//                        mOnItemClickListener.onItemClick(item);
-//                    }
-//                }
-//            });
         }
     }
 
@@ -100,7 +92,7 @@ public class PictureDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
             super(view);
             ButterKnife.bind(this, view);
             mPrefectureBg.setOnClickListener(this);
-            mLayout.setOnClickListener(this);
+//            mLayout.setOnClickListener(this);
         }
 
         @Override

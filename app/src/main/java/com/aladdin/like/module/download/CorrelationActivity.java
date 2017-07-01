@@ -4,24 +4,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
-import android.transition.Transition;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseActivity;
-import com.aladdin.like.constant.Constant;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.utils.FileUtils;
-import com.aladdin.utils.LogUtil;
+import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.ToastUtil;
 import com.arialyy.aria.core.Aria;
 import com.arialyy.aria.core.download.DownloadTask;
+import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
@@ -67,11 +65,45 @@ public class CorrelationActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        ViewCompat.setTransitionName(mPicture, Constant.TRANSITION_ANIMATION_NEWS_PHOTOS);
+//        ViewCompat.setTransitionName(mPicture, Constant.TRANSITION_ANIMATION_NEWS_PHOTOS);
 
         mTheme = (ThemeDetail.Theme) getIntent().getSerializableExtra("CORRELATION");
-        initImage();
         mFile = new File(FileUtils.getImageRootPath());
+        boolean isCacheinDisk = Fresco.getImagePipelineFactory().getMainDiskStorageCache().hasKey(new SimpleCacheKey(Uri.parse(mTheme.imageUrl).toString()));
+
+        if (isCacheinDisk){
+            setImg();
+        }
+    }
+
+    void setImg(){
+        Uri uri = Uri.parse(mTheme.imageUrl);
+        ImageRequest imageRequest = ImageRequestBuilder
+                .newBuilderWithSource(uri)
+                .setProgressiveRenderingEnabled(true)
+                .build();
+
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        DataSource<CloseableReference<CloseableImage>>
+                dataSource = imagePipeline.fetchDecodedImage(imageRequest, this);
+
+        dataSource.subscribe(new BaseBitmapDataSubscriber() {
+
+                                 @Override
+                                 public void onNewResultImpl(@Nullable Bitmap bitmap) {
+                                     float scale = (DensityUtils.mScreenWidth)/(float)bitmap.getWidth();
+                                     FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)mPicture.getLayoutParams();
+                                     params.height = (int) (bitmap.getHeight()*scale);
+                                     params.width = (int)(bitmap.getWidth()*scale);
+                                     mPicture.setLayoutParams(params);
+                                     mPicture.setImageBitmap(bitmap);
+                                 }
+
+                                 @Override
+                                 public void onFailureImpl(DataSource dataSource) {
+                                 }
+                             },
+                CallerThreadExecutor.getInstance());
     }
 
     public static Intent getPhotoDetailIntent(Context context, ThemeDetail.Theme theme){
@@ -80,40 +112,6 @@ public class CorrelationActivity extends BaseActivity {
         return intent;
     }
 
-    public void initImage(){
-        LogUtil.i("---mTheme--->>>"+mTheme);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mPicture.setImageURI(mTheme.imageUrl);
-            getWindow().getEnterTransition().addListener(new Transition.TransitionListener() {
-                @Override
-                public void onTransitionStart(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionEnd(Transition transition) {
-                    mPicture.setImageURI(mTheme.imageUrl);
-                }
-
-                @Override
-                public void onTransitionCancel(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionPause(Transition transition) {
-
-                }
-
-                @Override
-                public void onTransitionResume(Transition transition) {
-
-                }
-            });
-        }else{
-            mPicture.setImageURI(mTheme.imageUrl);
-        }
-    }
 
     @OnClick({R.id.back, R.id.download_status})
     public void onViewClicked(View view) {

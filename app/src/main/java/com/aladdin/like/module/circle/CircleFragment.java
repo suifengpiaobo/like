@@ -1,13 +1,19 @@
 package com.aladdin.like.module.circle;
 
 
-import android.os.Bundle;
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.View;
 import android.widget.TextView;
 
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseFragment;
+import com.aladdin.like.constant.Constant;
 import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.module.circle.adapter.CircleAdapter;
 import com.aladdin.like.module.circle.contract.CircleContract;
@@ -16,6 +22,8 @@ import com.aladdin.like.module.diary.PublishDiaryFragment;
 import com.aladdin.like.module.diarydetails.DiaryDetailsActivity;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.LogUtil;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
@@ -64,13 +72,34 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
 
         mAdapter.setItemClickListener(new CircleAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(DiaryDetail.Diary item) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("DIARY", item);
-                startActivity(DiaryDetailsActivity.class, bundle);
+            public void onItemClick(View view, SimpleDraweeView simpleDraweeView, DiaryDetail.Diary item) {
+                startDiaryDetailsActivity(simpleDraweeView,item);
+                LogUtil.i("----onItemClick---"+item);
             }
         });
 
+    }
+
+    //新添加
+    public void startDiaryDetailsActivity(SimpleDraweeView mPrefectureBg, DiaryDetail.Diary item){
+        Intent intent = new Intent(getActivity(),DiaryDetailsActivity.class);
+        intent.putExtra("DIARY",item);
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                    getActivity(),
+                    mPrefectureBg,
+                    Constant.TRANSITION_ANIMATION_CIRCLE_PHOTOS);
+            startActivity(intent,options.toBundle());
+        }else{
+            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeScaleUpAnimation(
+                    mPrefectureBg,
+                    mPrefectureBg.getWidth() / 2,
+                    mPrefectureBg.getHeight() / 2,
+                    0,
+                    0);
+            ActivityCompat.startActivity(getActivity(),intent,optionsCompat.toBundle());
+        }
     }
 
     @Override

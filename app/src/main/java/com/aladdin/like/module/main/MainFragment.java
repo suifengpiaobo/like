@@ -1,7 +1,9 @@
 package com.aladdin.like.module.main;
 
 
+import android.app.ActivityOptions;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -11,6 +13,7 @@ import android.widget.LinearLayout;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseFragment;
+import com.aladdin.like.constant.Constant;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.download.PictureDetailsActivity;
 import com.aladdin.like.module.main.adapter.MainAdapter;
@@ -58,24 +61,30 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
         mAdapter.setItemClickListener(new MainAdapter.onItemClickListener() {
             @Override
             public void onItemClick(View v, SimpleDraweeView mMainImg, LinearLayout mMainItem, ThemeModes.Theme item) {
-                scaleUpAnimation(mMainItem,item);
+                startCorrelationActivity(mMainImg,item);
             }
         });
     }
 
-    private void scaleUpAnimation(View view,ThemeModes.Theme item) {
-        //让新的Activity从一个小的范围扩大到全屏
-        ActivityOptionsCompat options =
-                ActivityOptionsCompat.makeScaleUpAnimation(view, //The View that the new activity is animating from
-                        (int)view.getWidth()/2, (int)view.getHeight()/2, //拉伸开始的坐标
-                        0, 0);//拉伸开始的区域大小，这里用（0，0）表示从无到全屏
-        startNewAcitivity(options,item);
-    }
+    //新添加
+    public void startCorrelationActivity(SimpleDraweeView mPrefectureBg, ThemeModes.Theme item){
+        Intent intent = PictureDetailsActivity.getPhotoDetailIntent(getActivity(),item);
 
-    private void startNewAcitivity(ActivityOptionsCompat options,ThemeModes.Theme item) {
-        Intent intent = new Intent(getActivity(),PictureDetailsActivity.class);
-        intent.putExtra("PREFECTURE",item);
-        ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                    getActivity(),
+                    mPrefectureBg,
+                    Constant.TRANSITION_ANIMATION_MAIN_PHOTOS);
+            startActivity(intent,options.toBundle());
+        }else{
+            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeScaleUpAnimation(
+                    mPrefectureBg,
+                    mPrefectureBg.getWidth() / 2,
+                    mPrefectureBg.getHeight() / 2,
+                    0,
+                    0);
+            ActivityCompat.startActivity(getActivity(),intent,optionsCompat.toBundle());
+        }
     }
 
     @Override

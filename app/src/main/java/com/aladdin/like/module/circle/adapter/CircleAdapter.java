@@ -24,7 +24,7 @@ import butterknife.ButterKnife;
  * Email:444288256@qq.com
  */
 public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
-    onItemClickListener mItemClickListener;
+    public onItemClickListener mItemClickListener;
     private Context mContext;
 
     public CircleAdapter(Context context) {
@@ -54,6 +54,7 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
         DiaryDetail.Diary item = getItemObject(position);
         if (item != null) {
             if (item != null){
+                viewHolder.item = item;
                 float scale = (DensityUtils.mScreenWidth/2-DensityUtils.dip2px(15))/(float)item.width;
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
                 params.height = (int) (item.height*scale);
@@ -63,14 +64,6 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
                 viewHolder.mMainImg.setImageURI(item.diaryImage);
             }
 
-            viewHolder.mMainItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mItemClickListener != null) {
-                        mItemClickListener.onItemClick(item);
-                    }
-                }
-            });
         }
     }
 
@@ -84,16 +77,28 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
         return mDatas.get(position);
     }
 
-    static class CircleViewHolder extends BaseViewHolder {
+    class CircleViewHolder extends BaseViewHolder implements View.OnClickListener{
         @BindView(R.id.main_img)
         SimpleDraweeView mMainImg;
         @BindView(R.id.main_item)
         LinearLayout mMainItem;
 
+        DiaryDetail.Diary item;
+
         CircleViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
+            mMainImg.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            mItemClickListener.onItemClick(v,mMainImg,item);
+        }
+    }
+
+    public onItemClickListener getItemClickListener() {
+        return mItemClickListener;
     }
 
     public void setItemClickListener(onItemClickListener itemClickListener) {
@@ -101,6 +106,6 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(DiaryDetail.Diary item);
+        void onItemClick(View view,SimpleDraweeView simpleDraweeView,DiaryDetail.Diary item);
     }
 }

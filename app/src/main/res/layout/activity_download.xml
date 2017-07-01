@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,6 +10,7 @@
     tools:context="com.aladdin.like.module.download.PictureDetailsActivity">
 
     <RelativeLayout
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="48dp">
 
@@ -36,7 +37,9 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="48dp"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,7 +54,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:scaleType="centerCrop"
-                android:transitionName="picture"
+                android:transitionName="transition_animation_main_photos"
                 fresco:placeholderImageScaleType="focusCrop"
                 fresco:roundedCornerRadius="10dp"
                 />
@@ -117,4 +120,4 @@
     </ScrollView>
 
 
-</LinearLayout>
+</RelativeLayout>

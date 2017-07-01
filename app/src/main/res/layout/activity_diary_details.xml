@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/color_4d"
     tools:context="com.aladdin.like.module.diarydetails.DiaryDetailsActivity">
 
     <com.facebook.drawee.view.SimpleDraweeView
@@ -13,8 +14,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
+        fresco:roundedCornerRadius="10dp"
         fresco:placeholderImageScaleType="focusCrop"
+        android:transitionName="transition_animation_circe_photos"
+        android:layout_gravity="center"
         />
 
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:layout_gravity="top"
+        android:layout_height="48dp">
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/back_selector"
+            android:padding="15dp"
+            />
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/share_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/share_icon"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="15dp"
+            />
+    </RelativeLayout>
+
+
+
+</FrameLayout>

@@ -12,6 +12,10 @@ public class Constant {
 
     public static final String TRANSITION_ANIMATION_NEWS_PHOTOS = "transition_animation_photos";
 
+    public static final String TRANSITION_ANIMATION_MAIN_PHOTOS = "transition_animation_main_photos";
+
+    public static final String TRANSITION_ANIMATION_CIRCLE_PHOTOS = "transition_animation_circe_photos";
+
     public class User {
 
         public final static String USER_INFO = "USER_INFO";

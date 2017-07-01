@@ -1,16 +1,16 @@
 package com.aladdin.like.module.download;
 
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,15 +28,19 @@ import com.aladdin.like.module.download.presenter.PictureDetailsPrestener;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.LogUtil;
-import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.SimpleCacheKey;
+import com.facebook.common.executors.CallerThreadExecutor;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -76,20 +80,28 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
         return R.layout.activity_download;
     }
 
+    public static Intent getPhotoDetailIntent(Context context, ThemeModes.Theme theme){
+        Intent intent = new Intent(context,PictureDetailsActivity.class);
+        intent.putExtra("PREFECTURE",theme);
+        return intent;
+    }
+
     @Override
     protected void initView() {
         mPrestener = new PictureDetailsPrestener(this);
         mTheme = (ThemeModes.Theme) getIntent().getSerializableExtra("PREFECTURE");
         themeId = mTheme.themeId;
-        LogUtil.i("--mTheme-->>>"+mTheme);
 
+        boolean isCacheinDisk = Fresco.getImagePipelineFactory().getMainDiskStorageCache().hasKey(new SimpleCacheKey(Uri.parse(mTheme.themeImgUrl).toString()));
+
+        if (isCacheinDisk){
+            setImg();
+        }
         if (mAdapter != null && mAdapter.getItemCount() > 0){
             mAdapter.clear();
         }
 
         mPrestener.getData(LikeAgent.getInstance().getUid(),themeId,page,page_num);
-
-        setPicture();
 
         mDownloadRecycle.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mDownloadRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
@@ -107,33 +119,34 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
         bindEvent();
     }
 
-    public void setPicture(){
+    private void setImg() {
         Uri uri = Uri.parse(mTheme.themeImgUrl);
-        Bitmap bitmap = returnBitmap(uri);
+        ImageRequest imageRequest = ImageRequestBuilder
+                .newBuilderWithSource(uri)
+                .setProgressiveRenderingEnabled(true)
+                .build();
 
-        int width = bitmap.getWidth();//994
-        float scale = (DensityUtils.mScreenWidth-DensityUtils.dip2px(20))/(float)width;
-        int height = bitmap.getHeight();
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mPicture.getLayoutParams();
-        params.height = (int) (height*scale);
-        params.weight = (int)(width*scale);
-        mPicture.setLayoutParams(params);
-        mPicture.setImageURI(mTheme.themeImgUrl);
-//        ImageLoaderUtils.displayRound(PictureDetailsActivity.this,mPicture,mTheme.themeImgUrl);
-        mTypeName.setText(mTheme.themeName);
-//        mPariseNum.setText(mTheme.followSign);
-    }
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        DataSource<CloseableReference<CloseableImage>>
+                dataSource = imagePipeline.fetchDecodedImage(imageRequest, this);
 
-    private Bitmap returnBitmap(Uri uri) {
-        Bitmap bitmap = null;
-        FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getMainDiskStorageCache().getResource(new SimpleCacheKey(uri.toString()));
-        if (resource != null){
-            File file = resource.getFile();
-            if (file != null && !TextUtils.isEmpty(file.getPath())) {
-                bitmap = BitmapFactory.decodeFile(file.getPath());
-            }
-        }
-        return bitmap;
+        dataSource.subscribe(new BaseBitmapDataSubscriber() {
+
+                                 @Override
+                                 public void onNewResultImpl(@Nullable Bitmap bitmap) {
+                                     float scale = (DensityUtils.mScreenWidth-DensityUtils.dip2px(20))/(float)bitmap.getWidth();
+                                     LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mPicture.getLayoutParams();
+                                     params.height = (int) (bitmap.getHeight()*scale);
+                                     params.width = (int)(bitmap.getWidth()*scale);
+                                     mPicture.setLayoutParams(params);
+                                     mPicture.setImageBitmap(bitmap);
+                                 }
+
+                                 @Override
+                                 public void onFailureImpl(DataSource dataSource) {
+                                 }
+                             },
+                CallerThreadExecutor.getInstance());
     }
 
     private void bindEvent() {
@@ -173,34 +186,6 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
                     0);
             ActivityCompat.startActivity(PictureDetailsActivity.this,intent,optionsCompat.toBundle());
         }
-    }
-
-    private void startPictureActivity(ThemeDetail.Theme item, View transitView) {
-        Intent intent = new Intent(PictureDetailsActivity.this,CorrelationActivity.class);
-        intent.putExtra("CORRELATION",item);
-            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                PictureDetailsActivity.this, transitView, CorrelationActivity.TRANSIT_PIC);
-        try {
-            ActivityCompat.startActivity(PictureDetailsActivity.this, intent, optionsCompat.toBundle());
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            startActivity(intent);
-        }
-    }
-
-    private void scaleUpAnimation(View view,ThemeDetail.Theme item) {
-        //让新的Activity从一个小的范围扩大到全屏
-        ActivityOptionsCompat options =
-                ActivityOptionsCompat.makeScaleUpAnimation(view, //The View that the new activity is animating from
-                        (int)view.getWidth()/2, (int)view.getHeight()/2, //拉伸开始的坐标
-                        0, 0);//拉伸开始的区域大小，这里用（0，0）表示从无到全屏
-        startNewAcitivity(options,item);
-    }
-
-    private void startNewAcitivity(ActivityOptionsCompat options,ThemeDetail.Theme item) {
-        Intent intent = new Intent(this,CorrelationActivity.class);
-        intent.putExtra("CORRELATION",item);
-        ActivityCompat.startActivity(this, intent, options.toBundle());
     }
 
     @OnClick({R.id.back, R.id.share, R.id.click_praise,R.id.picture})
