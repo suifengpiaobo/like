@@ -158,13 +158,10 @@ public class RequestContent {
         if (params != null && params.length % 2 == 0) {
             for (int i = 0; i < params.length; i += 2){
                 builder.addFormDataPart(params[i], params[i+1]);
-                Log.i("--upload-AA->>","--params--"+params[i]+"---"+params[i+1]);
             }
         }
         MultipartBody requestBody = builder.build();
         Request.Builder requestBuilder = new Request.Builder();
-        Log.i("--upload-->>","--url-->>"+url+"   --name--"+name);
-        Log.i("--upload-AA->>","--file-->>"+file.getAbsolutePath()+"   --header--"+header);
         requestBuilder.url(url);
         requestBuilder.post(requestBody);
         if (header != null)

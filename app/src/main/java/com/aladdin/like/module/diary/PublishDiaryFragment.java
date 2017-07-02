@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
 import android.view.View;
@@ -234,16 +235,21 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
             // 判断手机设备是否有SD卡
             boolean isHasSDCard = Environment.getExternalStorageState().equals(
                     Environment.MEDIA_MOUNTED);
+            File sdRoot;
+            File file;
             if (isHasSDCard) {
                 // SD卡根目录
-                File sdRoot = new File(FileUtils.getImageRootPath());
-                File file = new File(sdRoot, UUID.randomUUID().toString().substring(0, 16) + ".jepg");
+                sdRoot = new File(FileUtils.getImageRootPath());
+                file = new File(sdRoot, UUID.randomUUID().toString().substring(0, 16) + ".jpeg");
                 mPath = file.getAbsolutePath();
                 fos = new FileOutputStream(file);
             } else
                 throw new Exception("创建文件失败!");
 
             cachebmp.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+
+            //插入相册
+            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file.getAbsoluteFile())));
 
             fos.flush();
             fos.close();
@@ -253,7 +259,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         }
 
         view.destroyDrawingCache();
-        mPresenter.publishPic(LikeAgent.getInstance().getUid(), mPath, "", mDescription.getText().toString());
+        mPresenter.publishPic(LikeAgent.getInstance().getUid(), mPath, mContent.getText().toString(), mDescription.getText().toString());
 
     }
 
@@ -307,7 +313,6 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 mContent.setEnabled(true);
                 mDescription.setEnabled(true);
                 mShoosePicture.setImageURI("");
-
 
                 LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mPublishFinishPic.getLayoutParams();
                 params.height = mFinishHeight;

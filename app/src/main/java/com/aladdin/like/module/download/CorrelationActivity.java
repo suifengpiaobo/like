@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -16,9 +15,6 @@ import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.utils.FileUtils;
 import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.ToastUtil;
-import com.arialyy.aria.core.Aria;
-import com.arialyy.aria.core.download.DownloadTask;
 import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
@@ -33,6 +29,9 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -156,7 +155,8 @@ public class CorrelationActivity extends BaseActivity {
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
                                      mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
                                      Toast.makeText(CorrelationActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
-                                     MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "title", "description");
+                                     saveMyBitmap(bitmap,System.currentTimeMillis()+"");
+//                                     MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "title", "description");
                                  }
 
                                  @Override
@@ -165,59 +165,32 @@ public class CorrelationActivity extends BaseActivity {
                              },
                 CallerThreadExecutor.getInstance());
         mPicture.setImageURI(mTheme.imageUrl);
-//        mPariseNum.setText(mTheme.followSign);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Aria.download(CorrelationActivity.this).addSchedulerListener(new MySchedulerListener());
-    }
-
-    final class MySchedulerListener extends Aria.DownloadSchedulerListener {
-        @Override
-        public void onTaskPre(DownloadTask task) {
-            super.onTaskPre(task);
+    public void saveMyBitmap(Bitmap mBitmap,String bitName)  {
+        File f = new File( FileUtils.getImageRootPath() + bitName+".jpeg");
+        FileOutputStream fOut = null;
+        try {
+            fOut = new FileOutputStream(f);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
+        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Uri uri = Uri.fromFile(f.getAbsoluteFile());
+        intent.setData(uri);
+        sendBroadcast(intent);
 
-        @Override
-        public void onTaskStop(DownloadTask task) {
-            super.onTaskStop(task);
+//        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
+        try {
+            fOut.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        @Override
-        public void onTaskCancel(DownloadTask task) {
-            super.onTaskCancel(task);
+        try {
+            fOut.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        @Override
-        public void onTaskRunning(DownloadTask task) {
-            super.onTaskRunning(task);
-        }
-
-        @Override
-        public void onTaskFail(DownloadTask task) {
-            super.onTaskFail(task);
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            });
-            ToastUtil.showToast("下载失败！");
-        }
-
-        @Override
-        public void onTaskComplete(DownloadTask task) {
-            super.onTaskComplete(task);
-            downloadSuc();
-        }
-    }
-
-    public void downloadSuc() {
-        mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
-        ToastUtil.showToast("下载成功");
-
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(mFile.getAbsolutePath() + "/" + fileName))));
     }
 }
