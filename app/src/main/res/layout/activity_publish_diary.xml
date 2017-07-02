@@ -24,6 +24,18 @@
             />
 
         <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="保存成功"
+            android:layout_centerInParent="true"
+            android:textSize="16sp"
+            android:textColor="@color/main_color"
+            android:textStyle="bold"
+            android:visibility="gone"
+            />
+
+        <TextView
             android:id="@+id/finish"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -41,7 +53,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="15dp"
+        android:paddingBottom="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginTop="15dp"
@@ -49,119 +61,167 @@
         >
 
         <LinearLayout
-            android:id="@+id/root_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/shape_publish_diary"
             android:orientation="vertical"
             >
 
-            <RelativeLayout
+            <LinearLayout
+                android:id="@+id/share_info"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="250dp"
+                android:layout_height="80dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 >
 
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/shoose_picture"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    fresco:roundTopLeft="true"
-                    fresco:roundTopRight="true"
-                    fresco:roundedCornerRadius="10dp"
-                    fresco:roundBottomLeft="false"
-                    fresco:roundBottomRight="false"
+                <ImageView
+                    android:id="@+id/share_weixin"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:src="@drawable/share_weixin_selector"
                     />
 
                 <ImageView
-                    android:id="@+id/add_picture"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/share_friends"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/add_picture"
-                    android:padding="50dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/share_weixin_friends_selector"
                     />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:background="@color/Gray"/>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                >
-
-                <EditText
-                    android:id="@+id/title_content"
-                    android:layout_width="match_parent"
+                <ImageView
+                    android:id="@+id/share_weixin_collection"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:gravity="center|top"
-                    android:hint="请输入标题"
-                    android:padding="10dp"
-                    android:textSize="16sp"
-                    android:textColor="@color/Gray"
-                    />
-
-
-                <EditText
-                    android:id="@+id/description"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="100dp"
-                    android:background="@null"
-                    android:gravity="center|top"
-                    android:hint="此刻你想说点什么..."
-                    android:paddingRight="15dp"
-                    android:paddingLeft="15dp"
-                    android:paddingBottom="15dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/Gray"
+                    android:layout_weight="1"
+                    android:src="@drawable/share_weixin_collect_selector"
                     />
             </LinearLayout>
 
-            <RelativeLayout
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/publish_finish_pic"
                 android:layout_width="match_parent"
-                android:layout_height="50dp">
+                android:layout_height="wrap_content"
+                fresco:roundedCornerRadius="10dp"
+                android:layout_gravity="center"
+                />
 
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/user_avatar"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    fresco:roundAsCircle="true"
-                    android:background="@drawable/avatar"
-                    android:layout_marginLeft="15dp"
-                    android:layout_centerVertical="true"
-                    />
+            <!--发布时填写的信息-->
+            <LinearLayout
+                android:id="@+id/root_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/shape_publish_diary"
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/user_name"
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black"
-                    android:textSize="13sp"
-                    android:text="Ghani"
-                    android:layout_toRightOf="@+id/user_avatar"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    />
+                    android:minHeight="250dp"
+                    >
 
-                <TextView
-                    android:id="@+id/publish_time"
-                    android:layout_width="wrap_content"
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/shoose_picture"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        fresco:roundTopLeft="true"
+                        fresco:roundTopRight="true"
+                        fresco:roundedCornerRadius="10dp"
+                        fresco:roundBottomLeft="false"
+                        fresco:roundBottomRight="false"
+                        />
+
+                    <ImageView
+                        android:id="@+id/add_picture"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/add_picture"
+                        android:padding="50dp"
+                        />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/Gray"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="15dp"
-                    android:layout_centerVertical="true"
-                    android:textColor="@color/black"
-                    android:textSize="13sp"
-                    android:text="2017.7.1"
-                    />
-            </RelativeLayout>
+                    android:orientation="vertical"
+                    >
+
+                    <EditText
+                        android:id="@+id/title_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center|top"
+                        android:hint="请输入标题"
+                        android:padding="10dp"
+                        android:textSize="16sp"
+                        android:textColor="@color/Gray"
+                        />
+
+
+                    <EditText
+                        android:id="@+id/description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="100dp"
+                        android:background="@null"
+                        android:gravity="center|top"
+                        android:hint="此刻你想说点什么..."
+                        android:paddingRight="15dp"
+                        android:paddingLeft="15dp"
+                        android:paddingBottom="15dp"
+                        android:textSize="15sp"
+                        android:textColor="@color/Gray"
+                        />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <com.facebook.drawee.view.SimpleDraweeView
+                        android:id="@+id/user_avatar"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        fresco:roundAsCircle="true"
+                        android:background="@drawable/avatar"
+                        android:layout_marginLeft="15dp"
+                        android:layout_centerVertical="true"
+                        />
+
+                    <TextView
+                        android:id="@+id/user_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:text="Ghani"
+                        android:layout_toRightOf="@+id/user_avatar"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        />
+
+                    <TextView
+                        android:id="@+id/publish_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="15dp"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/black"
+                        android:textSize="13sp"
+                        android:text="2017.7.1"
+                        />
+                </RelativeLayout>
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>

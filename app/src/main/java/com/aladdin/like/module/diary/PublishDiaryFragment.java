@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
@@ -51,6 +50,8 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
     @BindView(R.id.back)
     ImageView mBack;
+    @BindView(R.id.title)
+    TextView mTitle;
     @BindView(R.id.finish)
     TextView mFinish;
     @BindView(R.id.shoose_picture)
@@ -64,6 +65,24 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
     @BindView(R.id.root_view)
     LinearLayout mRootView;
 
+
+    @BindView(R.id.share_weixin)
+    ImageView mShareWeixin;
+    @BindView(R.id.share_friends)
+    ImageView mShareFriends;
+    @BindView(R.id.share_weixin_collection)
+    ImageView mShareWeixinCollection;
+    @BindView(R.id.share_info)
+    LinearLayout mShareInfo;
+    @BindView(R.id.publish_finish_pic)
+    SimpleDraweeView mPublishFinishPic;
+    @BindView(R.id.user_avatar)
+    SimpleDraweeView mUserAvatar;
+    @BindView(R.id.user_name)
+    TextView mUserName;
+    @BindView(R.id.publish_time)
+    TextView mPublishTime;
+
     private int selectType = LocalMediaLoader.TYPE_IMAGE;
     private int copyMode = Constants.COPY_MODEL_DEFAULT;
     private int selectMode = Constants.MODE_SINGLE;
@@ -72,6 +91,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
     PublishDialog mDialog;
 
+    int mFinishWidth,mFinishHeight;//生成的图片宽高
 
     @Override
     protected int getLayoutId() {
@@ -81,6 +101,10 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
     @Override
     protected void initView() {
         mPresenter = new PublishPrestener(this);
+        mTitle.setVisibility(View.GONE);
+        mShareInfo.setVisibility(View.GONE);
+        mPublishFinishPic.setVisibility(View.GONE);
+        mRootView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -94,20 +118,20 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                         Bitmap bitmap = BitmapFactory.decodeFile(result.get(0));
                         int width = bitmap.getWidth();
                         int height = bitmap.getHeight();
-                        float scale = (DensityUtils.mScreenWidth-DensityUtils.dip2px(30))/(float)width;
+                        float scale = (DensityUtils.mScreenWidth - DensityUtils.dip2px(30)) / (float) width;
                         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShoosePicture.getLayoutParams();
-                        params.height = (int) (height*scale);
-                        params.width = (int)(width*scale);
+                        params.height = (int) (height * scale);
+                        params.width = (int) (width * scale);
                         mShoosePicture.setLayoutParams(params);
                         ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mShoosePicture, result.get(0));
                     }
                     break;
                 case ChooseCollectionActivity.CHOOSE_COLLECTION:
                     mAddPicture.setVisibility(View.GONE);
-                    float scale = (DensityUtils.mScreenWidth-DensityUtils.dip2px(30))/(float)data.getIntExtra("width",0);
+                    float scale = (DensityUtils.mScreenWidth - DensityUtils.dip2px(30)) / (float) data.getIntExtra("width", 0);
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShoosePicture.getLayoutParams();
-                    params.height = (int) (data.getIntExtra("height",0)*scale);
-                    params.width = (int)(width*scale);
+                    params.height = (int) (data.getIntExtra("height", 0) * scale);
+                    params.width = (int) (width * scale);
                     mShoosePicture.setLayoutParams(params);
                     mShoosePicture.setImageURI(data.getStringExtra("url"));
                     break;
@@ -123,7 +147,8 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         }
     };
 
-    @OnClick({R.id.back, R.id.finish, R.id.add_picture})
+    @OnClick({R.id.back, R.id.finish, R.id.add_picture,R.id.share_weixin,
+            R.id.share_friends, R.id.share_weixin_collection})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back:
@@ -137,6 +162,12 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 break;
             case R.id.add_picture:
                 showDialog();
+                break;
+            case R.id.share_weixin:
+                break;
+            case R.id.share_friends:
+                break;
+            case R.id.share_weixin_collection:
                 break;
         }
     }
@@ -166,14 +197,14 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         AlbumDirectoryActivity.startPhoto(PublishDiaryFragment.this, options);
     }
 
-    public void showDialog(){
+    public void showDialog() {
         mDialog = new PublishDialog();
-        mDialog.show(getSupportFragmentManager(),"share_dialog");
+        mDialog.show(getSupportFragmentManager(), "share_dialog");
         mDialog.setDialogListener(new PublishDialog.onDialogListener() {
             @Override
             public void onLikeCollection() {
                 mDialog.dismiss();
-                startActivityForResult(ChooseCollectionActivity.class,ChooseCollectionActivity.CHOOSE_COLLECTION);
+                startActivityForResult(ChooseCollectionActivity.class, ChooseCollectionActivity.CHOOSE_COLLECTION);
             }
 
             @Override
@@ -192,6 +223,8 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         // 把一个View转换成图片
         Bitmap cachebmp = loadBitmapFromView(view);
 
+        mFinishWidth = cachebmp.getWidth();
+        mFinishHeight = cachebmp.getHeight();
         // 添加水印
 //        Bitmap bitmap = Bitmap.createBitmap(createWatermarkBitmap(cachebmp,
 //                "@ Zhang Phil"));
@@ -200,11 +233,11 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         try {
             // 判断手机设备是否有SD卡
             boolean isHasSDCard = Environment.getExternalStorageState().equals(
-                    android.os.Environment.MEDIA_MOUNTED);
+                    Environment.MEDIA_MOUNTED);
             if (isHasSDCard) {
                 // SD卡根目录
                 File sdRoot = new File(FileUtils.getImageRootPath());
-                File file = new File(sdRoot, UUID.randomUUID().toString().substring(0,16)+".jepg");
+                File file = new File(sdRoot, UUID.randomUUID().toString().substring(0, 16) + ".jepg");
                 mPath = file.getAbsolutePath();
                 fos = new FileOutputStream(file);
             } else
@@ -222,11 +255,6 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         view.destroyDrawingCache();
         mPresenter.publishPic(LikeAgent.getInstance().getUid(), mPath, "", mDescription.getText().toString());
 
-
-//        mPath = "";
-//        mDescription.setText("");
-//        mShoosePicture.setImageURI("");
-//        mAddPicture.setVisibility(View.VISIBLE);
     }
 
     private Bitmap loadBitmapFromView(View v) {
@@ -270,19 +298,26 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(PublishDiaryFragment.this,"发布成功",Toast.LENGTH_SHORT).show();
-                mPath = "";
-                mDescription.setText("");
-                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShoosePicture.getLayoutParams();
-                params.height = (int) DensityUtils.dip2px(250);
-                params.width = (int)(DensityUtils.mScreenWidth-DensityUtils.dip2px(30));
-                mShoosePicture.setLayoutParams(params);
+                mTitle.setVisibility(View.VISIBLE);
+                mFinish.setVisibility(View.GONE);
+                mShareInfo.setVisibility(View.VISIBLE);
+                mPublishFinishPic.setVisibility(View.VISIBLE);
+                mRootView.setVisibility(View.GONE);
 
                 mContent.setEnabled(true);
                 mDescription.setEnabled(true);
                 mShoosePicture.setImageURI("");
-                mAddPicture.setVisibility(View.VISIBLE);
-                finish();
+
+
+                LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mPublishFinishPic.getLayoutParams();
+                params.height = mFinishHeight;
+                params.width = mFinishWidth;
+                mPublishFinishPic.setLayoutParams(params);
+
+                ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mPublishFinishPic,mPath);
+
+                mPath = "";
+                mDescription.setText("");
             }
         });
     }
@@ -296,4 +331,5 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
             }
         });
     }
+
 }
