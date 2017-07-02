@@ -39,6 +39,8 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
 
 import static android.R.attr.width;
 
@@ -248,9 +250,6 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
             cachebmp.compress(Bitmap.CompressFormat.JPEG, 90, fos);
 
-            //插入相册
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file.getAbsoluteFile())));
-
             fos.flush();
             fos.close();
 
@@ -259,8 +258,25 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         }
 
         view.destroyDrawingCache();
-        mPresenter.publishPic(LikeAgent.getInstance().getUid(), mPath, mContent.getText().toString(), mDescription.getText().toString());
 
+        Luban.get(this).putGear(Luban.THIRD_GEAR).setCompressListener(new OnCompressListener() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onSuccess(File file) {
+                //插入相册
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file.getAbsoluteFile())));
+                mPresenter.publishPic(LikeAgent.getInstance().getUid(), file.getAbsolutePath(), mContent.getText().toString(), mDescription.getText().toString());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+        }).launch();
     }
 
     private Bitmap loadBitmapFromView(View v) {

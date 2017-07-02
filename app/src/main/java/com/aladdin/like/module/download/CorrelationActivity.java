@@ -176,6 +176,7 @@ public class CorrelationActivity extends BaseActivity {
             e.printStackTrace();
         }
         mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+
         Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         Uri uri = Uri.fromFile(f.getAbsoluteFile());
         intent.setData(uri);
