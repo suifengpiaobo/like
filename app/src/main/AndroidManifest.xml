@@ -61,8 +61,11 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
-            android:name=".wxapi.WXEntryActivity"
-            android:screenOrientation="portrait">
+            android:name="com.aladdin.like.wxapi.WXEntryActivity"
+            android:screenOrientation="portrait"
+            android:exported="true"
+            android:launchMode="singleTop"
+            >
         </activity>
         <activity
             android:name=".module.atlas.AtlasChooseActivity"

@@ -173,6 +173,7 @@ public class DiaryDetailsActivity extends BaseActivity {
 
     public void showShareDialog(){
         shareDialog = new ShareDialog();
+        shareDialog.setBitmapUrl(mDiary.diaryImage);
         shareDialog.show(getSupportFragmentManager(),"share_dialog");
     }
 

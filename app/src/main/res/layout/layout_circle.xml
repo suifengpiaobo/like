@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              xmlns:xmenu="http://schemas.android.com/apk/res-auto"
               android:id="@+id/main_item"
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="center"
-              android:orientation="vertical">
+              >
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/main_img"
@@ -17,4 +18,52 @@
         android:transitionName="transition_animation_circe_photos"
         />
 
-</LinearLayout>
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/main_img_layer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        fresco:placeholderImageScaleType="focusCrop"
+        fresco:roundedCornerRadius="10dp"
+        android:transitionName="transition_animation_circe_photos"
+        android:background="#CCFFFFFF"
+        android:visibility="gone"
+        />
+
+    <com.aladdin.like.widget.ArcMenu
+        android:id="@+id/xmenu_buttom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        xmenu:position="left_top"
+        android:layout_alignParentLeft="true"
+        xmenu:radius="100dp"
+        >
+
+        <ImageView
+            android:id="@+id/xmenu_center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/share_weixin_selector"
+            />
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/share_weixin_selector"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/share_weixin_friends_selector"
+            />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/share_weixin_collect_selector"
+            />
+    </com.aladdin.like.widget.ArcMenu>
+</RelativeLayout>

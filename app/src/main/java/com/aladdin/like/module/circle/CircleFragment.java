@@ -22,6 +22,7 @@ import com.aladdin.like.module.diary.PublishDiaryFragment;
 import com.aladdin.like.module.diarydetails.DiaryDetailsActivity;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
@@ -74,6 +75,12 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
             public void onItemClick(View view, SimpleDraweeView simpleDraweeView, DiaryDetail.Diary item) {
                 startDiaryDetailsActivity(simpleDraweeView,item);
             }
+
+            @Override
+            public void onLongClickListener(int position, DiaryDetail.Diary item) {
+                LogUtil.i("--position-->>"+position+"  --item-->>"+item);
+                mAdapter.setPressedPosition(position);
+            }
         });
 
     }
@@ -106,6 +113,8 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
 
     @Override
     protected void onvisible() {
+        mAdapter.setPressedPosition(0);
+        mAdapter.notifyDataSetChanged();
         page = 1;
         if (mAdapter != null && mAdapter.getCommonItemCount()>0){
             mAdapter.clear();
@@ -115,6 +124,10 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
 
     @Override
     public void onRefresh() {
+        if (mAdapter != null){
+            mAdapter.setPressedPosition(0);
+            mAdapter.notifyDataSetChanged();
+        }
         page = 1;
         mPresenter.getData(LikeAgent.getInstance().getUid(),page,page_num);
     }

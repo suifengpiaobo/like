@@ -2,12 +2,18 @@ package com.aladdin.like.http;
 
 import android.text.TextUtils;
 
+import com.aladdin.like.LikeAgent;
+import com.aladdin.like.model.LoginStateEvent;
+import com.aladdin.like.model.UserPojo;
+import com.aladdin.like.model.WeiXinFailPojo;
 import com.aladdin.like.module.register.entity.WeiXinResult;
 import com.aladdin.like.wxapi.WXEntryActivity;
 import com.aladdin.utils.GsonUtils;
 import com.aladdin.utils.LogUtil;
 import com.zxl.network_lib.HttpUtil;
 import com.zxl.network_lib.Inteface.HttpResultListener;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
@@ -18,10 +24,15 @@ import java.io.IOException;
  */
 public class WChatHttpClient {
     public static final String WEIXIN_GET_CODE_FROM_TOKEN = "https://api.weixin.qq.com/sns/oauth2/access_token";
+    public static final String WEIXIN_GET_REFRESH_TOKEN = "https://api.weixin.qq.com/sns/oauth2/refresh_token";
+    public static final String WEIXIN_GET_USERINFO = "https://api.weixin.qq.com/sns/userinfo";
+
     public static void requestGetWChatToken(String code) {
         String appId = WXEntryActivity.WX_APPID;
         String secret = WXEntryActivity.WX_SECRET;
 
+        //https://api.weixin.qq.com/sns/oauth2/access_token
+        // ?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code
         String param = WEIXIN_GET_CODE_FROM_TOKEN + "?" +
                 HttpParamKey.WeiXinGetToKen.APP_ID + "=" + appId + "&" +
                 HttpParamKey.WeiXinGetToKen.SECRET + "=" + secret + "&" +
@@ -35,8 +46,26 @@ public class WChatHttpClient {
         }
     }
 
+    public static void requestGetRefreshWChatToken() {
+        String appId = WXEntryActivity.WX_APPID;
+        String secret = WXEntryActivity.WX_SECRET;
+
+        //https://api.weixin.qq.com/sns/oauth2/refresh_token
+        // ?appid=APPID&grant_type=refresh_token&refresh_token=REFRESH_TOKEN
+        String param = WEIXIN_GET_REFRESH_TOKEN + "?" +
+                HttpParamKey.WeiXinGetToKen.APP_ID + "=" + appId + "&" +
+                HttpParamKey.WeiXinGetToKen.GRANT_TYPE + "=" + "refresh_token" +
+                HttpParamKey.WeiXinGetToKen.REFRESH_TOKEN_PARAM + "=" + LikeAgent.getInstance().getWeiXinPojo().getRefresh_token();
+
+
+        try {
+            httpClientGetRequest(param);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void httpClientGetRequest(String param) throws IllegalStateException, IOException {
-        LogUtil.i("param--->>>"+param);
         HttpUtil.getInstance().GET(param, new HttpResultListener() {
             @Override
             public void onSuccess(String str) {
@@ -45,13 +74,41 @@ public class WChatHttpClient {
 //                    EventBus.getDefault().post(new LoginStateEvent(LoginStateEvent.WXLOGINERROR, "微信返回的数据有空"));
                     return;
                 }
-                LogUtil.i(weiXinResult.getAccess_token()+"  --  "+weiXinResult.getRefresh_token()+"  --  "+weiXinResult.getOpenid());
-//                LiveAgent.getInstance().weixinLogin(weiXinResult.getAccess_token(), weiXinResult.getRefresh_token(), weiXinResult.getOpenid(), false);
+
+                LikeAgent.getInstance().clearWeiXinInfo();
+                LikeAgent.getInstance().saveWeiXinInfo(weiXinResult);
+
+                getUserInfo(weiXinResult.getAccess_token(),weiXinResult.getOpenid());
             }
 
             @Override
             public void onFailure(String str) {
-//                EventBus.getDefault().post(new LoginStateEvent(LoginStateEvent.WXLOGINERROR, "请求网络异常"));
+                WeiXinFailPojo fail = GsonUtils.jsonToObject(str, WeiXinFailPojo.class);
+                if (fail.errcode == 40029) {
+                    requestGetRefreshWChatToken();
+                }
+
+            }
+        });
+    }
+
+    public static void getUserInfo(String access_token, String openid) {
+        //https://api.weixin.qq.com/sns/userinfo?access_token=ACCESS_TOKEN&openid=OPENID
+        String param = WEIXIN_GET_USERINFO + "?" + HttpParamKey.WeiXinGetToKen.ACCESS_TOKEN_PARAM+"="
+                + access_token + "&openid=" + openid;
+        HttpUtil.getInstance().GET(param, new HttpResultListener() {
+            @Override
+            public void onSuccess(String str) {
+                UserPojo userPojo = GsonUtils.jsonToObject(str, UserPojo.class);
+                LikeAgent.getInstance().saveUserInfo(userPojo);
+                EventBus.getDefault().post(new LoginStateEvent(LoginStateEvent.SUCCESS));
+
+                LogUtil.i("---user--->>>"+userPojo);
+            }
+
+            @Override
+            public void onFailure(String str) {
+
             }
         });
     }

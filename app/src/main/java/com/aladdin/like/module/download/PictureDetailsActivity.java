@@ -197,6 +197,7 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
                 break;
             case R.id.share:
                 ShareDialog shareDialog = new ShareDialog();
+                shareDialog.setBitmapUrl(mTheme.themeImgUrl);
                 shareDialog.show(getSupportFragmentManager(), "share_dialog");
                 break;
             case R.id.picture:

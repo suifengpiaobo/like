@@ -64,3 +64,15 @@
  -keep class com.tencent.android.tpush.** {* ;}
  -keep class com.tencent.mid.** {* ;}
  -keep public class * extends com.qq.taf.jce.JceStruct{*;}
+
+
+
+ -keep class com.tencent.mm.opensdk.** {
+    *;
+ }
+ -keep class com.tencent.wxop.** {
+    *;
+ }
+ -keep class com.tencent.mm.sdk.** {
+    *;
+ }

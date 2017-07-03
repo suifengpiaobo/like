@@ -31,6 +31,8 @@ public class ShareDialog extends DialogFragment {
     private Bitmap mBitmap;
     private Context mContext;
 
+    private String bitmapUrl;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,25 +68,29 @@ public class ShareDialog extends DialogFragment {
         return dialog;
     }
 
+    public void setBitmapUrl(String url){
+        this.bitmapUrl = url;
+    }
+
     private void bindEvent() {
         mWeixin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WXUtils.shareBitmap(mContext,mBitmap, SendMessageToWX.Req.WXSceneSession);
+                WXUtils.shareBitmap(mContext,bitmapUrl, SendMessageToWX.Req.WXSceneSession);
             }
         });
 
         mFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WXUtils.shareBitmap(mContext,mBitmap, SendMessageToWX.Req.WXSceneTimeline);
+                WXUtils.shareBitmap(mContext,bitmapUrl, SendMessageToWX.Req.WXSceneTimeline);
             }
         });
 
         mCollect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WXUtils.shareBitmap(mContext,mBitmap, SendMessageToWX.Req.WXSceneFavorite);
+                WXUtils.shareBitmap(mContext,bitmapUrl, SendMessageToWX.Req.WXSceneFavorite);
             }
         });
     }

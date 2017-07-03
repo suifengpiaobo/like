@@ -17,12 +17,15 @@ public class Constant {
     public static final String TRANSITION_ANIMATION_CIRCLE_PHOTOS = "transition_animation_circe_photos";
 
     public class User {
+        public final static String WEIXIN_INFO = "USER_INFO";
 
         public final static String USER_INFO = "USER_INFO";
 
         public final static String ACCOUNT_SET = "ACCOUNT_SET";
 
         public final static String LAST_ID = "LAST_ID";
+
+        public final static String CODE = "code";
 
     }
 }

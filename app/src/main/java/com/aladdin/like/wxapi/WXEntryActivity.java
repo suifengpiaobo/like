@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.constant.Constant;
 import com.aladdin.like.event.ShareEvent;
@@ -73,8 +74,8 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
             case BaseResp.ErrCode.ERR_OK:
                 if (Constant.IS_AUTH_WCHAT) {
                     String code = ((SendAuth.Resp) resp).code;
-                    LogUtil.i("---code--->>>"+code);
                     WChatHttpClient.requestGetWChatToken(code);
+                    LikeAgent.getInstance().setCode(code);
                 } else {
                     EventBus.getDefault().post(new ShareEvent(ShareEvent.SHARE_SUCCESS));
                 }

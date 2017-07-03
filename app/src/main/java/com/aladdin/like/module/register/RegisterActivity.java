@@ -1,9 +1,11 @@
 package com.aladdin.like.module.register;
 
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -13,6 +15,9 @@ import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.constant.Constant;
+import com.aladdin.like.http.HttpManager;
+import com.aladdin.like.model.LoginStateEvent;
+import com.aladdin.like.model.UserPojo;
 import com.aladdin.like.module.atlas.AtlasChooseActivity;
 import com.aladdin.like.module.login.LoginAccountActivity;
 import com.aladdin.like.wxapi.WXEntryActivity;
@@ -21,6 +26,11 @@ import com.aladdin.utils.ToastUtil;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.zxl.network_lib.Inteface.HttpResultCallback;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +62,7 @@ public class RegisterActivity extends BaseActivity {
     RegisterLoginFragment mRegisterLoginFragment;
     private List<Fragment> mList = new ArrayList<>();
     private int mCurrent = 0;
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_register;
@@ -59,6 +70,7 @@ public class RegisterActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        EventBus.getDefault().register(this);
         mRegisterFragment = new RegisterFragment();
         mRegisterLoginFragment = new RegisterLoginFragment();
         mList.add(mRegisterFragment);
@@ -93,9 +105,7 @@ public class RegisterActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.wx_login:
-                LikeAgent.getInstance().setUid("10000");
-                startThenKill(AtlasChooseActivity.class);
-//                loginWx();
+                loginWx();
                 break;
             case R.id.register_account:
                 startThenKill(LoginAccountActivity.class);
@@ -109,27 +119,70 @@ public class RegisterActivity extends BaseActivity {
     }
 
     public void loginWx(){
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                IWXAPI api = WXAPIFactory.createWXAPI(getApplicationContext(), WCHAT_APPID,false);
+                api.registerApp(WCHAT_APPID);
+                if (!api.isWXAppInstalled()) {
+                    ToastUtil.showToast("未安装微信客户端");
+                    return;
+                }
 
-        IWXAPI api = WXAPIFactory.createWXAPI(getApplicationContext(), WCHAT_APPID,true);
-        api.registerApp(WCHAT_APPID);
-        LogUtil.i("---wx_login---"+WCHAT_APPID);
-        if (!api.isWXAppInstalled()) {
-            ToastUtil.showToast("未安装微信客户端");
-            return;
-        }
-        LogUtil.i("---supportAPI--BB-->>>"+api.getWXAppSupportAPI());
-        if (!api.isWXAppSupportAPI()) {
-            ToastUtil.showToast("当前的微信版本太低，请先更新微信");
-            return;
-        }
+                //最新版本也一直提示版本太低
+                if (!api.isWXAppSupportAPI()) {
+                    ToastUtil.showToast("当前的微信版本太低，请先更新微信");
+                    return;
+                }
 
-        Constant.IS_AUTH_WCHAT = true;
-        startProgressDialog();
-        final SendAuth.Req req = new SendAuth.Req();
-        req.scope = SCOPE;
-        req.state = STATE;
-        api.sendReq(req);
+                Constant.IS_AUTH_WCHAT = true;
+                startProgressDialog();
+                final SendAuth.Req req = new SendAuth.Req();
+                req.scope = SCOPE;
+                req.state = STATE;
+                api.sendReq(req);
+            }
+        });
     }
+
+
+    @Subscribe(threadMode = ThreadMode.ASYNC)
+    public void onLoginSuccess(LoginStateEvent loginStateEvent) {
+        HttpManager.INSTANCE.login(1, LikeAgent.getInstance().getUserPojo().nickname,
+                LikeAgent.getInstance().getUserPojo().headimgurl, LikeAgent.getInstance().getUserPojo().openid,
+                LikeAgent.getInstance().getUserPojo().unionid, new HttpResultCallback<UserPojo>() {
+                    @Override
+                    public void onSuccess(UserPojo result) {
+                        UserPojo userPojo = LikeAgent.getInstance().getUserPojo();
+                        if (!"".equals(LikeAgent.getInstance().getUserPojo().headimgurl) && LikeAgent.getInstance().getUserPojo().headimgurl !=null){
+                            userPojo.headimgurl=LikeAgent.getInstance().getUserPojo().headimgurl;
+                        }
+                        if (!"".equals(LikeAgent.getInstance().getUserPojo().nickname) && LikeAgent.getInstance().getUserPojo().nickname !=null){
+                            userPojo.nickname=LikeAgent.getInstance().getUserPojo().nickname;
+                        }
+                        if (!TextUtils.isEmpty(LikeAgent.getInstance().getUserPojo().openid)){
+                            userPojo.openid = LikeAgent.getInstance().getUserPojo().openid;
+                        }
+
+                        if (result.IsFirstLogin == 1){
+                            userPojo.IsFirstLogin = 1;
+                        }else{
+                            userPojo.IsFirstLogin = 0;
+                        }
+                        LikeAgent.getInstance().updateUserInfo(userPojo);
+                        stopProgressDialog();
+                        startThenKill(AtlasChooseActivity.class);
+                        LogUtil.i("---user---result--->>>"+result);
+                    }
+
+                    @Override
+                    public void onFailure(String code, String msg) {
+
+                    }
+                });
+    }
+
+
 
     public class RegisterLoginAdapter extends FragmentStatePagerAdapter {
         private List<Fragment> mList;
