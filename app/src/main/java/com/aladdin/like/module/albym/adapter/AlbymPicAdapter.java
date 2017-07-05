@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
-import com.aladdin.like.model.ThemeModes;
+import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.utils.DensityUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
  * Created by zxl on 2017/5/1 上午6:23.
  * Email:444288256@qq.com
  */
-public class AlbymPicAdapter extends BaseAdapter<ThemeModes.Theme> {
+public class AlbymPicAdapter extends BaseAdapter<ThemeDetail.Theme> {
     onItemClickListener mItemClickListener;
     private Context mContext;
 
@@ -67,13 +67,13 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeModes.Theme> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         HorizontalViewHolder viewHolder = (HorizontalViewHolder) holder;
-        ThemeModes.Theme item = getItemObject(position);
+        ThemeDetail.Theme item = getItemObject(position);
         if (item != null) {
-            viewHolder.mResultImg.setImageURI(item.themeImgUrl);
-            viewHolder.mResultTypeName.setText(item.themeName);
+            viewHolder.mResultImg.setImageURI(item.imageUrl);
+            viewHolder.mResultTypeName.setText(item.imageName);
             viewHolder.mResultTime.setText(item.createTimeStr);
 
-            Uri uri = Uri.parse(item.themeImgUrl);
+            Uri uri = Uri.parse(item.imageUrl);
             Bitmap bitmap = returnBitmap(uri);
             int width = bitmap.getWidth();//994
             float scale = (DensityUtils.mScreenWidth/2- DensityUtils.dip2px(15))/(float)width;
@@ -97,10 +97,10 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeModes.Theme> {
     }
 
     @Override
-    public void onBindCommon(RecyclerView.ViewHolder holder, ThemeModes.Theme item) {
+    public void onBindCommon(RecyclerView.ViewHolder holder, ThemeDetail.Theme item) {
     }
 
-    public ThemeModes.Theme getItemObject(int position) {
+    public ThemeDetail.Theme getItemObject(int position) {
         if (position < 0 || position > mDatas.size() - 1) return null;
         return mDatas.get(position);
     }
@@ -132,7 +132,7 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeModes.Theme> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(ThemeModes.Theme item);
+        void onItemClick(ThemeDetail.Theme item);
     }
 
 

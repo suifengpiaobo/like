@@ -57,7 +57,6 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
 
         mPrestener = new AlbymPrestener(AlbymActivity.this);
         mPrestener.getAlbymDetail(LikeAgent.getInstance().getUserPojo().openid,mTheme.themeId,page,page_num);
-        mPrestener.getThemeDetail(LikeAgent.getInstance().getUserPojo().openid,mAlbymDetail.albymId+"",page,page_num);
 
         mAlbymList.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mAlbymList.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
@@ -107,7 +106,10 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
 
                 mAlbymAdapter.addAll(albymData.albymList);
                 mAlbymAdapter.notifyDataSetChanged();
-
+                if (albymData.albymList.size()>0){
+                    mPrestener.getThemeDetail(LikeAgent.getInstance().getUserPojo().openid,albymData.albymList.get(0).albymId+"",page,page_num);
+                    mAlbymName.setText(albymData.albymList.get(0).albymName);
+                }
                 page = albymData.next_page;
 
             }
@@ -116,7 +118,13 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
 
     @Override
     public void setAlbymPic(ThemeDetail themeDetail) {
-
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mAlbymPicAdapter.addAll(themeDetail.imageList);
+                mAlbymPicAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
