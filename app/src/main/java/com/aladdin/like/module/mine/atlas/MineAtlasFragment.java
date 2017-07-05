@@ -44,7 +44,7 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
     @Override
     protected void initView() {
         mPresenter = new MineThemePrestener(this);
-        mPresenter.getTheme(LikeAgent.getInstance().getUid());
+        mPresenter.getTheme(LikeAgent.getInstance().getUserPojo().openid);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -65,7 +65,7 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
 
     @Override
     protected void onvisible() {
-        mPresenter.getTheme(LikeAgent.getInstance().getUid());
+        mPresenter.getTheme(LikeAgent.getInstance().getUserPojo().openid);
     }
 
     private void bindEvent() {
@@ -74,7 +74,7 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
             public void onItemClick(ThemeModes.Theme item) {
                 List<String> tempList = new ArrayList<String>();
                 tempList.add(item.themeId);
-                mPresenter.addUserTheme(LikeAgent.getInstance().getUid(),tempList,2);
+                mPresenter.addUserTheme(LikeAgent.getInstance().getUserPojo().openid,tempList,2);
                 tempList.clear();
             }
         });
@@ -84,7 +84,7 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
             public void onItemClick(ThemeModes.Theme item) {
                 List<String> tempList = new ArrayList<String>();
                 tempList.add(item.themeId);
-                mPresenter.addUserTheme(LikeAgent.getInstance().getUid(),tempList,1);
+                mPresenter.addUserTheme(LikeAgent.getInstance().getUserPojo().openid,tempList,1);
                 tempList.clear();
             }
         });
@@ -160,6 +160,6 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
 
     @Override
     public void addThemeSuc() {
-        mPresenter.getTheme(LikeAgent.getInstance().getUid());
+        mPresenter.getTheme(LikeAgent.getInstance().getUserPojo().openid);
     }
 }

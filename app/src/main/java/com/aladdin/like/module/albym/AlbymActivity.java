@@ -56,8 +56,8 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
         mTheme = (ThemeModes.Theme) getIntent().getSerializableExtra("THEME");
 
         mPrestener = new AlbymPrestener(AlbymActivity.this);
-        mPrestener.getAlbymDetail(LikeAgent.getInstance().getUid(),mTheme.themeId,page,page_num);
-        mPrestener.getThemeDetail(LikeAgent.getInstance().getUid(),mAlbymDetail.albymId+"",page,page_num);
+        mPrestener.getAlbymDetail(LikeAgent.getInstance().getUserPojo().openid,mTheme.themeId,page,page_num);
+        mPrestener.getThemeDetail(LikeAgent.getInstance().getUserPojo().openid,mAlbymDetail.albymId+"",page,page_num);
 
         mAlbymList.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mAlbymList.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);

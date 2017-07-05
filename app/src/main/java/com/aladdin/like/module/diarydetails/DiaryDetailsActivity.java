@@ -178,7 +178,7 @@ public class DiaryDetailsActivity extends BaseActivity {
     }
 
     public void collection(){
-        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getUid(), mDiary.diaryId, new HttpResultCallback<String>() {
+        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getUserPojo().openid, mDiary.diaryId, new HttpResultCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 runOnUiThread(new Runnable() {

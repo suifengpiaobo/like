@@ -151,7 +151,7 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
     @Override
     public void onRefresh() {
-        mPresenter.loadData(LikeAgent.getInstance().getUid());
+        mPresenter.loadData(LikeAgent.getInstance().getUserPojo().openid);
     }
 
     @Override

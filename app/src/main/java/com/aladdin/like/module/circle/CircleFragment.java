@@ -119,7 +119,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
         if (mAdapter != null && mAdapter.getCommonItemCount()>0){
             mAdapter.clear();
         }
-        mPresenter.getData(LikeAgent.getInstance().getUid(),1,page,page_num);
+        mPresenter.getData(LikeAgent.getInstance().getUserPojo().openid,1,page,page_num);
     }
 
     @Override
@@ -129,13 +129,13 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
             mAdapter.notifyDataSetChanged();
         }
         page = 1;
-        mPresenter.getData(LikeAgent.getInstance().getUid(),1,page,page_num);
+        mPresenter.getData(LikeAgent.getInstance().getUserPojo().openid,1,page,page_num);
     }
 
     @Override
     public void onLoadMore() {
         if (page<total){
-            mPresenter.getData(LikeAgent.getInstance().getUid(),1,page,page_num);
+            mPresenter.getData(LikeAgent.getInstance().getUserPojo().openid,1,page,page_num);
         }else{
             mCircle.loadMoreComplete();
         }

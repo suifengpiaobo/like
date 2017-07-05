@@ -55,7 +55,7 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
                     inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
                 }
                 if (mSearch.getText().toString().length() > 0) {
-                    mPresenter.searchData(LikeAgent.getInstance().getUid(), mSearch.getText().toString());
+                    mPresenter.searchData(LikeAgent.getInstance().getUserPojo().openid, mSearch.getText().toString());
                 }
                 return true;
             }
@@ -71,7 +71,7 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
     @Override
     protected void initView() {
         mPresenter = new SearchPrestener(this);
-        mPresenter.loadData(LikeAgent.getInstance().getUid());
+        mPresenter.loadData(LikeAgent.getInstance().getUserPojo().openid);
 
         mSearchResult.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mSearchResult.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
