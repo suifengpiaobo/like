@@ -69,7 +69,7 @@
             <LinearLayout
                 android:id="@+id/share_info"
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="60dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 >
@@ -79,7 +79,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/share_weixin_selector"
+                    android:src="@drawable/share_weixin"
                     />
 
                 <ImageView
@@ -87,14 +87,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/share_weixin_friends_selector"
+                    android:src="@drawable/share_weixin_friends"
                     />
                 <ImageView
                     android:id="@+id/share_weixin_collection"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:src="@drawable/share_weixin_collect_selector"
+                    android:src="@drawable/share_weixin_collection"
                     />
             </LinearLayout>
 
