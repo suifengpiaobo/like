@@ -23,7 +23,7 @@ public class DiaryPrestener implements DiaryContract.Presenter {
 
     @Override
     public void getUserDiary(String openid, int page, int page_num) {
-        HttpManager.INSTANCE.getUserDiary(openid, page, page_num, new HttpResultCallback<DiaryDetail>() {
+        HttpManager.INSTANCE.getUserDiary(openid, 0,page, page_num, new HttpResultCallback<DiaryDetail>() {
             @Override
             public void onSuccess(DiaryDetail result) {
                 if (mView == null) return;

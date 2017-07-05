@@ -22,9 +22,9 @@ public class Circlrprestener implements CircleContract.Presenter{
     }
 
     @Override
-    public void getData(String openid,int page,int page_num) {
+    public void getData(String openid,int auditSign,int page,int page_num) {
         LogUtil.i(""+page+"----"+page_num);
-        HttpManager.INSTANCE.getUserDiary(openid, page, page_num, new HttpResultCallback<DiaryDetail>() {
+        HttpManager.INSTANCE.getUserDiary(openid,auditSign, page, page_num, new HttpResultCallback<DiaryDetail>() {
             @Override
             public void onSuccess(DiaryDetail result) {
                 if (mView == null) return;

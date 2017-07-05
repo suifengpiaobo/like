@@ -14,6 +14,6 @@ public interface CircleContract {
         void setData(DiaryDetail data);
     }
     interface Presenter extends BasePresenter {
-        void getData(String openid,int page,int page_num);
+        void getData(String openid,int auditSign,int page,int page_num);
     }
 }

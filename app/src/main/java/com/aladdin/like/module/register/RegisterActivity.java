@@ -21,7 +21,6 @@ import com.aladdin.like.model.UserPojo;
 import com.aladdin.like.module.atlas.AtlasChooseActivity;
 import com.aladdin.like.module.login.LoginAccountActivity;
 import com.aladdin.like.wxapi.WXEntryActivity;
-import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.ToastUtil;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
@@ -105,6 +104,8 @@ public class RegisterActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.wx_login:
+//                LikeAgent.getInstance().setUid("10000");
+//                startThenKill(AtlasChooseActivity.class);
                 loginWx();
                 break;
             case R.id.register_account:
@@ -154,14 +155,17 @@ public class RegisterActivity extends BaseActivity {
                     @Override
                     public void onSuccess(UserPojo result) {
                         UserPojo userPojo = LikeAgent.getInstance().getUserPojo();
-                        if (!"".equals(LikeAgent.getInstance().getUserPojo().headimgurl) && LikeAgent.getInstance().getUserPojo().headimgurl !=null){
-                            userPojo.headimgurl=LikeAgent.getInstance().getUserPojo().headimgurl;
+                        if (!"".equals(result.userId) && result.userId != null){
+                            userPojo.userId = result.userId;
                         }
-                        if (!"".equals(LikeAgent.getInstance().getUserPojo().nickname) && LikeAgent.getInstance().getUserPojo().nickname !=null){
-                            userPojo.nickname=LikeAgent.getInstance().getUserPojo().nickname;
+                        if (!"".equals(result.headimgurl) && result.headimgurl !=null){
+                            userPojo.headimgurl=result.headimgurl;
                         }
-                        if (!TextUtils.isEmpty(LikeAgent.getInstance().getUserPojo().openid)){
-                            userPojo.openid = LikeAgent.getInstance().getUserPojo().openid;
+                        if (!"".equals(result.nickname) && result.nickname !=null){
+                            userPojo.nickname=result.nickname;
+                        }
+                        if (!TextUtils.isEmpty(result.openid)){
+                            userPojo.openid = result.openid;
                         }
 
                         if (result.IsFirstLogin == 1){
@@ -172,7 +176,6 @@ public class RegisterActivity extends BaseActivity {
                         LikeAgent.getInstance().updateUserInfo(userPojo);
                         stopProgressDialog();
                         startThenKill(AtlasChooseActivity.class);
-                        LogUtil.i("---user---result--->>>"+result);
                     }
 
                     @Override

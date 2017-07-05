@@ -1,17 +1,21 @@
 package com.aladdin.like;
 
+import android.content.Intent;
 import android.support.annotation.CheckResult;
 import android.text.TextUtils;
 
 import com.aladdin.like.constant.Constant;
 import com.aladdin.like.constant.LoginType;
 import com.aladdin.like.constant.SharedPreferencesManager;
+import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.LoginStateEvent;
 import com.aladdin.like.model.User2Pojo;
 import com.aladdin.like.model.UserPojo;
+import com.aladdin.like.module.main.MainActivity;
 import com.aladdin.like.module.register.entity.WeiXinResult;
 import com.aladdin.like.utils.LoginHttpRequestUtil;
 import com.aladdin.like.utils.UserSettingHelper;
+import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.GsonUtils;
 import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.SharedPreferencesUtil;
@@ -79,7 +83,7 @@ public class LikeAgent {
      *
      * @param authed 是否认证成功
      */
-    private void setAuthed(boolean authed) {
+    public void setAuthed(boolean authed) {
         this.authed = authed;
     }
 
@@ -93,7 +97,7 @@ public class LikeAgent {
         if (TextUtils.isEmpty(uid)) {
             UserPojo userPojo = getUserPojo();
             if (null != userPojo) {
-                return userPojo.openid;
+                return userPojo.userId;
             }
         }
         return uid;
@@ -161,7 +165,6 @@ public class LikeAgent {
      * @param openId
      */
     public void weixinLogin(String accessToken, String refreshToken, String openId) {
-        LogUtil.i("--isAuthed-->>"+isAuthed());
         if (isAuthed()) {
             exitAgent();
         }
@@ -174,7 +177,6 @@ public class LikeAgent {
         LoginHttpRequestUtil.goWeiXinLogin(provider, accessToken, refreshToken, new HttpResultCallback<User2Pojo>() {
             @Override
             public void onSuccess(User2Pojo result) {
-                LogUtil.i("---User2Pojo--->>>"+result);
 //                if (provider.equals("weibo")) {
 //                    loginResult(LoginType.WEIBO, result);
 //                } else {
@@ -207,18 +209,37 @@ public class LikeAgent {
      * 自动登陆
      */
     public void autoLogin() {
-        if (isAuthed())
-            return;
-        // TODO 先保留application中，不要一直操作sp
-        LoginType signInState = SharedPreferencesManager.getLoginState();
-        String mAuth = UserSettingHelper.getInstance().getMauth();
-        if (TextUtils.isEmpty(mAuth) || TextUtils.isEmpty(mAuth.split("MAuth")[1]) || mAuth.split("MAuth")[1].equals("null")) {
-//            exitAgent();
-//            Navigator.INSTANCE.navigateExitToLoginStateChoice(ContextUtils.getInstance().getContext(), 1);
-        } else {
-            autoLogin(mAuth, signInState, true);
-            this.signInState = signInState;
-        }
+        HttpManager.INSTANCE.login(1, LikeAgent.getInstance().getUserPojo().nickname,
+                LikeAgent.getInstance().getUserPojo().headimgurl, LikeAgent.getInstance().getUserPojo().openid,
+                LikeAgent.getInstance().getUserPojo().unionid, new HttpResultCallback<UserPojo>() {
+                    @Override
+                    public void onSuccess(UserPojo result) {
+                        UserPojo userPojo = LikeAgent.getInstance().getUserPojo();
+                        if (!"".equals(LikeAgent.getInstance().getUserPojo().headimgurl) && LikeAgent.getInstance().getUserPojo().headimgurl !=null){
+                            userPojo.headimgurl=LikeAgent.getInstance().getUserPojo().headimgurl;
+                        }
+                        if (!"".equals(LikeAgent.getInstance().getUserPojo().nickname) && LikeAgent.getInstance().getUserPojo().nickname !=null){
+                            userPojo.nickname=LikeAgent.getInstance().getUserPojo().nickname;
+                        }
+                        if (!TextUtils.isEmpty(LikeAgent.getInstance().getUserPojo().openid)){
+                            userPojo.openid = LikeAgent.getInstance().getUserPojo().openid;
+                        }
+
+                        if (result.IsFirstLogin == 1){
+                            userPojo.IsFirstLogin = 1;
+                        }else{
+                            userPojo.IsFirstLogin = 0;
+                        }
+                        LikeAgent.getInstance().updateUserInfo(userPojo);
+                        Intent intent = new Intent(ContextUtils.getInstance().getContext(), MainActivity.class);
+                        ContextUtils.getInstance().getContext().startActivity(intent);
+                    }
+
+                    @Override
+                    public void onFailure(String code, String msg) {
+
+                    }
+                });
     }
 
     public void autoLogin(String mAuth, LoginType type, boolean isBackground) {

@@ -33,4 +33,7 @@ public class HttpUrl {
 
     //用户收藏图片
     public static final String GET_USER_DIARY = API_URL+"user/getUserCollectImage";
+
+    //获取专辑信息
+    public static final String GET_ALBYM_DETAIL=API_URL+"user/getAlbymDetail";
 }

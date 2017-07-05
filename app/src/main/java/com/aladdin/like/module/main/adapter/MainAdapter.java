@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
@@ -43,9 +43,9 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
         if (item != null) {
             viewHolder.item = item;
             float scale = (DensityUtils.mScreenWidth/2-DensityUtils.dip2px(15))/(float)item.width;
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
             params.height = (int) (item.height*scale);
-            params.weight = (int)(item.width*scale);
+            params.width = (int)(item.width*scale);
             viewHolder.mMainImg.setLayoutParams(params);
 
             viewHolder.mMainImg.setImageURI(item.themeImgUrl);
@@ -80,7 +80,7 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
         @BindView(R.id.main_time)
         TextView mMainTime;
         @BindView(R.id.main_item)
-        LinearLayout mMainItem;
+        RelativeLayout mMainItem;
         ThemeModes.Theme item;
 
         MainViewHolder(View view) {
@@ -102,7 +102,7 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
 
     public interface onItemClickListener {
 //        void onItemClick(ThemeModes.Theme item);
-        void onItemClick(View v,SimpleDraweeView mMainImg,LinearLayout mMainItem,ThemeModes.Theme item);
+        void onItemClick(View v,SimpleDraweeView mMainImg,RelativeLayout mMainItem,ThemeModes.Theme item);
     }
 
 }

@@ -8,13 +8,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseFragment;
 import com.aladdin.like.constant.Constant;
 import com.aladdin.like.model.ThemeModes;
+import com.aladdin.like.module.albym.AlbymActivity;
 import com.aladdin.like.module.download.PictureDetailsActivity;
 import com.aladdin.like.module.main.adapter.MainAdapter;
 import com.aladdin.like.module.main.contract.MainContract;
@@ -60,8 +61,11 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
         mAdapter.setItemClickListener(new MainAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(View v, SimpleDraweeView mMainImg, LinearLayout mMainItem, ThemeModes.Theme item) {
-                startCorrelationActivity(mMainImg,item);
+            public void onItemClick(View v, SimpleDraweeView mMainImg, RelativeLayout mMainItem, ThemeModes.Theme item) {
+//                startCorrelationActivity(mMainImg,item);
+                Intent intent = new Intent(getActivity(),AlbymActivity.class);
+                intent.putExtra("THEME",item);
+                startActivity(intent);
             }
         });
     }

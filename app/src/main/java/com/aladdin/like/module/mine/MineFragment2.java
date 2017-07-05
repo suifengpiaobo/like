@@ -5,7 +5,6 @@ import android.support.design.widget.TabLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseFragment;
 import com.aladdin.like.module.mine.atlas.MineAtlasFragment;
@@ -58,9 +57,9 @@ public class MineFragment2 extends BaseFragment {
         mTabLayout.setupWithViewPager(mMineInfoViewpager);
 //        mMineInfoViewpager.CURRENT_PAGE = 0;
 
-        mUserAvatar.setImageURI(LikeAgent.getInstance().getUserPojo().headimgurl);
-        mUserName.setText(LikeAgent.getInstance().getUserPojo().nickname);
-        mDescription.setText(LikeAgent.getInstance().getUserPojo().openid);
+//        mUserAvatar.setImageURI(LikeAgent.getInstance().getUserPojo().headimgurl);
+//        mUserName.setText(LikeAgent.getInstance().getUserPojo().nickname);
+//        mDescription.setText(LikeAgent.getInstance().getUserPojo().openid);
     }
 
     @Override

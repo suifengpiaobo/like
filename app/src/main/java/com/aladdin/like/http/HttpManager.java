@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.aladdin.http.HttpResultProcess;
 import com.aladdin.http.RequestType;
+import com.aladdin.like.model.AlbymModel;
 import com.aladdin.like.model.CollectionImage;
 import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.model.ThemeDetail;
@@ -50,7 +51,9 @@ public enum HttpManager {
 //            url.append(HttpUrl.API_URL).append(path);
         }
 
-        OkHttpHeadersInit.initOkHttpHeaders("token", "likeApp1qaz2wsx");
+//        LogUtil.i("token--->>>"+LikeAgent.getInstance().getWeiXinPojo().getAccess_token());//likeApp1qaz2wsx
+//        OkHttpHeadersInit.initOkHttpHeaders("token", LikeAgent.getInstance().getWeiXinPojo().getAccess_token());
+        OkHttpHeadersInit.initOkHttpHeaders("token","likeApp1qaz2wsx");
         if (requestType == RequestType.POST) {
             HttpUtil.getInstance().POST(url.toString(), param, HttpResultProcess.httpResultListener(httpResultCallback, uClass));
 
@@ -162,17 +165,17 @@ public enum HttpManager {
     }
 
     /**
-     *  查看主题详情
+     *  查看专辑详情
      * @param openid
-     * @param themeId
+     * @param albymId 专辑id
      * @param page
      * @param page_num
      * @param callback
      */
-    public void getThemeDetail(String openid, String themeId, int page, int page_num, HttpResultCallback<ThemeDetail> callback){
+    public void getThemeDetail(String openid, String albymId, int page, int page_num, HttpResultCallback<ThemeDetail> callback){
         Map<String, Object> map = new HashMap<>();
         map.put("openid",openid);
-        map.put("themeId",themeId);
+        map.put("albymId",albymId);
         map.put("page",page);
         map.put("page_num",page_num);
         String params = prepareParam(map);
@@ -183,6 +186,27 @@ public enum HttpManager {
         }
     }
 
+    /**
+     * 获取专辑
+     * @param openid
+     * @param themeId 专辑id
+     * @param page
+     * @param page_num
+     * @param callback
+     */
+    public void getAlbymDetail(String openid, String themeId, int page, int page_num, HttpResultCallback<AlbymModel> callback){
+        Map<String, Object> map = new HashMap<>();
+        map.put("openid",openid);
+        map.put("themeId",themeId);
+        map.put("page",page);
+        map.put("page_num",page_num);
+        String params = prepareParam(map);
+        try{
+            shortConnectRequest(HttpUrl.GET_ALBYM_DETAIL,params,RequestType.POST,callback,AlbymModel.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     /**
      * 图片收藏
      * @param openid
@@ -204,13 +228,15 @@ public enum HttpManager {
     /**
      * 日记查看
      * @param openid
+     * @param auditSign 0：未审核 1: 审核通过的
      * @param page
      * @param page_num
      * @param callback
      */
-    public void getUserDiary(String openid, int page, int page_num, HttpResultCallback<DiaryDetail> callback){
+    public void getUserDiary(String openid, int auditSign,int page, int page_num, HttpResultCallback<DiaryDetail> callback){
         Map<String, Object> map = new HashMap<>();
         map.put("openid",openid);
+        map.put("auditSign",auditSign);
         map.put("page",page);
         map.put("page_num",page_num);
         String params = prepareParam(map);

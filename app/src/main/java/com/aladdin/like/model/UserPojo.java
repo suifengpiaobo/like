@@ -19,6 +19,7 @@ public class UserPojo {
 //            ],
 //            "unionid": " o6_bmasdasdsad6_2sgVt7hMZOPfL"
 
+    public String userId;
     public String openid;//微信openid
     public String nickname;
     public int sex;

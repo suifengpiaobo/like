@@ -4,12 +4,10 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.aladdin.like.R;
 import com.aladdin.like.model.DiaryDetail;
-import com.aladdin.like.widget.ArcMenu;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.LogUtil;
 import com.ease.adapter.BaseAdapter;
@@ -97,18 +95,8 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
                     @Override
                     public boolean onLongClick(View v) {
                         mItemClickListener.onLongClickListener(position,item);
-                        viewHolder.mArcMenuButtom.setmMenuAnimationState(true);
 
-                        viewHolder.mArcMenuButtom.toggleMenu(300);
-                        viewHolder.mArcMenuButtom.startMenuAnimation(viewHolder.mCenter);
                         return true;
-                    }
-                });
-
-                viewHolder.mArcMenuButtom.setOnMenuItemClickListner(new ArcMenu.onMenuItemClickListner() {
-                    @Override
-                    public void onClick(View childView, int position) {
-                        LogUtil.i("---position---"+position);
                     }
                 });
             }
@@ -133,11 +121,6 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
         SimpleDraweeView mMainImgLayer;
 //        @BindView(R.id.main_item)
 //        LinearLayout mMainItem;
-        @BindView(R.id.xmenu_center)
-        ImageView mCenter;
-
-        @BindView(R.id.xmenu_buttom)
-        ArcMenu mArcMenuButtom;
 
         DiaryDetail.Diary item;
 

@@ -13,6 +13,7 @@ import com.aladdin.like.module.atlas.contract.AtlasContract;
 import com.aladdin.like.module.atlas.presenter.AtlasPresenter;
 import com.aladdin.like.module.main.MainActivity;
 import com.aladdin.like.widget.CustomGridView;
+import com.aladdin.utils.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,7 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
     @Override
     protected void initView() {
         mPresenter = new AtlasPresenter(this);
+        LogUtil.i("---uid--->>>"+LikeAgent.getInstance().getUid());
         mPresenter.loadData(LikeAgent.getInstance().getUid(),"");
 //        showLoading();
 

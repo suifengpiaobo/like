@@ -3,13 +3,14 @@ package com.aladdin.like.http;
 import android.text.TextUtils;
 
 import com.aladdin.like.LikeAgent;
+import com.aladdin.like.constant.LoginType;
+import com.aladdin.like.constant.SharedPreferencesManager;
 import com.aladdin.like.model.LoginStateEvent;
 import com.aladdin.like.model.UserPojo;
 import com.aladdin.like.model.WeiXinFailPojo;
 import com.aladdin.like.module.register.entity.WeiXinResult;
 import com.aladdin.like.wxapi.WXEntryActivity;
 import com.aladdin.utils.GsonUtils;
-import com.aladdin.utils.LogUtil;
 import com.zxl.network_lib.HttpUtil;
 import com.zxl.network_lib.Inteface.HttpResultListener;
 
@@ -101,9 +102,10 @@ public class WChatHttpClient {
             public void onSuccess(String str) {
                 UserPojo userPojo = GsonUtils.jsonToObject(str, UserPojo.class);
                 LikeAgent.getInstance().saveUserInfo(userPojo);
+                SharedPreferencesManager.setLoginState(LoginType.WEIXIN);
                 EventBus.getDefault().post(new LoginStateEvent(LoginStateEvent.SUCCESS));
 
-                LogUtil.i("---user--->>>"+userPojo);
+                LikeAgent.getInstance().setAuthed(true);
             }
 
             @Override

@@ -29,41 +29,4 @@
         android:background="#CCFFFFFF"
         android:visibility="gone"
         />
-
-    <com.aladdin.like.widget.ArcMenu
-        android:id="@+id/xmenu_buttom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        xmenu:position="left_top"
-        android:layout_alignParentLeft="true"
-        xmenu:radius="100dp"
-        >
-
-        <ImageView
-            android:id="@+id/xmenu_center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            android:background="@drawable/share_weixin_selector"
-            />
-
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/share_weixin_selector"
-            />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/share_weixin_friends_selector"
-            />
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/share_weixin_collect_selector"
-            />
-    </com.aladdin.like.widget.ArcMenu>
 </RelativeLayout>

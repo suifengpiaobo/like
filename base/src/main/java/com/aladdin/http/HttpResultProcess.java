@@ -1,5 +1,6 @@
 package com.aladdin.http;
 
+import com.aladdin.utils.LogUtil;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 import com.zxl.network_lib.Inteface.HttpResultListener;
 
@@ -19,6 +20,7 @@ public class HttpResultProcess {
             public void onSuccess(String str) {
                 try {
                     JSONObject response = new JSONObject(str);
+                    LogUtil.i("---str--->>>"+str);
                     int code = response.optInt("code");
                     if (code == 200) {
                         try{
