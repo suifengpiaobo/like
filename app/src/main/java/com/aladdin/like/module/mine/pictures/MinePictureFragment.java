@@ -40,7 +40,7 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
     @Override
     protected void initView() {
         mPresenter = new PicturePrestener(this);
-        mPresenter.getPicture(LikeAgent.getInstance().getUserPojo().openid,page,page_num);
+        mPresenter.getPicture(LikeAgent.getInstance().getOpenid(),page,page_num);
 
         mPicture.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mPicture.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
@@ -102,6 +102,6 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
 
     @Override
     public void onLoadMore() {
-        mPresenter.getPicture(LikeAgent.getInstance().getUserPojo().openid,page,page_num);
+        mPresenter.getPicture(LikeAgent.getInstance().getOpenid(),page,page_num);
     }
 }

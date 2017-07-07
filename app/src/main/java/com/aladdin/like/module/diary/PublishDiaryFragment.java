@@ -269,7 +269,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
             public void onSuccess(File file) {
                 //插入相册
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file.getAbsoluteFile())));
-                mPresenter.publishPic(LikeAgent.getInstance().getUserPojo().openid, file.getAbsolutePath(), mContent.getText().toString(), mDescription.getText().toString());
+                mPresenter.publishPic(LikeAgent.getInstance().getOpenid(), file.getAbsolutePath(), mContent.getText().toString(), mDescription.getText().toString());
             }
 
             @Override

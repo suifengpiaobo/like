@@ -1,9 +1,10 @@
 package com.aladdin.like.module.main.presenter;
 
+import android.text.TextUtils;
+
 import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.main.contract.MainContract;
-import com.aladdin.utils.LogUtil;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 //import com.aladdin.utils.OkHttpUtils;
 
@@ -26,21 +27,41 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void loadData(String openid) {
-        HttpManager.INSTANCE.getUserTheme(openid, new HttpResultCallback<ThemeModes>() {
-            @Override
-            public void onSuccess(ThemeModes result) {
-                if (mView == null) return;
+        if (!TextUtils.isEmpty(openid)){
+            HttpManager.INSTANCE.getUserTheme(openid, new HttpResultCallback<ThemeModes>() {
+                @Override
+                public void onSuccess(ThemeModes result) {
+                    if (mView == null) return;
 
-                mView.stopLoading();
-                mView.setData(result);
-            }
+                    mView.stopLoading();
+                    mView.setData(result);
+                }
 
-            @Override
-            public void onFailure(String code, String msg) {
-                if (mView == null) return;
-                mView.stopLoading();
-                mView.showErrorTip(msg);
-            }
-        });
+                @Override
+                public void onFailure(String code, String msg) {
+                    if (mView == null) return;
+                    mView.stopLoading();
+                    mView.showErrorTip(msg);
+                }
+            });
+        }else{
+            HttpManager.INSTANCE.getTheme("", "", new HttpResultCallback<ThemeModes>() {
+                @Override
+                public void onSuccess(ThemeModes result) {
+                    if (mView == null) return;
+
+                    mView.stopLoading();
+                    mView.setData(result);
+                }
+
+                @Override
+                public void onFailure(String code, String msg) {
+                    if (mView == null) return;
+                    mView.stopLoading();
+                    mView.showErrorTip(msg);
+                }
+            });
+        }
+
     }
 }

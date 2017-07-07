@@ -1,11 +1,7 @@
 package com.aladdin.like.module.albym.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -16,16 +12,14 @@ import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.utils.DensityUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
-import com.facebook.binaryresource.FileBinaryResource;
-import com.facebook.cache.common.SimpleCacheKey;
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static android.R.attr.width;
 
 /**
  * Description 搜索上方横向滑动适配器
@@ -46,18 +40,17 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeDetail.Theme> {
 
     }
 
-    private Bitmap returnBitmap(Uri uri) {
-        Bitmap bitmap = null;
-        FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getMainDiskStorageCache().getResource(new SimpleCacheKey(uri.toString()));
-        if (resource != null){
-            File file = resource.getFile();
-            if (file != null && !TextUtils.isEmpty(file.getPath())) {
-                bitmap = BitmapFactory.decodeFile(file.getPath());
-            }
-        }
-        return bitmap;
-
-    }
+//    private Bitmap returnBitmap(Uri uri) {
+//        Bitmap bitmap = null;
+//        FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getMainDiskStorageCache().getResource(new SimpleCacheKey(uri.toString()));
+//        if (resource != null){
+//            File file = resource.getFile();
+//            if (file != null && !TextUtils.isEmpty(file.getPath())) {
+//                bitmap = BitmapFactory.decodeFile(file.getPath());
+//            }
+//        }
+//        return bitmap;
+//    }
 
     @Override
     public int getCommonType(int position) {
@@ -69,27 +62,23 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeDetail.Theme> {
         HorizontalViewHolder viewHolder = (HorizontalViewHolder) holder;
         ThemeDetail.Theme item = getItemObject(position);
         if (item != null) {
-            viewHolder.mResultImg.setImageURI(item.imageUrl);
             viewHolder.mResultTypeName.setText(item.imageName);
             viewHolder.mResultTime.setText(item.createTimeStr);
 
-            Uri uri = Uri.parse(item.imageUrl);
-            Bitmap bitmap = returnBitmap(uri);
-            int width = bitmap.getWidth();//994
-            float scale = (DensityUtils.mScreenWidth/2- DensityUtils.dip2px(15))/(float)width;
-            int height = bitmap.getHeight();
+            float scale = (DensityUtils.mScreenWidth/2- DensityUtils.dip2px(15))/(float)item.width;
+            int height = item.height;
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mResultImg.getLayoutParams();
             params.height = (int) (height*scale);
             params.weight = (int)(width*scale);
             viewHolder.mResultImg.setLayoutParams(params);
-
+            viewHolder.mResultImg.setImageURI(item.imageUrl);
 //            viewHolder.mResultImg.setImageURI(item.themeImgUrl);
 
             viewHolder.mResultItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mItemClickListener != null) {
-                        mItemClickListener.onItemClick(item);
+                        mItemClickListener.onItemClick(v,viewHolder.mResultImg,item);
                     }
                 }
             });
@@ -107,7 +96,7 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeDetail.Theme> {
 
     @Override
     public RecyclerView.ViewHolder onCreateCommon(ViewGroup parent, int viewType) {
-        View mView = View.inflate(mContext, R.layout.layout_search_result, null);
+        View mView = View.inflate(mContext, R.layout.layout_albym_pic, null);
         return new HorizontalViewHolder(mView);
     }
 
@@ -132,7 +121,8 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeDetail.Theme> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(ThemeDetail.Theme item);
+//        void onItemClick(ThemeDetail.Theme item);
+        void onItemClick(View v, SimpleDraweeView mPrefectureBg,ThemeDetail.Theme item);
     }
 
 

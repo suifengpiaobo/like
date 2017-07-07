@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -139,10 +140,14 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
                     mAdapter.clear();
                 }
                 mMainRecycle.refreshComplete();
-                for (ThemeModes.Theme theme :data.themeList){
-                    if (theme.followSign == 1){
-                        mAdapter.addItem(theme);
+                if (!TextUtils.isEmpty(LikeAgent.getInstance().getOpenid())){
+                    for (ThemeModes.Theme theme :data.themeList){
+                        if (theme.followSign == 1){
+                            mAdapter.addItem(theme);
+                        }
                     }
+                }else{
+                   mAdapter.addAll(data.themeList);
                 }
                 mAdapter.notifyDataSetChanged();
             }
@@ -151,7 +156,7 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
     @Override
     public void onRefresh() {
-        mPresenter.loadData(LikeAgent.getInstance().getUserPojo().openid);
+        mPresenter.loadData(LikeAgent.getInstance().getOpenid());
     }
 
     @Override

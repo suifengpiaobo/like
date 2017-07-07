@@ -38,7 +38,7 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
     @Override
     protected void initView() {
         mPresenter = new DiaryPrestener(this);
-        mPresenter.getUserDiary(LikeAgent.getInstance().getUserPojo().openid,page,page_num);
+        mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
 
         mMineDiary.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mMineDiary.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
@@ -63,7 +63,7 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
             mDiaryAdapter.clear();
         }
         page = 1;
-        mPresenter.getUserDiary(LikeAgent.getInstance().getUserPojo().openid,page,page_num);
+        mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
     }
 
     @Override
@@ -111,7 +111,7 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
     @Override
     public void onLoadMore() {
         if (page < total_page){
-            mPresenter.getUserDiary(LikeAgent.getInstance().getUserPojo().openid,page,page_num);
+            mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
         }
     }
 }

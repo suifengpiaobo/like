@@ -99,11 +99,11 @@ public class ChooseCollectionActivity extends BaseActivity implements Collection
         if (mAdapter != null &&mAdapter.getCommonItemCount()>0){
             mAdapter.clear();
         }
-        mPresenter.getUserCollectionImage(LikeAgent.getInstance().getUserPojo().openid,page,page_num);
+        mPresenter.getUserCollectionImage(LikeAgent.getInstance().getOpenid(),page,page_num);
     }
 
     @Override
     public void onLoadMore() {
-        mPresenter.getUserCollectionImage(LikeAgent.getInstance().getUserPojo().openid,page,page_num);
+        mPresenter.getUserCollectionImage(LikeAgent.getInstance().getOpenid(),page,page_num);
     }
 }

@@ -101,7 +101,7 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
             mAdapter.clear();
         }
 
-        mPrestener.getData(LikeAgent.getInstance().getUserPojo().openid,themeId,page,page_num);
+        mPrestener.getData(LikeAgent.getInstance().getOpenid(),themeId,page,page_num);
 
         mDownloadRecycle.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mDownloadRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
@@ -257,6 +257,6 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
 
     @Override
     public void onLoadMore() {
-        mPrestener.getData(LikeAgent.getInstance().getUserPojo().openid,themeId,page,page_num);
+        mPrestener.getData(LikeAgent.getInstance().getOpenid(),themeId,page,page_num);
     }
 }

@@ -20,6 +20,7 @@ import com.aladdin.like.model.LoginStateEvent;
 import com.aladdin.like.model.UserPojo;
 import com.aladdin.like.module.atlas.AtlasChooseActivity;
 import com.aladdin.like.module.login.LoginAccountActivity;
+import com.aladdin.like.module.main.MainActivity;
 import com.aladdin.like.wxapi.WXEntryActivity;
 import com.aladdin.utils.ToastUtil;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
@@ -54,6 +55,8 @@ public class RegisterActivity extends BaseActivity {
     TextView mRegisterAccount;
     @BindView(R.id.register_buttom)
     LinearLayout mRegisterButtom;
+    @BindView(R.id.experience_tv)
+    TextView mExperience;
 
     RegisterLoginAdapter mAdapter;
 
@@ -100,7 +103,7 @@ public class RegisterActivity extends BaseActivity {
         });
     }
 
-    @OnClick({R.id.wx_login, R.id.register_account,R.id.login_wx_login})
+    @OnClick({R.id.wx_login, R.id.register_account, R.id.login_wx_login,R.id.experience_tv})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.wx_login:
@@ -112,18 +115,21 @@ public class RegisterActivity extends BaseActivity {
                 startThenKill(LoginAccountActivity.class);
                 break;
             case R.id.login_wx_login:
-                if (mCurrent == 1){
+                if (mCurrent == 1) {
                     loginWx();
                 }
                 break;
+            case R.id.experience_tv:
+                startThenKill(MainActivity.class);
+
         }
     }
 
-    public void loginWx(){
+    public void loginWx() {
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                IWXAPI api = WXAPIFactory.createWXAPI(getApplicationContext(), WCHAT_APPID,false);
+                IWXAPI api = WXAPIFactory.createWXAPI(getApplicationContext(), WCHAT_APPID, false);
                 api.registerApp(WCHAT_APPID);
                 if (!api.isWXAppInstalled()) {
                     ToastUtil.showToast("未安装微信客户端");
@@ -150,27 +156,27 @@ public class RegisterActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onLoginSuccess(LoginStateEvent loginStateEvent) {
         HttpManager.INSTANCE.login(1, LikeAgent.getInstance().getUserPojo().nickname,
-                LikeAgent.getInstance().getUserPojo().headimgurl, LikeAgent.getInstance().getUserPojo().openid,
+                LikeAgent.getInstance().getUserPojo().headimgurl, LikeAgent.getInstance().getOpenid(),
                 LikeAgent.getInstance().getUserPojo().unionid, new HttpResultCallback<UserPojo>() {
                     @Override
                     public void onSuccess(UserPojo result) {
                         UserPojo userPojo = LikeAgent.getInstance().getUserPojo();
-                        if (!"".equals(result.userId) && result.userId != null){
+                        if (!"".equals(result.userId) && result.userId != null) {
                             userPojo.userId = result.userId;
                         }
-                        if (!"".equals(result.headimgurl) && result.headimgurl !=null){
-                            userPojo.headimgurl=result.headimgurl;
+                        if (!"".equals(result.headimgurl) && result.headimgurl != null) {
+                            userPojo.headimgurl = result.headimgurl;
                         }
-                        if (!"".equals(result.nickname) && result.nickname !=null){
-                            userPojo.nickname=result.nickname;
+                        if (!"".equals(result.nickname) && result.nickname != null) {
+                            userPojo.nickname = result.nickname;
                         }
-                        if (!TextUtils.isEmpty(result.openid)){
+                        if (!TextUtils.isEmpty(result.openid)) {
                             userPojo.openid = result.openid;
                         }
 
-                        if (result.IsFirstLogin == 1){
+                        if (result.IsFirstLogin == 1) {
                             userPojo.IsFirstLogin = 1;
-                        }else{
+                        } else {
                             userPojo.IsFirstLogin = 0;
                         }
                         LikeAgent.getInstance().updateUserInfo(userPojo);
@@ -184,7 +190,6 @@ public class RegisterActivity extends BaseActivity {
                     }
                 });
     }
-
 
 
     public class RegisterLoginAdapter extends FragmentStatePagerAdapter {

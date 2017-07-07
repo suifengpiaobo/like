@@ -47,7 +47,7 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
     @Override
     protected void initView() {
         mPresenter = new AtlasPresenter(this);
-        mPresenter.loadData(LikeAgent.getInstance().getUserPojo().openid,"");
+        mPresenter.loadData(LikeAgent.getInstance().getOpenid(),"");
 //        showLoading();
 
         mAdapter = new ChooseAdapter(AtlasChooseActivity.this);
@@ -74,7 +74,7 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
 
     @OnClick(R.id.enter)
     public void onViewClicked() {
-        mPresenter.addUserTheme(LikeAgent.getInstance().getUserPojo().openid,mChooseId,1);
+        mPresenter.addUserTheme(LikeAgent.getInstance().getOpenid(),mChooseId,1);
         startThenKill(MainActivity.class);
 
 //        startActivity(TestActivity.class);

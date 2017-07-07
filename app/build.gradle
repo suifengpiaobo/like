@@ -51,7 +51,7 @@ android {
         debug {
             storeFile file(properties.getProperty('DEBUG_KEY_PATH'))
             storePassword "134520789z"
-            keyAlias "like"
+            keyAlias "likemeitu"
             keyPassword "134520789z"
         }
     }
@@ -62,7 +62,7 @@ android {
             buildConfigField "boolean", "IS_DEBUG", "true"
             buildConfigField "boolean", "IS_RUNLEAKS", "false"
             resValue "string", "wx_appid", "wxcd27b7e580be7978"
-            resValue "string", "wx_secret", "567e3976c6f46acb3c82a580e0d996bb"
+            resValue "string", "wx_secret", "6fd246b0621242b004620ff415a10a9d"
         }
 
         w_test {
@@ -70,7 +70,7 @@ android {
             buildConfigField "boolean", "IS_DEBUG", "false"
             buildConfigField "boolean", "IS_RUNLEAKS", "false"
             resValue "string", "wx_appid", "wxcd27b7e580be7978"
-            resValue "string", "wx_secret", "567e3976c6f46acb3c82a580e0d996bb"
+            resValue "string", "wx_secret", "6fd246b0621242b004620ff415a10a9d"
         }
 
         w_reasse {
@@ -78,7 +78,7 @@ android {
             buildConfigField "boolean", "IS_DEBUG", "false"
             buildConfigField "boolean", "IS_RUNLEAKS", "false"
             resValue "string", "wx_appid", "wxcd27b7e580be7978"
-            resValue "string", "wx_secret", "567e3976c6f46acb3c82a580e0d996bb"
+            resValue "string", "wx_secret", "6fd246b0621242b004620ff415a10a9d"
         }
     }
 

@@ -43,7 +43,8 @@ public class LikeAgent {
     private volatile String code;//微信授权时返回的code
 
     private String uid;
-    private volatile UserPojo userPojo;
+    private String openid;
+    private volatile UserPojo mUserPojo;
     private volatile WeiXinResult weiXinpojo;
 
     private LikeAgent() {
@@ -106,15 +107,26 @@ public class LikeAgent {
 //        return uid;
     }
 
+    public String getOpenid(){
+        String userPojo = SharedPreferencesUtil.INSTANCE.getString(Constant.User.USER_INFO, null);
+        if (!TextUtils.isEmpty(userPojo)){
+            this.mUserPojo = GsonUtils.jsonToObject(userPojo, UserPojo.class);
+            openid = mUserPojo.openid;
+        }else{
+            openid = "";
+        }
+        return openid;
+    }
+
     @CheckResult
     public UserPojo getUserPojo() {
-        if (userPojo == null) {
+        if (mUserPojo == null) {
             String userPojo = SharedPreferencesUtil.INSTANCE.getString(Constant.User.USER_INFO, null);
             if (!TextUtils.isEmpty(userPojo)) {
-                this.userPojo = GsonUtils.jsonToObject(userPojo, UserPojo.class);
+                this.mUserPojo = GsonUtils.jsonToObject(userPojo, UserPojo.class);
             }
         }
-        return userPojo;
+        return mUserPojo;
     }
 
     public synchronized void saveUserInfo(UserPojo user) {
@@ -143,13 +155,13 @@ public class LikeAgent {
     // 必须只在更新个人资料或者其它特殊情况的时候用
     public synchronized void updateUserInfo(UserPojo user) {
         saveUserInfo(user);
-        userPojo = user;
+        mUserPojo = user;
     }
 
     // 必须只在注销或者其它特殊情况的时候用
     public synchronized void clearUserInfo() {
         SharedPreferencesUtil.INSTANCE.remove(Constant.User.USER_INFO);
-        userPojo = null;
+        mUserPojo = null;
     }
 
     public synchronized void clearWeiXinInfo() {
@@ -209,20 +221,22 @@ public class LikeAgent {
      * 自动登陆
      */
     public void autoLogin() {
+        LogUtil.i("---autoLogin---"+LikeAgent.getInstance().getUserPojo().nickname+"  ---headimg--->>>"+LikeAgent.getInstance().getUserPojo().headimgurl
+                +"  ---openid--->>>"+LikeAgent.getInstance().getUserPojo().openid+"  ---unionid--->>>"+LikeAgent.getInstance().getUserPojo().unionid);
         HttpManager.INSTANCE.login(1, LikeAgent.getInstance().getUserPojo().nickname,
-                LikeAgent.getInstance().getUserPojo().headimgurl, LikeAgent.getInstance().getUserPojo().openid,
-                LikeAgent.getInstance().getUserPojo().unionid, new HttpResultCallback<UserPojo>() {
+                LikeAgent.getInstance().getUserPojo().headimgurl, LikeAgent.getInstance().getOpenid(),
+                LikeAgent.getInstance().getOpenid(), new HttpResultCallback<UserPojo>() {
                     @Override
                     public void onSuccess(UserPojo result) {
                         UserPojo userPojo = LikeAgent.getInstance().getUserPojo();
-                        if (!"".equals(LikeAgent.getInstance().getUserPojo().headimgurl) && LikeAgent.getInstance().getUserPojo().headimgurl !=null){
-                            userPojo.headimgurl=LikeAgent.getInstance().getUserPojo().headimgurl;
+                        if (!"".equals(result.headimgurl) && result.headimgurl !=null){
+                            userPojo.headimgurl=result.headimgurl;
                         }
-                        if (!"".equals(LikeAgent.getInstance().getUserPojo().nickname) && LikeAgent.getInstance().getUserPojo().nickname !=null){
-                            userPojo.nickname=LikeAgent.getInstance().getUserPojo().nickname;
+                        if (!"".equals(result.nickname) && result.nickname !=null){
+                            userPojo.nickname=result.nickname;
                         }
-                        if (!TextUtils.isEmpty(LikeAgent.getInstance().getUserPojo().openid)){
-                            userPojo.openid = LikeAgent.getInstance().getUserPojo().openid;
+                        if (!TextUtils.isEmpty(result.openid)){
+                            userPojo.openid = result.openid;
                         }
 
                         if (result.IsFirstLogin == 1){

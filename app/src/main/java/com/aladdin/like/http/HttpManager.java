@@ -109,7 +109,10 @@ public enum HttpManager {
      */
     public void getTheme(String openid, String themeName, HttpResultCallback<ThemeModes> callback){
         Map<String, Object> map = new HashMap<>();
-        map.put("openid",openid);
+        if (!TextUtils.isEmpty(openid)){
+            map.put("openid",openid);
+        }
+
         if (!TextUtils.isEmpty(themeName)){
             map.put("themeName",themeName);
         }
@@ -129,7 +132,9 @@ public enum HttpManager {
      */
     public void getUserTheme(String openid,HttpResultCallback<ThemeModes> callback){
         Map<String, Object> map = new HashMap<>();
-        map.put("openid",openid);
+        if (!TextUtils.isEmpty(openid)){
+            map.put("openid",openid);
+        }
         String params = prepareParam(map);
         try{
             shortConnectRequest(HttpUrl.GET_USER_THEME,params,RequestType.POST,callback,ThemeModes.class);
@@ -147,7 +152,9 @@ public enum HttpManager {
      */
     public void addUserTheme(String openid, List<String> themeId,int operateType, HttpResultCallback<String> callback){
         Map<String, Object> map = new HashMap<>();
-        map.put("openid",openid);
+        if (!TextUtils.isEmpty(openid)){
+            map.put("openid",openid);
+        }
         map.put("operateType",operateType);
 
         if (themeId.size() >0){
@@ -174,7 +181,9 @@ public enum HttpManager {
      */
     public void getThemeDetail(String openid, String albymId, int page, int page_num, HttpResultCallback<ThemeDetail> callback){
         Map<String, Object> map = new HashMap<>();
-        map.put("openid",openid);
+        if (!TextUtils.isEmpty(openid)){
+            map.put("openid",openid);
+        }
         map.put("albymId",albymId);
         map.put("page",page);
         map.put("page_num",page_num);
@@ -196,7 +205,9 @@ public enum HttpManager {
      */
     public void getAlbymDetail(String openid, String themeId, int page, int page_num, HttpResultCallback<AlbymModel> callback){
         Map<String, Object> map = new HashMap<>();
-        map.put("openid",openid);
+        if (!TextUtils.isEmpty(openid)){
+            map.put("openid",openid);
+        }
         map.put("themeId",themeId);
         map.put("page",page);
         map.put("page_num",page_num);
@@ -215,7 +226,9 @@ public enum HttpManager {
      */
     public void collectionImage(String openid,String imageId, HttpResultCallback<String> callback){
         Map<String, Object> map = new HashMap<>();
-        map.put("openid",openid);
+        if (!TextUtils.isEmpty(openid)){
+            map.put("openid",openid);
+        }
         map.put("imageId",imageId);
         String params = prepareParam(map);
         try{
@@ -235,7 +248,9 @@ public enum HttpManager {
      */
     public void getUserDiary(String openid, int auditSign,int page, int page_num, HttpResultCallback<DiaryDetail> callback){
         Map<String, Object> map = new HashMap<>();
-        map.put("openid",openid);
+        if (!TextUtils.isEmpty(openid)){
+            map.put("openid",openid);
+        }
         map.put("auditSign",auditSign);
         map.put("page",page);
         map.put("page_num",page_num);
@@ -256,7 +271,9 @@ public enum HttpManager {
      */
     public void addUserDiary(String openid, String image, File file, String diaryTitle, String diaryContent, HttpResultListener callback){
         Map<String, Object> map = new HashMap<>();
-        map.put("openid",openid);
+        if (!TextUtils.isEmpty(openid)){
+            map.put("openid",openid);
+        }
         map.put("image",image);
         map.put("diaryTitle",diaryTitle);
         map.put("diaryContent",diaryContent);
@@ -274,7 +291,9 @@ public enum HttpManager {
      */
     public void getUserCollectionImage(String openid, int page, int page_num, HttpResultCallback<CollectionImage> callback){
         Map<String, Object> map = new HashMap<>();
-        map.put("openid",openid);
+        if (!TextUtils.isEmpty(openid)){
+            map.put("openid",openid);
+        }
         map.put("page",page);
         map.put("page_num",page_num);
         String params = prepareParam(map);
