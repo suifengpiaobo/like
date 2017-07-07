@@ -144,6 +144,7 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
                             mNotFollowThemes.add(themes);
                         }
                     }
+                    LogUtil.i("---mFollowThemes--->>>"+mFollowThemes+"   ---mNotFollowThemes--->>>"+mNotFollowThemes);
                     if (mFollowThemes != null && mFollowThemes.size()>0){
                         mAtlasAdapter.addAll(mFollowThemes);
                         mAtlasAdapter.notifyDataSetChanged();

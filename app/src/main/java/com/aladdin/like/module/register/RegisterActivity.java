@@ -1,6 +1,5 @@
 package com.aladdin.like.module.register;
 
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -107,8 +106,6 @@ public class RegisterActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.wx_login:
-//                LikeAgent.getInstance().setUid("10000");
-//                startThenKill(AtlasChooseActivity.class);
                 loginWx();
                 break;
             case R.id.register_account:
@@ -126,69 +123,78 @@ public class RegisterActivity extends BaseActivity {
     }
 
     public void loginWx() {
-        new Handler().post(new Runnable() {
+        runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                IWXAPI api = WXAPIFactory.createWXAPI(getApplicationContext(), WCHAT_APPID, false);
-                api.registerApp(WCHAT_APPID);
-                if (!api.isWXAppInstalled()) {
-                    ToastUtil.showToast("未安装微信客户端");
-                    return;
-                }
-
-                //最新版本也一直提示版本太低
-                if (!api.isWXAppSupportAPI()) {
-                    ToastUtil.showToast("当前的微信版本太低，请先更新微信");
-                    return;
-                }
-
-                Constant.IS_AUTH_WCHAT = true;
                 startProgressDialog();
-                final SendAuth.Req req = new SendAuth.Req();
-                req.scope = SCOPE;
-                req.state = STATE;
-                api.sendReq(req);
             }
         });
+        IWXAPI api = WXAPIFactory.createWXAPI(getApplicationContext(), WCHAT_APPID, true);
+        api.registerApp(WCHAT_APPID);
+        if (!api.isWXAppInstalled()) {
+            ToastUtil.showToast("未安装微信客户端");
+            return;
+        }
+
+        //最新版本也一直提示版本太低
+        if (!api.isWXAppSupportAPI()) {
+            ToastUtil.showToast("当前的微信版本太低，请先更新微信");
+            return;
+        }
+
+        Constant.IS_AUTH_WCHAT = true;
+
+        final SendAuth.Req req = new SendAuth.Req();
+        req.scope = SCOPE;
+        req.state = STATE;
+        api.sendReq(req);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void loginCancel(LoginStateEvent loginStateEvent){
+        if (loginStateEvent.loginState == LoginStateEvent.LOGIN_CANCEL){
+            stopProgressDialog();
+        }
+    }
 
-    @Subscribe(threadMode = ThreadMode.ASYNC)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoginSuccess(LoginStateEvent loginStateEvent) {
-        HttpManager.INSTANCE.login(1, LikeAgent.getInstance().getUserPojo().nickname,
-                LikeAgent.getInstance().getUserPojo().headimgurl, LikeAgent.getInstance().getOpenid(),
-                LikeAgent.getInstance().getUserPojo().unionid, new HttpResultCallback<UserPojo>() {
-                    @Override
-                    public void onSuccess(UserPojo result) {
-                        UserPojo userPojo = LikeAgent.getInstance().getUserPojo();
-                        if (!"".equals(result.userId) && result.userId != null) {
-                            userPojo.userId = result.userId;
-                        }
-                        if (!"".equals(result.headimgurl) && result.headimgurl != null) {
-                            userPojo.headimgurl = result.headimgurl;
-                        }
-                        if (!"".equals(result.nickname) && result.nickname != null) {
-                            userPojo.nickname = result.nickname;
-                        }
-                        if (!TextUtils.isEmpty(result.openid)) {
-                            userPojo.openid = result.openid;
+        if (loginStateEvent.loginState == LoginStateEvent.SUCCESS){
+            HttpManager.INSTANCE.login(1, LikeAgent.getInstance().getUserPojo().nickname,
+                    LikeAgent.getInstance().getUserPojo().headimgurl, LikeAgent.getInstance().getOpenid(),
+                    LikeAgent.getInstance().getUserPojo().unionid, new HttpResultCallback<UserPojo>() {
+                        @Override
+                        public void onSuccess(UserPojo result) {
+                            UserPojo userPojo = LikeAgent.getInstance().getUserPojo();
+                            if (!"".equals(result.userId) && result.userId != null) {
+                                userPojo.userId = result.userId;
+                            }
+                            if (!"".equals(result.headimgurl) && result.headimgurl != null) {
+                                userPojo.headimgurl = result.headimgurl;
+                            }
+                            if (!"".equals(result.nickname) && result.nickname != null) {
+                                userPojo.nickname = result.nickname;
+                            }
+                            if (!TextUtils.isEmpty(result.openid)) {
+                                userPojo.openid = result.openid;
+                            }
+
+                            if (result.IsFirstLogin == 1) {
+                                userPojo.IsFirstLogin = 1;
+                            } else {
+                                userPojo.IsFirstLogin = 0;
+                            }
+                            LikeAgent.getInstance().updateUserInfo(userPojo);
+                            stopProgressDialog();
+                            startThenKill(AtlasChooseActivity.class);
                         }
 
-                        if (result.IsFirstLogin == 1) {
-                            userPojo.IsFirstLogin = 1;
-                        } else {
-                            userPojo.IsFirstLogin = 0;
+                        @Override
+                        public void onFailure(String code, String msg) {
+
                         }
-                        LikeAgent.getInstance().updateUserInfo(userPojo);
-                        stopProgressDialog();
-                        startThenKill(AtlasChooseActivity.class);
-                    }
-
-                    @Override
-                    public void onFailure(String code, String msg) {
-
-                    }
-                });
+                    });
+        }
     }
 
 
@@ -219,5 +225,11 @@ public class RegisterActivity extends BaseActivity {
         public void destroyItem(ViewGroup container, int position, Object object) {
             super.destroyItem(container, position, object);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

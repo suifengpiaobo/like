@@ -1,14 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="com.aladdin.like.module.register.RegisterLoginFragment">
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/register_4"
         android:scaleType="centerCrop"
+        android:background="@drawable/register_4"
         />
 
     <RelativeLayout

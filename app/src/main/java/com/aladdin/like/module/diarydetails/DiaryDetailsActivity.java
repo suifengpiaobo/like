@@ -18,6 +18,7 @@ import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.ToastUtil;
 import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.common.executors.CallerThreadExecutor;

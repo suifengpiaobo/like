@@ -10,7 +10,6 @@ import com.aladdin.like.base.BaseFragment;
  */
 public class RegisterLoginFragment extends BaseFragment {
 
-
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_register_login;
@@ -18,12 +17,10 @@ public class RegisterLoginFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-
     }
 
     @Override
     protected void lazyFetchData() {
 
     }
-
 }

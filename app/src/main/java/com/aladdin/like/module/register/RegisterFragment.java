@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseFragment;
+import com.aladdin.utils.ImageLoaderUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,8 +59,6 @@ public class RegisterFragment extends BaseFragment {
         mList = new int[]{R.drawable.register_1, R.drawable.register_2, R.drawable.register_3};
         mViews = new ArrayList<>();
 
-
-
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
@@ -67,7 +66,7 @@ public class RegisterFragment extends BaseFragment {
             ImageView imageView = new ImageView(getActivity());
             imageView.setLayoutParams(params);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setBackgroundResource(mList[i]);
+            ImageLoaderUtils.loadImg(getActivity(),mList[i],imageView);
             mViews.add(imageView);
         }
 

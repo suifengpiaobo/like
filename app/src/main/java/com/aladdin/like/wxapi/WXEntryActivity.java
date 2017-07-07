@@ -10,6 +10,7 @@ import com.aladdin.like.R;
 import com.aladdin.like.constant.Constant;
 import com.aladdin.like.event.ShareEvent;
 import com.aladdin.like.http.WChatHttpClient;
+import com.aladdin.like.model.LoginStateEvent;
 import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.ToastUtil;
@@ -86,6 +87,7 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
 
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
+                EventBus.getDefault().post(new LoginStateEvent(LoginStateEvent.LOGIN_CANCEL));
                 break;
             case BaseResp.ErrCode.ERR_BAN:
 

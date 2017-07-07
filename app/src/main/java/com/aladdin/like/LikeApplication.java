@@ -1,6 +1,7 @@
 package com.aladdin.like;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -25,17 +26,15 @@ import java.security.SecureRandom;
 public class LikeApplication extends Application {
     public static LikeApplication instance;
     private boolean isFirst = false;
+    private static Context mAppContext;
     @Override
     public void onCreate() {
         super.onCreate();
-
+        mAppContext = this.getApplicationContext();
         if (!isFirst){
             isFirst = true;
             instance = this;
             initConfig();
-
-            //消息推送
-            initPushMessage();
 
             //友盟统计
             MobclickAgent.UMAnalyticsConfig  umAnalyticsConfig = new MobclickAgent.UMAnalyticsConfig(getApplicationContext(),"59434c6f99f0c756230005a0",getChannel());
@@ -47,7 +46,11 @@ public class LikeApplication extends Application {
 
     public void initConfig() {
         //替换字体
-        FontsOverrideUtil.init(this);
+        FontsOverrideUtil.init(mAppContext);
+
+        //消息推送
+        initPushMessage();
+
         ContextUtils.getInstance().setContext(this.getApplicationContext()); // Must!! First call this method.
         DensityUtils.setAppContext(this);
         Fresco.initialize(this);

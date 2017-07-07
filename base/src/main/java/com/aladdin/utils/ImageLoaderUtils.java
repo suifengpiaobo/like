@@ -23,6 +23,10 @@ public class ImageLoaderUtils {
     private static int placeholderId = R.drawable.ic_image_loading;
     private static int errorId = R.drawable.ic_empty_picture;
 
+    public static void loadImg(Context context, int drawable, ImageView imageView) {
+        Glide.with(context).load(drawable).asBitmap().into(imageView);
+    }
+
     /**
      * 加载图片
      */
