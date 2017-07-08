@@ -4,7 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
@@ -67,9 +68,9 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeDetail.Theme> {
 
             float scale = (DensityUtils.mScreenWidth/2- DensityUtils.dip2px(15))/(float)item.width;
             int height = item.height;
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mResultImg.getLayoutParams();
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.mResultImg.getLayoutParams();
             params.height = (int) (height*scale);
-            params.weight = (int)(width*scale);
+            params.width = (int)(width*scale);
             viewHolder.mResultImg.setLayoutParams(params);
             viewHolder.mResultImg.setImageURI(item.imageUrl);
 //            viewHolder.mResultImg.setImageURI(item.themeImgUrl);
@@ -108,7 +109,9 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeDetail.Theme> {
         @BindView(R.id.result_time)
         TextView mResultTime;
         @BindView(R.id.result_item)
-        LinearLayout mResultItem;
+        RelativeLayout mResultItem;
+        @BindView(R.id.watermark)
+        ImageView mWaterMark;
 
         HorizontalViewHolder(View view) {
             super(view);

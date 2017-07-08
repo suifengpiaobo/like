@@ -82,6 +82,18 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
         mAlbymAdapter = new AlbymAdapter(AlbymActivity.this);
         mAlbymHorizontal.setAdapter(mAlbymAdapter);
 
+        mAlbymAdapter.setItemClickListener(new AlbymAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(AlbymModel.AlbymDetail item) {
+                if (mAlbymPicAdapter != null && mAlbymPicAdapter.getCommonItemCount()>0){
+                    mAlbymPicAdapter.clear();
+                }
+                page = 1;
+                mPrestener.getThemeDetail(LikeAgent.getInstance().getOpenid(), item.albymId + "", page, page_num);
+                mAlbymName.setText(item.albymName);
+            }
+        });
+
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mAlbymPicAdapter = new AlbymPicAdapter(AlbymActivity.this);

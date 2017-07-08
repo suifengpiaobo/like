@@ -6,8 +6,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.aladdin.like.R;
@@ -91,7 +91,7 @@ public class CorrelationActivity extends BaseActivity {
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
                                      float scale = (DensityUtils.mScreenWidth)/(float)bitmap.getWidth();
-                                     FrameLayout.LayoutParams params = (FrameLayout.LayoutParams)mPicture.getLayoutParams();
+                                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)mPicture.getLayoutParams();
                                      params.height = (int) (bitmap.getHeight()*scale);
                                      params.width = (int)(bitmap.getWidth()*scale);
                                      mPicture.setLayoutParams(params);

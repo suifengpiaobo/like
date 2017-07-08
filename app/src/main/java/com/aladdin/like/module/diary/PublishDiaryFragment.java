@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import com.aladdin.like.utils.WXUtils;
 import com.aladdin.like.widget.PublishDialog;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.ImageLoaderUtils;
+import com.aladdin.utils.ToastUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.yalantis.ucrop.ui.AlbumDirectoryActivity;
@@ -163,7 +165,11 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 mFinish.requestFocus();
                 mContent.setEnabled(false);
                 mDescription.setEnabled(false);
-                new Handler().post(runnable);
+                if (!TextUtils.isEmpty(LikeAgent.getInstance().getOpenid())){
+                    new Handler().post(runnable);
+                }else{
+                    ToastUtil.showToast("请登录后发表日记");
+                }
                 break;
             case R.id.add_picture:
                 showDialog();
