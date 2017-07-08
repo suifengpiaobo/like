@@ -27,7 +27,6 @@ import com.aladdin.like.module.diarydetails.DiaryDetailsActivity;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
@@ -94,7 +93,6 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
                 view.getLocationOnScreen(location);
                 int x = location[0];
                 int y = location[1];
-                LogUtil.i("---position--->>>"+position);
                 mAdapter.setPressedPosition(position);
 
                 ArcMenu mArcMenu = new ArcMenu(getActivity());
@@ -246,6 +244,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
                 mCircle.refreshComplete();
                 mCircle.loadMoreComplete();
                 mAdapter.addAll(data.diaryList);
+                mAdapter.setPressedPosition(-1);
                 page = data.per_page;
                 total = data.total;
             }

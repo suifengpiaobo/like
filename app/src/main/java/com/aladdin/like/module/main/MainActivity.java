@@ -2,12 +2,15 @@ package com.aladdin.like.module.main;
 
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
+import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.base.BaseFragment;
@@ -41,6 +44,15 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.buttom_ll)
     LinearLayout mLayout;
 
+    @BindView(R.id.main_page_rl)
+    RelativeLayout mMainPageRl;
+    @BindView(R.id.search_page_rl)
+    RelativeLayout mSearchPageRl;
+    @BindView(R.id.circle_page_rl)
+    RelativeLayout mCirclePageRl;
+    @BindView(R.id.mine_page_rl)
+    RelativeLayout mMinePageRl;
+
     private List<BaseFragment> mFragments;
     private MainFragment mMainFragment;
     private SearchFragment mSearchFragment;
@@ -61,7 +73,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        resetTab();
         mFragments = new ArrayList<>();
         mMainFragment = new MainFragment();
         mSearchFragment = new SearchFragment();
@@ -71,9 +82,16 @@ public class MainActivity extends BaseActivity {
         mFragments.add(mMainFragment);
         mFragments.add(mSearchFragment);
         mFragments.add(mCircleFragment);
-        mFragments.add(mMineFragment);
 
-        mAdapter = new BaseFragmentAdapter(getSupportFragmentManager(),mFragments);
+        if (TextUtils.isEmpty(LikeAgent.getInstance().getOpenid())){
+            mMinePageRl.setVisibility(View.GONE);
+        }else{
+            mMinePageRl.setVisibility(View.VISIBLE);
+            mFragments.add(mMineFragment);
+        }
+
+        resetTab();
+        mAdapter = new BaseFragmentAdapter(getSupportFragmentManager(), mFragments);
         mMainViewPager.setAdapter(mAdapter);
         mMainViewPager.setCurrentItem(currentTabPosition);
         mLayout.setBackgroundColor(getResources().getColor(R.color.color_e6ffffff));
@@ -100,23 +118,23 @@ public class MainActivity extends BaseActivity {
         mMinePage.setSelected(false);
     }
 
-    @OnClick({R.id.main_page, R.id.search_page, R.id.circle_page, R.id.mine_page})
+    @OnClick({R.id.main_page_rl, R.id.search_page_rl, R.id.circle_page_rl, R.id.mine_page_rl})
     public void onViewClicked(View view) {
         resetTab();
         switch (view.getId()) {
-            case R.id.main_page:
+            case R.id.main_page_rl:
                 currentTabPosition = 0;
                 mMainPage.setSelected(true);
                 break;
-            case R.id.search_page:
+            case R.id.search_page_rl:
                 currentTabPosition = 1;
                 mSearchPadge.setSelected(true);
                 break;
-            case R.id.circle_page:
+            case R.id.circle_page_rl:
                 currentTabPosition = 2;
                 mCirclePage.setSelected(true);
                 break;
-            case R.id.mine_page:
+            case R.id.mine_page_rl:
                 currentTabPosition = 3;
                 mMinePage.setSelected(true);
                 break;
@@ -135,11 +153,12 @@ public class MainActivity extends BaseActivity {
         mOnCircleClickListener = onCircleClickListener;
     }
 
-    public interface onSearchClickListener{
+
+    public interface onSearchClickListener {
         void onSearch(String s);
     }
 
-    public interface onCircleClickListener{
+    public interface onCircleClickListener {
         void onClick();
     }
 

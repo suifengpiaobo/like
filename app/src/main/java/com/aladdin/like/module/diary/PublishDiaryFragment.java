@@ -267,6 +267,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
         view.destroyDrawingCache();
 
+//        if (LikeAgent.getInstance().getOpenid())
         Luban.get(this).load(file).putGear(Luban.THIRD_GEAR).setCompressListener(new OnCompressListener() {
             @Override
             public void onStart() {

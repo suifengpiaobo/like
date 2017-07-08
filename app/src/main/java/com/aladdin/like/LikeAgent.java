@@ -1,5 +1,6 @@
 package com.aladdin.like;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.CheckResult;
 import android.text.TextUtils;
@@ -220,9 +221,7 @@ public class LikeAgent {
     /**
      * 自动登陆
      */
-    public void autoLogin() {
-        LogUtil.i("---autoLogin---"+LikeAgent.getInstance().getUserPojo().nickname+"  ---headimg--->>>"+LikeAgent.getInstance().getUserPojo().headimgurl
-                +"  ---openid--->>>"+LikeAgent.getInstance().getUserPojo().openid+"  ---unionid--->>>"+LikeAgent.getInstance().getUserPojo().unionid);
+    public void autoLogin(Context context) {
         HttpManager.INSTANCE.login(1, LikeAgent.getInstance().getUserPojo().nickname,
                 LikeAgent.getInstance().getUserPojo().headimgurl, LikeAgent.getInstance().getOpenid(),
                 LikeAgent.getInstance().getOpenid(), new HttpResultCallback<UserPojo>() {
@@ -246,7 +245,7 @@ public class LikeAgent {
                         }
                         LikeAgent.getInstance().updateUserInfo(userPojo);
                         Intent intent = new Intent(ContextUtils.getInstance().getContext(), MainActivity.class);
-                        ContextUtils.getInstance().getContext().startActivity(intent);
+                        context.startActivity(intent);
                     }
 
                     @Override

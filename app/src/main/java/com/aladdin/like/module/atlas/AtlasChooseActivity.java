@@ -13,6 +13,7 @@ import com.aladdin.like.module.atlas.contract.AtlasContract;
 import com.aladdin.like.module.atlas.presenter.AtlasPresenter;
 import com.aladdin.like.module.main.MainActivity;
 import com.aladdin.like.widget.CustomGridView;
+import com.aladdin.utils.ToastUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,10 +75,12 @@ public class AtlasChooseActivity extends BaseActivity implements AtlasContract.V
 
     @OnClick(R.id.enter)
     public void onViewClicked() {
-        mPresenter.addUserTheme(LikeAgent.getInstance().getOpenid(),mChooseId,1);
-        startThenKill(MainActivity.class);
-
-//        startActivity(TestActivity.class);
+        if (mChoose.size()>0){
+            mPresenter.addUserTheme(LikeAgent.getInstance().getOpenid(),mChooseId,1);
+            startThenKill(MainActivity.class);
+        }else{
+            ToastUtil.showToast("请选择您喜欢的主题");
+        }
     }
 
     @Override

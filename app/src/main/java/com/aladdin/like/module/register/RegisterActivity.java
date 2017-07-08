@@ -136,10 +136,9 @@ public class RegisterActivity extends BaseActivity {
             ToastUtil.showToast("未安装微信客户端");
             return;
         }
-
-        //最新版本也一直提示版本太低
         if (!api.isWXAppSupportAPI()) {
             ToastUtil.showToast("当前的微信版本太低，请先更新微信");
+            stopProgressDialog();
             return;
         }
 
