@@ -22,6 +22,7 @@ import com.aladdin.like.module.login.LoginAccountActivity;
 import com.aladdin.like.module.main.MainActivity;
 import com.aladdin.like.wxapi.WXEntryActivity;
 import com.aladdin.utils.ToastUtil;
+import com.tencent.android.tpush.XGPushManager;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
@@ -187,6 +188,9 @@ public class RegisterActivity extends BaseActivity {
                             LikeAgent.getInstance().updateUserInfo(userPojo);
                             stopProgressDialog();
                             startThenKill(AtlasChooseActivity.class);
+                            if (!TextUtils.isEmpty(LikeAgent.getInstance().getOpenid())){
+                                XGPushManager.registerPush(getApplicationContext(),LikeAgent.getInstance().getOpenid());
+                            }
                         }
 
                         @Override

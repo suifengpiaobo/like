@@ -66,6 +66,36 @@ public class WXUtils {
         return api.sendReq(req);
     }
 
+    public static boolean shareBitmap(Context context,Bitmap bitmap,int scene){
+        boolean result = false;
+        String appid = "wxcd27b7e580be7978";
+
+        IWXAPI api = WXAPIFactory.createWXAPI(context, appid);
+        api.registerApp(appid);
+
+        if (!api.isWXAppInstalled()) {
+            ToastUtil.showToast("未安装微信客户端");
+            return false;
+        }
+        if (!api.isWXAppSupportAPI()) {
+            ToastUtil.showToast("当前的微信版本过低，请先更新");
+            return false;
+        }
+
+        LogUtil.i("--bitmap--"+bitmap);
+        WXImageObject image = new WXImageObject(bitmap);
+        WXMediaMessage message = new WXMediaMessage();
+        message.mediaObject = image;
+        Bitmap thumbBitmap = Bitmap.createScaledBitmap(bitmap,150,150,true);
+        bitmap.recycle();
+        message.thumbData = BitmapUtils.bmpToByteArray(thumbBitmap,true);
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = UUID.randomUUID().toString();
+        req.message = message;
+        req.scene = scene;
+        return api.sendReq(req);
+    }
+
     public static Bitmap getBitmap(String url){
         FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getMainDiskStorageCache().getResource(new SimpleCacheKey(url.toString()));
         File file = resource.getFile();

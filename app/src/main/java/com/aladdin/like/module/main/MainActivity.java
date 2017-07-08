@@ -53,6 +53,7 @@ public class MainActivity extends BaseActivity {
 
     int currentTabPosition = 0;
     public static final String CURRENT_TAB_POSITION = "HOME_CURRENT_TAB_POSITION";
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;

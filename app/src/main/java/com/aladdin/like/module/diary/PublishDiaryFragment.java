@@ -22,10 +22,12 @@ import com.aladdin.like.module.diary.contract.PublishContract;
 import com.aladdin.like.module.diary.prestener.PublishPrestener;
 import com.aladdin.like.module.publishcollection.ChooseCollectionActivity;
 import com.aladdin.like.utils.FileUtils;
+import com.aladdin.like.utils.WXUtils;
 import com.aladdin.like.widget.PublishDialog;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.ImageLoaderUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.yalantis.ucrop.ui.AlbumDirectoryActivity;
 import com.yalantis.ucrop.ui.ImageGridActivity;
 import com.yalantis.ucrop.util.Constants;
@@ -167,10 +169,16 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 showDialog();
                 break;
             case R.id.share_weixin:
+                Bitmap bitmap = BitmapFactory.decodeFile(mPath);
+                WXUtils.shareBitmap(PublishDiaryFragment.this,bitmap, SendMessageToWX.Req.WXSceneSession);
                 break;
             case R.id.share_friends:
+                Bitmap bitmap1 = BitmapFactory.decodeFile(mPath);
+                WXUtils.shareBitmap(PublishDiaryFragment.this,bitmap1, SendMessageToWX.Req.WXSceneTimeline);
                 break;
             case R.id.share_weixin_collection:
+                Bitmap bitmap2 = BitmapFactory.decodeFile(mPath);
+                WXUtils.shareBitmap(PublishDiaryFragment.this,bitmap2, SendMessageToWX.Req.WXSceneFavorite);
                 break;
         }
     }
@@ -195,7 +203,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         options.setSelectMode(selectMode);
         options.setShowCamera(true);
         options.setEnablePreview(true);
-        options.setEnableCrop(false);
+        options.setEnableCrop(true);
         options.setPreviewVideo(false);
         AlbumDirectoryActivity.startPhoto(PublishDiaryFragment.this, options);
     }
@@ -233,12 +241,12 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 //                "@ Zhang Phil"));
 
         FileOutputStream fos;
+        File file = null;
         try {
             // 判断手机设备是否有SD卡
             boolean isHasSDCard = Environment.getExternalStorageState().equals(
                     Environment.MEDIA_MOUNTED);
             File sdRoot;
-            File file;
             if (isHasSDCard) {
                 // SD卡根目录
                 sdRoot = new File(FileUtils.getImageRootPath());
@@ -259,7 +267,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
         view.destroyDrawingCache();
 
-        Luban.get(this).putGear(Luban.THIRD_GEAR).setCompressListener(new OnCompressListener() {
+        Luban.get(this).load(file).putGear(Luban.THIRD_GEAR).setCompressListener(new OnCompressListener() {
             @Override
             public void onStart() {
 
@@ -337,7 +345,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
                 ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mPublishFinishPic,mPath);
 
-                mPath = "";
+//                mPath = "";
                 mDescription.setText("");
             }
         });
@@ -353,4 +361,9 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPath = "";
+    }
 }

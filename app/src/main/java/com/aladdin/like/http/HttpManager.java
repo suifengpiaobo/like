@@ -251,6 +251,7 @@ public enum HttpManager {
         if (!TextUtils.isEmpty(openid)){
             map.put("openid",openid);
         }
+
         map.put("auditSign",auditSign);
         map.put("page",page);
         map.put("page_num",page_num);

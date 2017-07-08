@@ -56,4 +56,15 @@
         android:textSize="19sp"
         android:text="邀请20位爱图片好友成为Like的新成员，您的图片水印会自动关闭。"
         />
+
+    <ListView
+        android:id="@+id/push_list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/title"
+        android:divider="@null"
+        android:dividerHeight="5dp"
+        android:scrollbars="none"
+        android:visibility="gone"
+        />
 </RelativeLayout>

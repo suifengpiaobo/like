@@ -27,7 +27,7 @@ import static com.tencent.android.tpush.common.Constants.LogTag;
  * Email:444288256@qq.com
  */
 public class MessageReceiver extends XGPushBaseReceiver{
-    private Intent intent = new Intent("com.qq.xgdemo.activity.UPDATE_LISTVIEW");
+    private Intent intent = new Intent("com.aladdin.like.activity.UPDATE_LISTVIEW");
 
     // 通知展示
     @Override
@@ -49,7 +49,7 @@ public class MessageReceiver extends XGPushBaseReceiver{
                 .format(Calendar.getInstance().getTime()));
         NotificationService.getInstance(context).save(notific);
         context.sendBroadcast(intent);
-        ToastUtil.showToast(context, "您有1条新消息, " + "通知被展示 ， " + notifiShowedRlt.toString());
+//        ToastUtil.showToast(context, "您有1条新消息, " + "通知被展示 ， " + notifiShowedRlt.toString());
         Log.d("LC","+++++++++++++++++++++++++++++展示通知的回调");
     }
 

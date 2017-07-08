@@ -92,7 +92,6 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
 
     @Override
     protected void lazyFetchData() {
-        LogUtil.i("---MineAtlasFragment--lazyFetchData---");
     }
 
     @Override
