@@ -13,12 +13,13 @@
         android:layout_height="wrap_content"
         android:background="#ffffff"
         android:fitsSystemWindows="true">
+
         <RelativeLayout
             android:id="@+id/mine_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_scrollFlags="scroll"
             android:orientation="vertical"
+            app:layout_scrollFlags="scroll"
             >
 
             <ImageView
@@ -45,11 +46,11 @@
                 android:id="@+id/new_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/shape_message"
                 android:layout_alignLeft="@+id/set"
                 android:layout_alignTop="@+id/set"
                 android:layout_marginLeft="13dp"
                 android:layout_marginTop="17dp"
+                android:background="@drawable/shape_message"
                 />
 
             <com.facebook.drawee.view.SimpleDraweeView
@@ -85,10 +86,10 @@
                 android:layout_below="@+id/user_name"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="5dp"
+                android:paddingBottom="20dp"
                 android:text="Amsterdam, The Netherlands"
                 android:textColor="@color/Gray"
                 android:textSize="16sp"
-                android:paddingBottom="20dp"
                 />
         </RelativeLayout>
 
@@ -112,11 +113,11 @@
     </android.support.design.widget.AppBarLayout>
 
     <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:orientation="vertical"-->
-        <!--android:scrollbars="none"-->
-        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical"-->
+    <!--android:scrollbars="none"-->
+    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -124,6 +125,7 @@
         android:fillViewport="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         >
+
         <com.aladdin.like.widget.HViewPager
             android:id="@+id/mine_info_viewpager"
             android:layout_width="match_parent"

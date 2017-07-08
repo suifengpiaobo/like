@@ -2,6 +2,7 @@ package com.aladdin.like.module.mine;
 
 
 import android.support.design.widget.TabLayout;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,7 +13,9 @@ import com.aladdin.like.module.mine.atlas.MineAtlasFragment;
 import com.aladdin.like.module.mine.diary.MineDiraryFragment;
 import com.aladdin.like.module.mine.pictures.MinePictureFragment;
 import com.aladdin.like.module.set.SettingActivity;
+import com.aladdin.like.receiver.NotificationService;
 import com.aladdin.like.widget.HViewPager;
+import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
@@ -35,6 +38,8 @@ public class MineFragment2 extends BaseFragment {
     ImageView mSet;
     @BindView(R.id.tabLayout)
     TabLayout mTabLayout;
+    @BindView(R.id.new_message)
+    ImageView mNewMessage;
 
     Mine2PagerAdapter mAdapter;
 
@@ -46,9 +51,9 @@ public class MineFragment2 extends BaseFragment {
     @Override
     protected void initView() {
         mAdapter = new Mine2PagerAdapter(getFragmentManager());
-        mAdapter.addFragment(new MineAtlasFragment(),"主题");
-        mAdapter.addFragment(new MinePictureFragment(),"图片");
-        mAdapter.addFragment(new MineDiraryFragment(),"日记");
+        mAdapter.addFragment(new MineAtlasFragment(), "主题");
+        mAdapter.addFragment(new MinePictureFragment(), "图片");
+        mAdapter.addFragment(new MineDiraryFragment(), "日记");
         mMineInfoViewpager.setAdapter(mAdapter);
 
         mTabLayout.addTab(mTabLayout.newTab().setText("主题"));//给TabLayout添加Tab
@@ -58,12 +63,19 @@ public class MineFragment2 extends BaseFragment {
         mTabLayout.setupWithViewPager(mMineInfoViewpager);
 //        mMineInfoViewpager.CURRENT_PAGE = 0;
 
-        if (LikeAgent.getInstance().getUserPojo() != null){
+        if (LikeAgent.getInstance().getUserPojo() != null) {
             mUserAvatar.setImageURI(LikeAgent.getInstance().getUserPojo().headimgurl);
             mUserName.setText(LikeAgent.getInstance().getUserPojo().nickname);
             mDescription.setText("微信不给返回个性签名我也很无奈！");
         }
 
+        int count = NotificationService.getInstance(getActivity()).getNewMessageCount();
+        LogUtil.i("---message--count--->>>"+count);
+        if (count >0){
+            mNewMessage.setVisibility(View.VISIBLE);
+        }else{
+            mNewMessage.setVisibility(View.GONE);
+        }
     }
 
     @Override

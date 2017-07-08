@@ -3,10 +3,9 @@ package com.aladdin.like.receiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.aladdin.like.module.set.SettingActivity;
-import com.aladdin.utils.ToastUtil;
+import com.aladdin.utils.LogUtil;
 import com.tencent.android.tpush.XGPushBaseReceiver;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushRegisterResult;
@@ -48,6 +47,7 @@ public class MessageReceiver extends XGPushBaseReceiver{
         notific.setUpdate_time(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 .format(Calendar.getInstance().getTime()));
         NotificationService.getInstance(context).save(notific);
+        NotificationService.getInstance(context).saveNewMessage(notific);
         context.sendBroadcast(intent);
 //        ToastUtil.showToast(context, "您有1条新消息, " + "通知被展示 ， " + notifiShowedRlt.toString());
         Log.d("LC","+++++++++++++++++++++++++++++展示通知的回调");
@@ -75,7 +75,7 @@ public class MessageReceiver extends XGPushBaseReceiver{
 
     @Override
     public void onTextMessage(Context context, XGPushTextMessage message) {
-
+        LogUtil.i("---onTextMessage--->>>"+message);
     }
 
     @Override
@@ -98,8 +98,8 @@ public class MessageReceiver extends XGPushBaseReceiver{
             // APP自己处理通知被清除后的相关动作
             text = "通知被清除 :" + message;
         }
-        Toast.makeText(context, "广播接收到通知被点击:" + message.toString(),
-                Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "广播接收到通知被点击:" + message.toString(),
+//                Toast.LENGTH_SHORT).show();
         // 获取自定义key-value
         String customContent = message.getCustomContent();
         if (customContent != null && customContent.length() != 0) {
@@ -114,7 +114,7 @@ public class MessageReceiver extends XGPushBaseReceiver{
                 e.printStackTrace();}}
         // APP自主处理的过程。。。
         Log.d(LogTag, text);
-        ToastUtil.showToast(context, text);
+//        ToastUtil.showToast(context, text);
     }
 
 }

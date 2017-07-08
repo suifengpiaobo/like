@@ -164,7 +164,14 @@
             android:name="XG_V2_ACCESS_KEY"
             android:value="A7SUM22T3J6C"/>
 
-        <receiver android:name=".receiver.MessageReceiver"/>
+        <receiver android:name=".receiver.MessageReceiver">
+            <intent-filter>
+                <!-- 接收消息透传 -->
+                <action android:name="com.tencent.android.tpush.action.PUSH_MESSAGE" />
+                <!-- 监听注册、反注册、设置/删除标签、通知被点击等处理结果 -->
+                <action android:name="com.tencent.android.tpush.action.FEEDBACK" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".module.diarydetails.DiaryDetailsActivity"

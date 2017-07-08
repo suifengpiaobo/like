@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.os.Message;
 
+import com.aladdin.like.receiver.NotificationService;
 import com.aladdin.like.utils.FontsOverrideUtil;
 import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.DensityUtils;
@@ -52,7 +53,8 @@ public class LikeApplication extends Application {
     public void initConfig() {
         //替换字体
         FontsOverrideUtil.init(mAppContext);
-
+        //初始化消息数据库
+        NotificationService.getInstance(getApplicationContext());
         //消息推送
         initPushMessage();
 

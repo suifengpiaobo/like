@@ -40,6 +40,14 @@ public class NotificationService {
         db.insert("notification", null, values);
     }
 
+    public void saveNewMessage(XGNotification notification){
+        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("msg_id", notification.getMsg_id());
+        values.put("type", 0);
+        db.insert("message", null, values);
+    }
+
     public void delete(Integer id) {
         SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
         db.delete("notification", "id=?", new String[]{id.toString()});
@@ -61,6 +69,13 @@ public class NotificationService {
         values.put("update_time", notification.getUpdate_time());
         db.update("notification", values, "id=?", new String[]{notification
                 .getId().toString()});
+    }
+
+    public void updateMessage(){
+        SQLiteDatabase db = dbOpenHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("type", 1);
+        db.execSQL("update message set type = 1 where type = 0");
     }
 
     public XGNotification find(Integer id) {
@@ -127,6 +142,17 @@ public class NotificationService {
     public int getCount() {
         SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
         Cursor cursor = db.rawQuery("select count(*) from notification", null);
+        try {
+            cursor.moveToFirst();
+            return cursor.getInt(0);
+        } finally {
+            cursor.close();
+        }
+    }
+
+    public int getNewMessageCount() {
+        SQLiteDatabase db = dbOpenHelper.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select count(*) from message where type = 0", null);
         try {
             cursor.moveToFirst();
             return cursor.getInt(0);

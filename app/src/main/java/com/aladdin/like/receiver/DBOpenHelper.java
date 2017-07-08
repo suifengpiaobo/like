@@ -19,6 +19,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE notification (id integer primary key autoincrement,msg_id varchar(64),title varchar(128),activity varchar(256),notificationActionType varchar(512),content text,update_time varchar(16))");
+        db.execSQL("CREATE TABLE message (id integer primary key autoincrement,msg_id varchar(64),type varchar(128))");
     }
 
     @Override

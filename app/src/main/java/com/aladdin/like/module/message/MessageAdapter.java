@@ -9,8 +9,10 @@ import android.widget.TextView;
 
 import com.aladdin.like.R;
 import com.aladdin.like.receiver.XGNotification;
+import com.aladdin.utils.LogUtil;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -27,13 +29,20 @@ public class MessageAdapter extends BaseAdapter{
     public MessageAdapter(Activity activity){
         mActivity = activity;
         mInflater = LayoutInflater.from(mActivity);
+        adapterData = new ArrayList<>();
     }
     public List<XGNotification> getData() {
         return adapterData;
     }
 
     public void setData(List<XGNotification> pushInfoList) {
-        adapterData = pushInfoList;
+        adapterData.clear();
+        adapterData.addAll(pushInfoList);
+        LogUtil.i("adapterData-->>"+adapterData);
+    }
+
+    public void addData(List<XGNotification> pushInfoList){
+        adapterData.addAll(pushInfoList);
     }
 
     @Override
@@ -59,8 +68,6 @@ public class MessageAdapter extends BaseAdapter{
         if (convertView == null) {
             aholder = new pushViewHolder();
             convertView = mInflater.inflate(R.layout.item_push, null);
-            aholder.msg_idv = (TextView) convertView
-                    .findViewById(R.id.push_msg_id);
             aholder.contentv = (TextView) convertView
                     .findViewById(R.id.push_content);
             aholder.timev = (TextView) convertView
@@ -71,8 +78,6 @@ public class MessageAdapter extends BaseAdapter{
         } else {
             aholder = (pushViewHolder) convertView.getTag();
         }
-
-        aholder.msg_idv.setText("ID:" + item.getMsg_id());
         aholder.titlev.setText(item.getTitle());
         aholder.contentv.setText(item.getContent());
         if (item.getUpdate_time() != null
@@ -94,7 +99,6 @@ public class MessageAdapter extends BaseAdapter{
     }
 
     private class pushViewHolder {
-        TextView msg_idv;
         TextView titlev;
         TextView timev;
         TextView contentv;
