@@ -1,1 +1,1 @@
-include ':app', ':ease', ':base', ':picture_library', ':network_lib', ':xrecycleview'
+include ':app', ':ease', ':base', ':picture_library', ':network_lib', ':xrecycleview', ':arcmenu'

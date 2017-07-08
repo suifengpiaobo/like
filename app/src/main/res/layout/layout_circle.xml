@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:fresco="http://schemas.android.com/apk/res-auto"
+                xmlns:arc="http://schemas.android.com/apk/res-auto"
               xmlns:xmenu="http://schemas.android.com/apk/res-auto"
               android:id="@+id/main_item"
               android:layout_width="wrap_content"
@@ -17,6 +18,19 @@
         fresco:roundedCornerRadius="10dp"
         android:transitionName="transition_animation_circe_photos"
         />
+
+    <com.aladdin.arcmenu.ArcMenu
+        android:id="@+id/arc_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/main_img"
+        android:layout_alignBottom="@+id/main_img"
+        arc:fromDegrees="0.0"
+        arc:toDegrees="90.0"
+        arc:childSize="30dp"
+        android:visibility="gone"
+        />
+
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/main_img_layer"

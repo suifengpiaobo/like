@@ -9,7 +9,6 @@ import android.widget.RelativeLayout;
 import com.aladdin.like.R;
 import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.LogUtil;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -28,7 +27,7 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
     public onItemClickListener mItemClickListener;
     private Context mContext;
 
-    private int pressedPosition = 0;
+    private int pressedPosition = -1;
 
     public CircleAdapter(Context context) {
         super(context);
@@ -63,6 +62,7 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
         if (item != null) {
             if (item != null){
                 viewHolder.item = item;
+
                 float scale = (DensityUtils.mScreenWidth/2-DensityUtils.dip2px(15))/(float)item.width;
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
                 params.height = (int) (item.height*scale);
@@ -72,15 +72,11 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
 
                 viewHolder.mMainImg.setImageURI(item.diaryImage);
 
-                if (pressedPosition >0){
+                if (pressedPosition >=0){
                     if (pressedPosition!=position){
-                        LogUtil.i("---AAA---");
-//                        viewHolder.mArcMenuButtom.setVisibility(View.GONE);
                         viewHolder.mMainImgLayer.setVisibility(View.VISIBLE);
                     }else{
-                        LogUtil.i("---BBB---");
                         viewHolder.mMainImgLayer.setVisibility(View.GONE);
-//                        viewHolder.mArcMenuButtom.setVisibility(View.VISIBLE);
                     }
                 }else{
                     viewHolder.mMainImgLayer.setVisibility(View.GONE);
@@ -94,7 +90,7 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
                 viewHolder.mMainImg.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        mItemClickListener.onLongClickListener(position,item);
+                        mItemClickListener.onLongClickListener(v,position,item);
 
                         return true;
                     }
@@ -119,8 +115,6 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
         SimpleDraweeView mMainImg;
         @BindView(R.id.main_img_layer)
         SimpleDraweeView mMainImgLayer;
-//        @BindView(R.id.main_item)
-//        LinearLayout mMainItem;
 
         DiaryDetail.Diary item;
 
@@ -129,6 +123,7 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
             ButterKnife.bind(this, view);
         }
     }
+
 
     public onItemClickListener getItemClickListener() {
         return mItemClickListener;
@@ -141,6 +136,6 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
     public interface onItemClickListener {
         void onItemClick(View view,SimpleDraweeView simpleDraweeView,DiaryDetail.Diary item);
 
-        void onLongClickListener(int position,DiaryDetail.Diary item);
+        void onLongClickListener(View view,int position,DiaryDetail.Diary item);
     }
 }
