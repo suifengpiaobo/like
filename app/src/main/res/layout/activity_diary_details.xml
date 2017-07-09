@@ -68,6 +68,7 @@
         android:background="@color/white"
         android:gravity="center_vertical"
         android:layout_gravity="bottom"
+        android:visibility="gone"
         >
 
         <TextView

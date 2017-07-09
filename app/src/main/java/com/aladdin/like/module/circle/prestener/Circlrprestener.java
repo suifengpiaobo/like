@@ -40,4 +40,22 @@ public class Circlrprestener implements CircleContract.Presenter{
             }
         });
     }
+
+    @Override
+    public void collectionPic(String openid, String imageId) {
+        HttpManager.INSTANCE.collectionImage(openid, imageId, new HttpResultCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                if (mView == null) return;
+
+                mView.collectionSucc();
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                if (mView == null) return;
+                mView.showErrorTip(msg);
+            }
+        });
+    }
 }

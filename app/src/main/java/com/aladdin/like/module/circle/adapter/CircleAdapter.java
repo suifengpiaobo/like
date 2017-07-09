@@ -87,14 +87,14 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
                         mItemClickListener.onItemClick(v,viewHolder.mMainImg,item);
                     }
                 });
-                viewHolder.mMainImg.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View v) {
-                        mItemClickListener.onLongClickListener(v,position,item);
-
-                        return true;
-                    }
-                });
+//                viewHolder.mMainImg.setOnLongClickListener(new View.OnLongClickListener() {
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//                        mItemClickListener.onLongClickListener(v,position,item);
+//
+//                        return true;
+//                    }
+//                });
             }
 
         }

@@ -2,6 +2,7 @@ package com.aladdin.like.module.search;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -15,6 +16,7 @@ import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseFragment;
 import com.aladdin.like.model.ThemeModes;
+import com.aladdin.like.module.albym.AlbymActivity;
 import com.aladdin.like.module.search.adapter.HorizontalAdapter;
 import com.aladdin.like.module.search.adapter.SearchResultAdapter;
 import com.aladdin.like.module.search.contract.SearchContract;
@@ -93,6 +95,16 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         mSearchResult.setAdapter(mResultAdapter);
 
         mSearch.setOnEditorActionListener(onEditorActionListener);
+
+
+        mResultAdapter.setItemClickListener(new SearchResultAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(ThemeModes.Theme item) {
+                Intent intent = new Intent(getActivity(),AlbymActivity.class);
+                intent.putExtra("THEME",item);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -160,6 +172,7 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
                 }
                 mResultAdapter.addAll(data.themeList);
                 mResultAdapter.notifyDataSetChanged();
+
             }
         });
     }

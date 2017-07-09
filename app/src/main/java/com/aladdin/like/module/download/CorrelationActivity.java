@@ -1,20 +1,26 @@
 package com.aladdin.like.module.download;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.support.annotation.Nullable;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseActivity;
+import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.utils.FileUtils;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.ToastUtil;
 import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
@@ -27,6 +33,7 @@ import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.umeng.analytics.MobclickAgent;
+import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,6 +55,12 @@ public class CorrelationActivity extends BaseActivity {
     SimpleDraweeView mPicture;
     @BindView(R.id.download_status)
     ImageView mDownloadStatus;
+    @BindView(R.id.watermark_pic_rl)
+    RelativeLayout mBgRl;
+    @BindView(R.id.title)
+    RelativeLayout mTitle;
+    @BindView(R.id.rl_bottom)
+    RelativeLayout mBottom;
 
     ThemeDetail.Theme mTheme;
 
@@ -55,6 +68,15 @@ public class CorrelationActivity extends BaseActivity {
     String fileName;
 
     public static final String TRANSIT_PIC = "picture";
+
+    boolean hidden = false;
+
+    double mAnimStart;
+    double mLastTime, mCurrent;
+    @BindView(R.id.collection_times)
+    TextView mCollectionTimes;
+    @BindView(R.id.collection_picture)
+    ImageView mCollectionPicture;
 
     @Override
     protected int getLayoutId() {
@@ -64,18 +86,63 @@ public class CorrelationActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-//        ViewCompat.setTransitionName(mPicture, Constant.TRANSITION_ANIMATION_NEWS_PHOTOS);
-
         mTheme = (ThemeDetail.Theme) getIntent().getSerializableExtra("CORRELATION");
         mFile = new File(FileUtils.getImageRootPath());
         boolean isCacheinDisk = Fresco.getImagePipelineFactory().getMainDiskStorageCache().hasKey(new SimpleCacheKey(Uri.parse(mTheme.imageUrl).toString()));
-
-        if (isCacheinDisk){
+        mCollectionTimes.setText(mTheme.collectionTimes+"人喜欢了此图片");
+        if (isCacheinDisk) {
             setImg();
         }
+
+        mPicture.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mLastTime = mCurrent;
+                        mCurrent = System.currentTimeMillis();
+                        if (mCurrent - mLastTime < 500 && mCurrent - mAnimStart > 500) {
+                            hide();
+                            mAnimStart = System.currentTimeMillis();
+                            return true;
+                        }
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
-    void setImg(){
+    public void hide() {
+        if (!hidden) {
+            startAnimation(true, 1.0f, 0.0f);
+        } else {
+            startAnimation(false, 0.0f, 1.0f);
+        }
+        hidden = !hidden;
+    }
+
+    private void startAnimation(final boolean endState, float startValue, float endValue) {
+        ValueAnimator animator = ValueAnimator.ofFloat(startValue, endValue).setDuration(500);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float y1, y2;
+                if (endState) {
+                    y1 = (0 - animation.getAnimatedFraction()) * DensityUtils.dip2px(48);
+                    y2 = (animation.getAnimatedFraction()) * DensityUtils.dip2px(48);
+                } else {
+                    y1 = (animation.getAnimatedFraction() - 1) * DensityUtils.dip2px(48);
+                    y2 = (1 - animation.getAnimatedFraction()) * DensityUtils.dip2px(48);
+                }
+                mTitle.setTranslationY(y1);
+                mBottom.setTranslationY(y2);
+            }
+        });
+        animator.start();
+    }
+
+    void setImg() {
         Uri uri = Uri.parse(mTheme.imageUrl);
         ImageRequest imageRequest = ImageRequestBuilder
                 .newBuilderWithSource(uri)
@@ -90,10 +157,10 @@ public class CorrelationActivity extends BaseActivity {
 
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                     float scale = (DensityUtils.mScreenWidth)/(float)bitmap.getWidth();
-                                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)mPicture.getLayoutParams();
-                                     params.height = (int) (bitmap.getHeight()*scale);
-                                     params.width = (int)(bitmap.getWidth()*scale);
+                                     float scale = (DensityUtils.mScreenWidth) / (float) bitmap.getWidth();
+                                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mPicture.getLayoutParams();
+                                     params.height = (int) (bitmap.getHeight() * scale);
+                                     params.width = (int) (bitmap.getWidth() * scale);
                                      mPicture.setLayoutParams(params);
                                      mPicture.setImageBitmap(bitmap);
                                  }
@@ -105,35 +172,42 @@ public class CorrelationActivity extends BaseActivity {
                 CallerThreadExecutor.getInstance());
     }
 
-    public static Intent getPhotoDetailIntent(Context context, ThemeDetail.Theme theme){
-        Intent intent = new Intent(context,CorrelationActivity.class);
-        intent.putExtra("CORRELATION",theme);
+    public static Intent getPhotoDetailIntent(Context context, ThemeDetail.Theme theme) {
+        Intent intent = new Intent(context, CorrelationActivity.class);
+        intent.putExtra("CORRELATION", theme);
         return intent;
     }
 
 
-    @OnClick({R.id.back, R.id.download_status})
+    @OnClick({R.id.back, R.id.download_status,R.id.collection_picture})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.back:
                 super.onBackPressed();
                 break;
             case R.id.download_status:
-//                HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getUid(), mTheme.imageId, new HttpResultCallback<String>() {
-//                    @Override
-//                    public void onSuccess(String result) {
-//                    }
-//                    @Override
-//                    public void onFailure(String code, String msg) {
-//                    }
-//                });
                 MobclickAgent.onEvent(CorrelationActivity.this, "DownLoad");
                 fileName = UUID.randomUUID().toString().substring(0, 16) + ".jpeg";
                 savePicture();
-//                Aria.download(this)
-//                        .load(mTheme.themeImgUrl)     //读取下载地址
-//                        .setDownloadPath(mFile.getAbsolutePath()+"/"+fileName)    //设置文件保存的完整路径
-//                        .start();   //启动下载
+
+                break;
+            case R.id.collection_picture:
+                HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), mTheme.imageId, new HttpResultCallback<String>() {
+                    @Override
+                    public void onSuccess(String result) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtil.showToast("收藏成功");
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(String code, String msg) {
+
+                    }
+                });
                 break;
         }
     }
@@ -155,7 +229,7 @@ public class CorrelationActivity extends BaseActivity {
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
                                      mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
                                      Toast.makeText(CorrelationActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
-                                     saveMyBitmap(bitmap,System.currentTimeMillis()+"");
+                                     saveMyBitmap(bitmap, System.currentTimeMillis() + "");
 //                                     MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "title", "description");
                                  }
 
@@ -167,8 +241,8 @@ public class CorrelationActivity extends BaseActivity {
         mPicture.setImageURI(mTheme.imageUrl);
     }
 
-    public void saveMyBitmap(Bitmap mBitmap,String bitName)  {
-        File f = new File( FileUtils.getImageRootPath() + bitName+".jpeg");
+    public void saveMyBitmap(Bitmap mBitmap, String bitName) {
+        File f = new File(FileUtils.getImageRootPath() + bitName + ".jpeg");
         FileOutputStream fOut = null;
         try {
             fOut = new FileOutputStream(f);

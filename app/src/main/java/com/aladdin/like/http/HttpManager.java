@@ -51,8 +51,6 @@ public enum HttpManager {
 //            url.append(HttpUrl.API_URL).append(path);
         }
 
-//        LogUtil.i("token--->>>"+LikeAgent.getInstance().getWeiXinPojo().getAccess_token());//likeApp1qaz2wsx
-//        OkHttpHeadersInit.initOkHttpHeaders("token", LikeAgent.getInstance().getWeiXinPojo().getAccess_token());
         OkHttpHeadersInit.initOkHttpHeaders("token","likeApp1qaz2wsx");
         if (requestType == RequestType.POST) {
             HttpUtil.getInstance().POST(url.toString(), param, HttpResultProcess.httpResultListener(httpResultCallback, uClass));

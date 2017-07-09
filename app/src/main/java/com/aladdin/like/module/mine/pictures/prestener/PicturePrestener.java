@@ -3,6 +3,7 @@ package com.aladdin.like.module.mine.pictures.prestener;
 import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.CollectionImage;
 import com.aladdin.like.module.mine.pictures.contract.PictureContract;
+import com.aladdin.utils.LogUtil;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 /**
@@ -28,7 +29,7 @@ public class PicturePrestener implements PictureContract.Presenter {
             @Override
             public void onSuccess(CollectionImage result) {
                 if (mView == null) return;
-
+                LogUtil.i("---result--->>>"+result);
                 mView.setCollectImage(result);
             }
 

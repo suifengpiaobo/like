@@ -12,8 +12,11 @@ import com.aladdin.like.model.DiaryDetail;
 public interface CircleContract {
     interface View extends BaseView {
         void setData(DiaryDetail data);
+        void collectionSucc();
     }
     interface Presenter extends BasePresenter {
         void getData(String openid,int auditSign,int page,int page_num);
+
+        void collectionPic(String openid,String imageId);
     }
 }

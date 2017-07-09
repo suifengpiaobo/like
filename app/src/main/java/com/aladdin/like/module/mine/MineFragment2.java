@@ -15,7 +15,6 @@ import com.aladdin.like.module.mine.pictures.MinePictureFragment;
 import com.aladdin.like.module.set.SettingActivity;
 import com.aladdin.like.receiver.NotificationService;
 import com.aladdin.like.widget.HViewPager;
-import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import butterknife.BindView;
@@ -70,7 +69,6 @@ public class MineFragment2 extends BaseFragment {
         }
 
         int count = NotificationService.getInstance(getActivity()).getNewMessageCount();
-        LogUtil.i("---message--count--->>>"+count);
         if (count >0){
             mNewMessage.setVisibility(View.VISIBLE);
         }else{

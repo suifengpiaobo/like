@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.aladdin.like.R;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.LogUtil;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -30,28 +31,22 @@ import static android.R.attr.width;
 public class AlbymPicAdapter extends BaseAdapter<ThemeDetail.Theme> {
     onItemClickListener mItemClickListener;
     private Context mContext;
+    private int pressedPosition = -1;
 
     public AlbymPicAdapter(Context context) {
         super(context);
         this.mContext = context;
     }
 
+    public void setPressedPosition(int position){
+        pressedPosition = position;
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
 
     }
-
-//    private Bitmap returnBitmap(Uri uri) {
-//        Bitmap bitmap = null;
-//        FileBinaryResource resource = (FileBinaryResource) Fresco.getImagePipelineFactory().getMainDiskStorageCache().getResource(new SimpleCacheKey(uri.toString()));
-//        if (resource != null){
-//            File file = resource.getFile();
-//            if (file != null && !TextUtils.isEmpty(file.getPath())) {
-//                bitmap = BitmapFactory.decodeFile(file.getPath());
-//            }
-//        }
-//        return bitmap;
-//    }
 
     @Override
     public int getCommonType(int position) {
@@ -66,21 +61,42 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeDetail.Theme> {
             viewHolder.mResultTypeName.setText(item.imageName);
             viewHolder.mResultTime.setText(item.createTimeStr);
 
-            float scale = (DensityUtils.mScreenWidth/2- DensityUtils.dip2px(15))/(float)item.width;
+            float scale = (DensityUtils.mScreenWidth / 2 - DensityUtils.dip2px(15)) / (float) item.width;
             int height = item.height;
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.mResultImg.getLayoutParams();
-            params.height = (int) (height*scale);
-            params.width = (int)(width*scale);
+            params.height = (int) (height * scale);
+            params.width = (int) (width * scale);
             viewHolder.mResultImg.setLayoutParams(params);
             viewHolder.mResultImg.setImageURI(item.imageUrl);
-//            viewHolder.mResultImg.setImageURI(item.themeImgUrl);
+
+            LogUtil.i("--pressedPosition-->>"+pressedPosition);
+            if (pressedPosition >=0){
+                if (pressedPosition!=position){
+                    viewHolder.mLayer.setVisibility(View.VISIBLE);
+                    LogUtil.i("--AB-->>"+pressedPosition);
+                }else{
+                    viewHolder.mLayer.setVisibility(View.GONE);
+                    LogUtil.i("--CD->>"+pressedPosition);
+                }
+            }else{
+                viewHolder.mLayer.setVisibility(View.GONE);
+                LogUtil.i("--EF->>"+pressedPosition);
+            }
 
             viewHolder.mResultItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mItemClickListener != null) {
-                        mItemClickListener.onItemClick(v,viewHolder.mResultImg,item);
+                        mItemClickListener.onItemClick(v, viewHolder.mResultImg, viewHolder.mWaterMark, item);
                     }
+                }
+            });
+
+            viewHolder.mResultItem.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mItemClickListener.onLongClickListener(v,position,item);
+                    return true;
                 }
             });
         }
@@ -112,6 +128,8 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeDetail.Theme> {
         RelativeLayout mResultItem;
         @BindView(R.id.watermark)
         ImageView mWaterMark;
+        @BindView(R.id.main_img_layer)
+        SimpleDraweeView mLayer;
 
         HorizontalViewHolder(View view) {
             super(view);
@@ -124,8 +142,9 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeDetail.Theme> {
     }
 
     public interface onItemClickListener {
-//        void onItemClick(ThemeDetail.Theme item);
-        void onItemClick(View v, SimpleDraweeView mPrefectureBg,ThemeDetail.Theme item);
+        void onItemClick(View v, SimpleDraweeView mPrefectureBg, ImageView mWaterMark, ThemeDetail.Theme item);
+
+        void onLongClickListener(View view,int position,ThemeDetail.Theme item);
     }
 
 

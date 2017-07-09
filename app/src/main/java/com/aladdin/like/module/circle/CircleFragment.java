@@ -3,7 +3,10 @@ package com.aladdin.like.module.circle;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -12,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aladdin.arcmenu.ArcMenu;
 import com.aladdin.like.LikeAgent;
@@ -24,12 +28,28 @@ import com.aladdin.like.module.circle.contract.CircleContract;
 import com.aladdin.like.module.circle.prestener.Circlrprestener;
 import com.aladdin.like.module.diary.PublishDiaryFragment;
 import com.aladdin.like.module.diarydetails.DiaryDetailsActivity;
+import com.aladdin.like.utils.FileUtils;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.ToastUtil;
+import com.facebook.common.executors.CallerThreadExecutor;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -132,7 +152,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
                         shareDialog.setBitmapUrl(diary.diaryImage);
                         shareDialog.show(getActivity().getSupportFragmentManager(),"share");
                     }else if(position == 1){
-
+                        mPresenter.collectionPic(LikeAgent.getInstance().getOpenid(),diary.diaryId);
                     }else if (position == 2){
                         savePic(diary.diaryImage);
                     }
@@ -142,7 +162,51 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
     }
 
     private void savePic(String image) {
+        Uri uri = Uri.parse(image);
+        ImageRequest imageRequest = ImageRequestBuilder
+                .newBuilderWithSource(uri)
+                .setProgressiveRenderingEnabled(true)
+                .build();
 
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        DataSource<CloseableReference<CloseableImage>>
+                dataSource = imagePipeline.fetchDecodedImage(imageRequest, this);
+
+        dataSource.subscribe(new BaseBitmapDataSubscriber() {
+
+                                 @Override
+                                 public void onNewResultImpl(@Nullable Bitmap bitmap) {
+                                     Toast.makeText(getActivity(),"下载成功",Toast.LENGTH_SHORT).show();
+                                     saveMyBitmap(bitmap,System.currentTimeMillis()+"");
+                                 }
+
+                                 @Override
+                                 public void onFailureImpl(DataSource dataSource) {
+                                 }
+                             },
+                CallerThreadExecutor.getInstance());
+    }
+
+    public void saveMyBitmap(Bitmap mBitmap,String bitName)  {
+        File f = new File( FileUtils.getImageRootPath() + bitName+".jpeg");
+        FileOutputStream fOut = null;
+        try {
+            fOut = new FileOutputStream(f);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+        getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
+        try {
+            fOut.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            fOut.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     //新添加
@@ -247,6 +311,17 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
                 mAdapter.setPressedPosition(-1);
                 page = data.per_page;
                 total = data.total;
+            }
+        });
+    }
+
+    @Override
+    public void collectionSucc() {
+        if (getActivity() == null) return;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtil.showToast("收藏成功");
             }
         });
     }
