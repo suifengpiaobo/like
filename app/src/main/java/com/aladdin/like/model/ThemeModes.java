@@ -18,6 +18,7 @@ public class ThemeModes implements Serializable{
         public String createTimeStr;//创建时间
         public int width;
         public int height;
+        public float scale;
 
         public int followSign; //是否关注 1 关注 0 未关注 查询全部时 为空
 

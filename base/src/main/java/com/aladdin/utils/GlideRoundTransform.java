@@ -1,22 +1,11 @@
 package com.aladdin.utils;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapShader;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.RectF;
-
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-
 /**
  * Description
  * Created by zxl on 2017/6/30 上午9:02.
  * Email:444288256@qq.com
  */
-public class GlideRoundTransform extends BitmapTransformation {
+/*public class GlideRoundTransform extends BitmapTransformation {
 
     private static float radius = 0f;
 
@@ -55,4 +44,9 @@ public class GlideRoundTransform extends BitmapTransformation {
     public String getId() {
         return getClass().getName() + Math.round(radius);
     }
-}
+
+    @Override
+    public void updateDiskCacheKey(MessageDigest messageDigest) {
+
+    }
+}*/

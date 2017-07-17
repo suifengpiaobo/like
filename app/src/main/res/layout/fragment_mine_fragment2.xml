@@ -1,11 +1,12 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 xmlns:fresco="http://schemas.android.com/apk/res-auto"
-                                                 xmlns:tools="http://schemas.android.com/tools"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:orientation="vertical"
-                                                 tools:context=".module.mine.MineFragment2">
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".module.mine.MineFragment2">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/bar_layout"
@@ -22,7 +23,7 @@
             app:layout_scrollFlags="scroll"
             >
 
-            <ImageView
+            <com.sunfusheng.glideimageview.GlideImageView
                 android:id="@+id/bg"
                 android:layout_width="match_parent"
                 android:layout_height="220dp"
@@ -89,6 +90,7 @@
                 android:paddingBottom="20dp"
                 android:text="Amsterdam, The Netherlands"
                 android:textColor="@color/Gray"
+                android:visibility="gone"
                 android:textSize="16sp"
                 />
         </RelativeLayout>

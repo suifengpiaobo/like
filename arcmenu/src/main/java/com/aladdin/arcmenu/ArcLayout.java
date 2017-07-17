@@ -48,9 +48,13 @@ public class ArcLayout extends ViewGroup {
      */
     private int mChildSize;
 
-    private int mChildPadding = 5;
+//    private int mChildPadding = 5;
 
-    private int mLayoutPadding = 10;
+//    private int mLayoutPadding = 10;
+
+    private int mChildPadding = 15;
+
+    private int mLayoutPadding = 15;
 
     public static final float DEFAULT_FROM_DEGREES = 270.0f;
 

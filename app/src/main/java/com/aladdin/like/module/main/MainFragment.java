@@ -17,15 +17,14 @@ import com.aladdin.like.base.BaseFragment;
 import com.aladdin.like.constant.Constant;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.albym.AlbymActivity;
-import com.aladdin.like.module.download.PictureDetailsActivity;
 import com.aladdin.like.module.main.adapter.MainAdapter;
 import com.aladdin.like.module.main.contract.MainContract;
 import com.aladdin.like.module.main.presenter.MainPresenter;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.sunfusheng.glideimageview.GlideImageView;
 
 import butterknife.BindView;
 
@@ -62,18 +61,18 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
         mAdapter.setItemClickListener(new MainAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(View v, SimpleDraweeView mMainImg, RelativeLayout mMainItem, ThemeModes.Theme item) {
-//                startCorrelationActivity(mMainImg,item);
-                Intent intent = new Intent(getActivity(),AlbymActivity.class);
-                intent.putExtra("THEME",item);
-                startActivity(intent);
+            public void onItemClick(View v, GlideImageView mMainImg, RelativeLayout mMainItem, ThemeModes.Theme item) {
+                startCorrelationActivity(mMainImg,item);
+//                Intent intent = new Intent(getActivity(),AlbymActivity.class);
+//                intent.putExtra("THEME",item);
+//                startActivity(intent);
             }
         });
     }
 
     //新添加
-    public void startCorrelationActivity(SimpleDraweeView mPrefectureBg, ThemeModes.Theme item){
-        Intent intent = PictureDetailsActivity.getPhotoDetailIntent(getActivity(),item);
+    public void startCorrelationActivity(GlideImageView mPrefectureBg, ThemeModes.Theme item){
+        Intent intent = AlbymActivity.getPhotoDetailIntent(getActivity(),item);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(

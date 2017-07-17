@@ -2,6 +2,7 @@ package com.aladdin.like.module.download.contract;
 
 import com.aladdin.like.base.BasePresenter;
 import com.aladdin.like.base.BaseView;
+import com.aladdin.like.model.AlbymModel;
 import com.aladdin.like.model.ThemeDetail;
 
 /**
@@ -14,11 +15,15 @@ public interface PictureDetailsContract {
         void setData(ThemeDetail themeDetail);
 
         void collectionResult(String result);
+
+        void setAlbymData(AlbymModel albymData);
     }
 
     interface Prestener extends BasePresenter {
         void getData(String openid,String themeId, int page, int page_num);
 
         void collectionImage(String openid,String imageId);
+
+        void getAlbymDetail(String openid, String themeId, int page, int page_num);
     }
 }

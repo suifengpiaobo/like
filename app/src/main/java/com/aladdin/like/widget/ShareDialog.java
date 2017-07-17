@@ -77,6 +77,7 @@ public class ShareDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 WXUtils.shareBitmap(mContext,bitmapUrl, SendMessageToWX.Req.WXSceneSession);
+                dismiss();
             }
         });
 
@@ -84,6 +85,7 @@ public class ShareDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 WXUtils.shareBitmap(mContext,bitmapUrl, SendMessageToWX.Req.WXSceneTimeline);
+                dismiss();
             }
         });
 
@@ -91,6 +93,7 @@ public class ShareDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 WXUtils.shareBitmap(mContext,bitmapUrl, SendMessageToWX.Req.WXSceneFavorite);
+                dismiss();
             }
         });
     }

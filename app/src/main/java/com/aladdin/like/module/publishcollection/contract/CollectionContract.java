@@ -15,6 +15,6 @@ public interface CollectionContract {
     }
 
     interface Presenter extends BasePresenter {
-        void getUserCollectionImage(String openid, int page, int page_num);
+        void getUserCollectionImage(String openid, int page, int page_num,int operateType);
     }
 }

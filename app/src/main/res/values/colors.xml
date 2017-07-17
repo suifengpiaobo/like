@@ -6,4 +6,6 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="color_e6ffffff">#E6FFFFFF</color>
+
+    <color name="placeholder_color">#1A000000</color>
 </resources>

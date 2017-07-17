@@ -2,7 +2,6 @@ package com.aladdin.like.module.albym.presenter;
 
 import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.AlbymModel;
-import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.module.albym.contract.AlbymContract;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
@@ -39,19 +38,18 @@ public class AlbymPrestener implements AlbymContract.Prestener{
         });
     }
 
-    @Override
-    public void getThemeDetail(String openid, String albymId, int page, int page_num) {
-        HttpManager.INSTANCE.getThemeDetail(openid, albymId, page, page_num, new HttpResultCallback<ThemeDetail>() {
-            @Override
-            public void onSuccess(ThemeDetail result) {
-                if (mView == null) return;
-                mView.setAlbymPic(result);
-            }
-
-            @Override
-            public void onFailure(String code, String msg) {
-
-            }
-        });
-    }
+//    @Override
+//    public void getThemeDetail(String openid, String albymId, int page, int page_num) {
+//        HttpManager.INSTANCE.getThemeDetail(openid, albymId, page, page_num, new HttpResultCallback<ThemeDetail>() {
+//            @Override
+//            public void onSuccess(ThemeDetail result) {
+//                if (mView == null) return;
+//                mView.setAlbymPic(result);
+//            }
+//            @Override
+//            public void onFailure(String code, String msg) {
+//
+//            }
+//        });
+//    }
 }

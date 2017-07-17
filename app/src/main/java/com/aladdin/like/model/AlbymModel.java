@@ -1,5 +1,6 @@
 package com.aladdin.like.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  * Created by zxl on 2017/7/4 下午11:54.
  * Email:444288256@qq.com
  */
-public class AlbymModel {
+public class AlbymModel implements Serializable{
     /**
      * code : 200
      * message : success
@@ -25,7 +26,7 @@ public class AlbymModel {
     public int next_page;
     public List<AlbymDetail> albymList;
 
-    public static class AlbymDetail {
+    public static class AlbymDetail implements Serializable{
         /**
          * albymId : 1
          * themeId : 20
@@ -45,9 +46,25 @@ public class AlbymModel {
         public String albymName;
         public String albymUrl;
         public String createTimeStr;
-        public String width;
-        public String height;
+        public int width;
+        public int height;
         public int collectTimes;
         public int albymStatus;
+
+        @Override
+        public String toString() {
+            return "AlbymDetail{" +
+                    "albymId=" + albymId +
+                    ", themeId=" + themeId +
+                    ", themeName=" + themeName +
+                    ", albymName='" + albymName + '\'' +
+                    ", albymUrl='" + albymUrl + '\'' +
+                    ", createTimeStr='" + createTimeStr + '\'' +
+                    ", width=" + width +
+                    ", height=" + height +
+                    ", collectTimes=" + collectTimes +
+                    ", albymStatus=" + albymStatus +
+                    '}';
+        }
     }
 }

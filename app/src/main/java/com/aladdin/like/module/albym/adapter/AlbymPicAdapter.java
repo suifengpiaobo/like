@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.aladdin.like.R;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.LogUtil;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -69,18 +68,14 @@ public class AlbymPicAdapter extends BaseAdapter<ThemeDetail.Theme> {
             viewHolder.mResultImg.setLayoutParams(params);
             viewHolder.mResultImg.setImageURI(item.imageUrl);
 
-            LogUtil.i("--pressedPosition-->>"+pressedPosition);
             if (pressedPosition >=0){
                 if (pressedPosition!=position){
                     viewHolder.mLayer.setVisibility(View.VISIBLE);
-                    LogUtil.i("--AB-->>"+pressedPosition);
                 }else{
                     viewHolder.mLayer.setVisibility(View.GONE);
-                    LogUtil.i("--CD->>"+pressedPosition);
                 }
             }else{
                 viewHolder.mLayer.setVisibility(View.GONE);
-                LogUtil.i("--EF->>"+pressedPosition);
             }
 
             viewHolder.mResultItem.setOnClickListener(new View.OnClickListener() {

@@ -26,12 +26,12 @@ import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.sunfusheng.glideimageview.GlideImageView;
 import com.umeng.analytics.MobclickAgent;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
@@ -52,7 +52,7 @@ public class CorrelationActivity extends BaseActivity {
     @BindView(R.id.back)
     ImageView mBack;
     @BindView(R.id.picture)
-    SimpleDraweeView mPicture;
+    GlideImageView mPicture;
     @BindView(R.id.download_status)
     ImageView mDownloadStatus;
     @BindView(R.id.watermark_pic_rl)
@@ -91,8 +91,15 @@ public class CorrelationActivity extends BaseActivity {
         boolean isCacheinDisk = Fresco.getImagePipelineFactory().getMainDiskStorageCache().hasKey(new SimpleCacheKey(Uri.parse(mTheme.imageUrl).toString()));
         mCollectionTimes.setText(mTheme.collectionTimes+"人喜欢了此图片");
         if (isCacheinDisk) {
-            setImg();
+//            setImg();
         }
+
+        float scale = DensityUtils.mScreenWidth/(float)mTheme.width;
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mPicture.getLayoutParams();
+        params.height = (int)(mTheme.height*scale);
+        params.width = (int)(mTheme.width*scale);
+        mPicture.setLayoutParams(params);
+        mPicture.loadImage(mTheme.imageUrl,R.color.placeholder_color);
 
         mPicture.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -157,12 +164,17 @@ public class CorrelationActivity extends BaseActivity {
 
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                     float scale = (DensityUtils.mScreenWidth) / (float) bitmap.getWidth();
-                                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mPicture.getLayoutParams();
-                                     params.height = (int) (bitmap.getHeight() * scale);
-                                     params.width = (int) (bitmap.getWidth() * scale);
-                                     mPicture.setLayoutParams(params);
-                                     mPicture.setImageBitmap(bitmap);
+                                     runOnUiThread(new Runnable() {
+                                         @Override
+                                         public void run() {
+                                             float scale = (DensityUtils.mScreenWidth) / (float) bitmap.getWidth();
+                                             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mPicture.getLayoutParams();
+                                             params.height = (int) (bitmap.getHeight() * scale);
+                                             params.width = (int) (bitmap.getWidth() * scale);
+                                             mPicture.setLayoutParams(params);
+                                             mPicture.setImageBitmap(bitmap);
+                                         }
+                                     });
                                  }
 
                                  @Override
@@ -238,7 +250,7 @@ public class CorrelationActivity extends BaseActivity {
                                  }
                              },
                 CallerThreadExecutor.getInstance());
-        mPicture.setImageURI(mTheme.imageUrl);
+//        mPicture.setImageURI(mTheme.imageUrl);
     }
 
     public void saveMyBitmap(Bitmap mBitmap, String bitName) {

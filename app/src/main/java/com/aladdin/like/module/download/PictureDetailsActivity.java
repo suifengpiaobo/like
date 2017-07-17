@@ -3,11 +3,8 @@ package com.aladdin.like.module.download;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -20,6 +17,7 @@ import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.constant.Constant;
+import com.aladdin.like.model.AlbymModel;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.download.adapter.PictureDetailsAdapter;
@@ -28,19 +26,10 @@ import com.aladdin.like.module.download.presenter.PictureDetailsPrestener;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
-import com.facebook.cache.common.SimpleCacheKey;
-import com.facebook.common.executors.CallerThreadExecutor;
-import com.facebook.common.references.CloseableReference;
-import com.facebook.datasource.DataSource;
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.core.ImagePipeline;
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
-import com.facebook.imagepipeline.image.CloseableImage;
-import com.facebook.imagepipeline.request.ImageRequest;
-import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.sunfusheng.glideimageview.GlideImageView;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -55,7 +44,7 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
     @BindView(R.id.share)
     ImageView mShare;
     @BindView(R.id.picture)
-    SimpleDraweeView mPicture;
+    GlideImageView mPicture;
     @BindView(R.id.type_name)
     TextView mTypeName;
     @BindView(R.id.parise_num)
@@ -92,16 +81,21 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
         mTheme = (ThemeModes.Theme) getIntent().getSerializableExtra("PREFECTURE");
         themeId = mTheme.themeId;
 
-        boolean isCacheinDisk = Fresco.getImagePipelineFactory().getMainDiskStorageCache().hasKey(new SimpleCacheKey(Uri.parse(mTheme.themeImgUrl).toString()));
+        float scale = (DensityUtils.mScreenWidth-DensityUtils.dip2px(30))/(float)mTheme.width;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mPicture.getLayoutParams();
+        params.height = (int) (mTheme.height*scale);
+        params.width = (int)(mTheme.width*scale);
+        mPicture.setLayoutParams(params);
+        mPicture.loadImage(mTheme.themeImgUrl,R.color.placeholder_color);
+        mTypeName.setText(mTheme.themeName);
 
-        if (isCacheinDisk){
-            setImg();
-        }
         if (mAdapter != null && mAdapter.getItemCount() > 0){
             mAdapter.clear();
         }
 
-        mPrestener.getData(LikeAgent.getInstance().getOpenid(),themeId,page,page_num);
+//        mPrestener.getData(LikeAgent.getInstance().getOpenid(),themeId,page,page_num);
+
+        mPrestener.getAlbymDetail(LikeAgent.getInstance().getOpenid(), mTheme.themeId, page, page_num);
 
         mDownloadRecycle.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mDownloadRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
@@ -117,36 +111,6 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
         mDownloadRecycle.setAdapter(mAdapter);
 
         bindEvent();
-    }
-
-    private void setImg() {
-        Uri uri = Uri.parse(mTheme.themeImgUrl);
-        ImageRequest imageRequest = ImageRequestBuilder
-                .newBuilderWithSource(uri)
-                .setProgressiveRenderingEnabled(true)
-                .build();
-
-        ImagePipeline imagePipeline = Fresco.getImagePipeline();
-        DataSource<CloseableReference<CloseableImage>>
-                dataSource = imagePipeline.fetchDecodedImage(imageRequest, this);
-
-        dataSource.subscribe(new BaseBitmapDataSubscriber() {
-
-                                 @Override
-                                 public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                     float scale = (DensityUtils.mScreenWidth-DensityUtils.dip2px(20))/(float)bitmap.getWidth();
-                                     LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mPicture.getLayoutParams();
-                                     params.height = (int) (bitmap.getHeight()*scale);
-                                     params.width = (int)(bitmap.getWidth()*scale);
-                                     mPicture.setLayoutParams(params);
-                                     mPicture.setImageBitmap(bitmap);
-                                 }
-
-                                 @Override
-                                 public void onFailureImpl(DataSource dataSource) {
-                                 }
-                             },
-                CallerThreadExecutor.getInstance());
     }
 
     private void bindEvent() {
@@ -248,6 +212,18 @@ public class PictureDetailsActivity extends BaseActivity implements PictureDetai
     @Override
     public void collectionResult(String result) {
 
+    }
+
+    @Override
+    public void setAlbymData(AlbymModel albymData) {
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                page = albymData.per_page;
+//                mDownloadRecycle.refreshComplete();
+//                mAdapter.addAll(themeDetail.imageList);
+//            }
+//        });
     }
 
     @Override

@@ -24,8 +24,8 @@ public class CollectionPrestener implements CollectionContract.Presenter {
     }
 
     @Override
-    public void getUserCollectionImage(String openid, int page, int page_num) {
-        HttpManager.INSTANCE.getUserCollectionImage(openid, page, page_num, new HttpResultCallback<CollectionImage>() {
+    public void getUserCollectionImage(String openid, int page, int page_num,int operateType) {
+        HttpManager.INSTANCE.getUserCollectionImage(openid, page, page_num, operateType,new HttpResultCallback<CollectionImage>() {
             @Override
             public void onSuccess(CollectionImage result) {
                 if (mView == null) return;

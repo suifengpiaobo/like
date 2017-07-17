@@ -17,6 +17,10 @@ import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import butterknife.BindView;
 
+/**
+ * Description 选择收藏的图片
+ * Created by zxl on 2017/7/17 下午8:42.
+ */
 public class ChooseCollectionActivity extends BaseActivity implements CollectionContract.View,XRecyclerView.LoadingListener {
     @BindView(R.id.collection_picture)
     XRecyclerView mCollectionPicture;
@@ -99,11 +103,11 @@ public class ChooseCollectionActivity extends BaseActivity implements Collection
         if (mAdapter != null &&mAdapter.getCommonItemCount()>0){
             mAdapter.clear();
         }
-        mPresenter.getUserCollectionImage(LikeAgent.getInstance().getOpenid(),page,page_num);
+        mPresenter.getUserCollectionImage(LikeAgent.getInstance().getOpenid(),page,page_num,1);
     }
 
     @Override
     public void onLoadMore() {
-        mPresenter.getUserCollectionImage(LikeAgent.getInstance().getOpenid(),page,page_num);
+        mPresenter.getUserCollectionImage(LikeAgent.getInstance().getOpenid(),page,page_num,1);
     }
 }

@@ -1,4 +1,4 @@
-package com.aladdin.like.module.main.adapter;
+package com.aladdin.like.module.albym.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,7 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.aladdin.like.R;
-import com.aladdin.like.model.ThemeModes;
+import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.utils.DensityUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
@@ -22,11 +22,11 @@ import butterknife.ButterKnife;
  * Created by zxl on 2017/4/30 下午4:08.
  * Email:444288256@qq.com
  */
-public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
+public class AlbymDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
     onItemClickListener mItemClickListener;
     private Context mContext;
 
-    public MainAdapter(Context context) {
+    public AlbymDetailsAdapter(Context context) {
         super(context);
         this.mContext = context;
     }
@@ -39,48 +39,47 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         MainViewHolder viewHolder = (MainViewHolder) holder;
-        ThemeModes.Theme item = getItemObject(position);
+        ThemeDetail.Theme item = getItemObject(position);
         if (item != null) {
+            viewHolder.item = item;
             float scale = (DensityUtils.mScreenWidth / 2 - DensityUtils.dip2px(15)) / (float) item.width;
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
             params.height = (int) (item.height * scale);
             params.width = (int) (item.width * scale);
             viewHolder.mMainImg.setLayoutParams(params);
 
-            viewHolder.mMainImg.loadImage(item.themeImgUrl,R.color.placeholder_color);
-            viewHolder.mMainTypeName.setText(item.themeName);
+            viewHolder.mMainImg.loadImage(item.imageUrl,R.color.placeholder_color);
+            viewHolder.mMainTypeName.setText(item.imageName);
             viewHolder.mMainTime.setText(item.createTimeStr);
-            item.scale = scale;
-            viewHolder.item = item;
         }
     }
 
     @Override
-    public void onBindCommon(RecyclerView.ViewHolder holder, ThemeModes.Theme item) {
+    public void onBindCommon(RecyclerView.ViewHolder holder, ThemeDetail.Theme item) {
 
     }
 
-    public ThemeModes.Theme getItemObject(int position) {
+    public ThemeDetail.Theme getItemObject(int position) {
         if (position < 0 || position > mDatas.size() - 1) return null;
         return mDatas.get(position);
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateCommon(ViewGroup parent, int viewType) {
-        View mView = View.inflate(mContext, R.layout.layout_main_prefecture, null);
+        View mView = View.inflate(mContext, R.layout.layout_albym_details, null);
         return new MainViewHolder(mView);
     }
 
     class MainViewHolder extends BaseViewHolder implements View.OnClickListener {
-        @BindView(R.id.main_img)
+        @BindView(R.id.albym_img)
         GlideImageView mMainImg;
-        @BindView(R.id.main_type_name)
+        @BindView(R.id.albym_type_name)
         TextView mMainTypeName;
-        @BindView(R.id.main_time)
+        @BindView(R.id.albym_time)
         TextView mMainTime;
-        @BindView(R.id.main_item)
+        @BindView(R.id.albym_item)
         RelativeLayout mMainItem;
-        ThemeModes.Theme item;
+        ThemeDetail.Theme item;
 
         MainViewHolder(View view) {
             super(view);
@@ -100,8 +99,7 @@ public class MainAdapter extends BaseAdapter<ThemeModes.Theme> {
     }
 
     public interface onItemClickListener {
-        //        void onItemClick(ThemeModes.Theme item);
-        void onItemClick(View v, GlideImageView mMainImg, RelativeLayout mMainItem, ThemeModes.Theme item);
+        void onItemClick(View v, GlideImageView mMainImg, RelativeLayout mMainItem, ThemeDetail.Theme item);
     }
 
 }

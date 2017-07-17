@@ -1,5 +1,7 @@
 package com.aladdin.like.module.albym;
 
+import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -7,14 +9,12 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aladdin.arcmenu.ArcMenu;
@@ -27,7 +27,6 @@ import com.aladdin.like.model.AlbymModel;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.albym.adapter.AlbymAdapter;
-import com.aladdin.like.module.albym.adapter.AlbymPicAdapter;
 import com.aladdin.like.module.albym.contract.AlbymContract;
 import com.aladdin.like.module.albym.presenter.AlbymPrestener;
 import com.aladdin.like.module.download.CorrelationActivity;
@@ -35,13 +34,11 @@ import com.aladdin.like.utils.FileUtils;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.ToastUtil;
 import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
@@ -49,6 +46,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.sunfusheng.glideimageview.GlideImageView;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 import java.io.File;
@@ -63,10 +61,8 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
 
     @BindView(R.id.back)
     ImageView mBack;
-    @BindView(R.id.albym_horizontal)
-    RecyclerView mAlbymHorizontal;
-    @BindView(R.id.albym_name)
-    TextView mAlbymName;
+    @BindView(R.id.share)
+    ImageView mShare;
     @BindView(R.id.albym_list)
     XRecyclerView mAlbymList;
     @BindView(R.id.line)
@@ -74,9 +70,16 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
     @BindView(R.id.root_view)
     FrameLayout mRootView;
 
-    AlbymAdapter mAlbymAdapter;
+    @BindView(R.id.picture)
+    GlideImageView mPicture;
+    @BindView(R.id.type_name)
+    TextView mTypeName;
+    @BindView(R.id.parise_num)
+    TextView mPariseNum;
+    @BindView(R.id.click_praise)
+    ImageView mClickPraise;
 
-    AlbymPicAdapter mAlbymPicAdapter;
+    AlbymAdapter mAlbymAdapter;
 
     AlbymContract.Prestener mPrestener;
 
@@ -86,7 +89,7 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
 
     int page = 1, page_num = 10;
 
-    private static final int[] ITEM_DRAWABLES = {R.drawable.composer_camera,R.drawable.composer_place, R.drawable.composer_music};
+    private static final int[] ITEM_DRAWABLES = {R.drawable.compress_share, R.drawable.compress_collection, R.drawable.compress_download};
 
     @Override
     protected int getLayoutId() {
@@ -106,66 +109,62 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
         mAlbymList.setLoadingListener(this);
         mAlbymList.setPullRefreshEnabled(false);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(AlbymActivity.this);
-        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
-        mAlbymHorizontal.setLayoutManager(linearLayoutManager);
+        float scale = (DensityUtils.mScreenWidth-DensityUtils.dip2px(30))/(float)mTheme.width;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) mPicture.getLayoutParams();
+        params.height = (int) (mTheme.height*scale);
+        params.width = (int)(mTheme.width*scale);
+        mPicture.setLayoutParams(params);
+        mPicture.loadImage(mTheme.themeImgUrl,R.color.placeholder_color);
+        mTypeName.setText(mTheme.themeName);
+
+        StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mAlbymAdapter = new AlbymAdapter(AlbymActivity.this);
-        mAlbymHorizontal.setAdapter(mAlbymAdapter);
+        mAlbymList.setLayoutManager(staggered);
+        mAlbymList.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(11.5f), DensityUtils.dip2px(7.5f)));
+        mAlbymList.setAdapter(mAlbymAdapter);
 
         mAlbymAdapter.setItemClickListener(new AlbymAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(AlbymModel.AlbymDetail item) {
-                if (mAlbymPicAdapter != null && mAlbymPicAdapter.getCommonItemCount()>0){
-                    mAlbymPicAdapter.clear();
-                }
-                page = 1;
-                mPrestener.getThemeDetail(LikeAgent.getInstance().getOpenid(), item.albymId + "", page, page_num);
-                mAlbymName.setText(item.albymName);
-            }
-        });
-
-
-        StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        mAlbymPicAdapter = new AlbymPicAdapter(AlbymActivity.this);
-        mAlbymList.setLayoutManager(staggered);
-        mAlbymList.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(11.5f), DensityUtils.dip2px(7.5f)));
-        mAlbymList.setAdapter(mAlbymPicAdapter);
-
-        mAlbymPicAdapter.setItemClickListener(new AlbymPicAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(View v, SimpleDraweeView mPrefectureBg, ImageView mWaterMark,ThemeDetail.Theme item) {
-                startCorrelationActivity(mPrefectureBg,mWaterMark, item);
+            public void onItemClick(View v, GlideImageView mPrefectureBg, AlbymModel.AlbymDetail item) {
+//                startCorrelationActivity(mPrefectureBg, item);
+                Intent intent= AlbymDetailsActivity.getPhotoDetailIntent(AlbymActivity.this,item);
+                startActivity(intent);
             }
 
             @Override
-            public void onLongClickListener(View view, int position, ThemeDetail.Theme item) {
-                LogUtil.i("---long--click--"+position+"   ---item-->>"+item);
+            public void onLongClickListener(View view, int position, AlbymModel.AlbymDetail item) {
                 int[] location = new int[2];
                 view.getLocationOnScreen(location);
                 int x = location[0];
                 int y = location[1];
-                mAlbymPicAdapter.setPressedPosition(position);
+                mAlbymAdapter.setPressedPosition(position);
 
                 ArcMenu mArcMenu = new ArcMenu(AlbymActivity.this);
 
-                mArcMenu.setChildSize(DensityUtils.dip2px(AlbymActivity.this, 50));
+                mArcMenu.setChildSize(DensityUtils.dip2px(AlbymActivity.this, 30));
                 FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                if (x>DensityUtils.mScreenWidth/2){
+                if (x > DensityUtils.mScreenWidth / 2) {
                     mArcMenu.setDrgess(90.0f, 180.0f);
-                    params.setMargins(DensityUtils.mScreenWidth/2-DensityUtils.dip2px(30),y+view.getHeight()-DensityUtils.dip2px(250),0,0);
-                }else {
+                    params.setMargins(DensityUtils.mScreenWidth / 2 - DensityUtils.dip2px(30), y + view.getHeight() - DensityUtils.dip2px(200), 0, 0);
+                } else {
                     mArcMenu.setDrgess(0.0f, 90.0f);
-                    params.setMargins(x+view.getWidth()-DensityUtils.dip2px(170),y+view.getHeight()-DensityUtils.dip2px(250),0,0);
+                    params.setMargins(x + view.getWidth() - DensityUtils.dip2px(100), y + view.getHeight() - DensityUtils.dip2px(200), 0, 0);
                 }
                 mArcMenu.setLayoutParams(params);
                 mRootView.addView(mArcMenu);
 
-                initArcMenu(mArcMenu, ITEM_DRAWABLES,item);
+                initArcMenu(mArcMenu, ITEM_DRAWABLES, item);
             }
         });
     }
 
-    private void initArcMenu(ArcMenu menu, int[] itemDrawables,ThemeDetail.Theme themeDetail) {
+    public static Intent getPhotoDetailIntent(Context context, ThemeModes.Theme theme) {
+        Intent intent = new Intent(context, AlbymActivity.class);
+        intent.putExtra("THEME", theme);
+        return intent;
+    }
+
+    private void initArcMenu(ArcMenu menu, int[] itemDrawables, AlbymModel.AlbymDetail themeDetail) {
         final int itemCount = itemDrawables.length;
         for (int i = 0; i < itemCount; i++) {
             ImageView item = new ImageView(AlbymActivity.this);
@@ -177,23 +176,23 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
                 @Override
                 public void onClick(View v) {
                     mRootView.removeView(menu);
-                    mAlbymPicAdapter.setPressedPosition(-1);
-                    if (position == 0){
+                    mAlbymAdapter.setPressedPosition(-1);
+                    if (position == 0) {
                         ShareDialog shareDialog = new ShareDialog();
-                        shareDialog.setBitmapUrl(themeDetail.imageUrl);
-                        shareDialog.show(getSupportFragmentManager(),"share");
-                    }else if(position == 1){
+                        shareDialog.setBitmapUrl(themeDetail.albymUrl);
+                        shareDialog.show(getSupportFragmentManager(), "share");
+                    } else if (position == 1) {
                         collectionPic(themeDetail);
-                    }else if (position == 2){
-                        savePic(themeDetail.imageUrl);
+                    } else if (position == 2) {
+                        savePic(themeDetail.albymUrl);
                     }
                 }
             });
         }
     }
 
-    public void collectionPic(ThemeDetail.Theme themeDetail){
-        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), themeDetail.imageId, new HttpResultCallback<String>() {
+    public void collectionPic(AlbymModel.AlbymDetail themeDetail) {
+        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), themeDetail.albymUrl, new HttpResultCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 runOnUiThread(new Runnable() {
@@ -227,7 +226,7 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
                                      ToastUtil.showToast("下载成功");
-                                     saveMyBitmap(bitmap,System.currentTimeMillis()+"");
+                                     saveMyBitmap(bitmap, System.currentTimeMillis() + "");
                                  }
 
                                  @Override
@@ -237,8 +236,8 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
                 CallerThreadExecutor.getInstance());
     }
 
-    public void saveMyBitmap(Bitmap mBitmap, String bitName)  {
-        File f = new File( FileUtils.getImageRootPath() + bitName+".jpeg");
+    public void saveMyBitmap(Bitmap mBitmap, String bitName) {
+        File f = new File(FileUtils.getImageRootPath() + bitName + ".jpeg");
         FileOutputStream fOut = null;
         try {
             fOut = new FileOutputStream(f);
@@ -284,14 +283,9 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
                         mAlbymAdapter.clear();
                     }
                 }
-
                 mAlbymAdapter.addAll(albymData.albymList);
                 mAlbymAdapter.notifyDataSetChanged();
-                if (albymData.albymList.size() > 0) {
-                    mPrestener.getThemeDetail(LikeAgent.getInstance().getOpenid(), albymData.albymList.get(0).albymId + "", page, page_num);
-                    mAlbymName.setText(albymData.albymList.get(0).albymName);
-                    mLine.setVisibility(View.VISIBLE);
-                }
+
                 page = albymData.next_page;
 
             }
@@ -299,23 +293,22 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
     }
 
     //新添加
-    public void startCorrelationActivity(SimpleDraweeView mPrefectureBg, ImageView mWaterMark,ThemeDetail.Theme item) {
+    public void startCorrelationActivity(GlideImageView mPrefectureBg, ThemeDetail.Theme item) {
         Intent intent = CorrelationActivity.getPhotoDetailIntent(AlbymActivity.this, item);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Pair<View, String> imagePair = Pair.create(mPrefectureBg, Constant.TRANSITION_ANIMATION_NEWS_PHOTOS);
-            Pair<View, String> textPair = Pair.create(mWaterMark, Constant.TRANSITION_ANIMATION_NEWS_PHOTOS);
+//            Pair<View, String> imagePair = Pair.create(mPrefectureBg, Constant.TRANSITION_ANIMATION_NEWS_PHOTOS);
+//            Pair<View, String> textPair = Pair.create(mWaterMark, Constant.TRANSITION_ANIMATION_NEWS_PHOTOS);
+//            ActivityOptionsCompat compat = ActivityOptionsCompat
+//                    .makeSceneTransitionAnimation(this, imagePair, textPair);
+//            ActivityCompat.startActivity(this, intent,
+//                    compat.toBundle());
 
-            ActivityOptionsCompat compat = ActivityOptionsCompat
-                    .makeSceneTransitionAnimation(this, imagePair, textPair);
-            ActivityCompat.startActivity(this, intent,
-                    compat.toBundle());
-
-//            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
-//                    AlbymActivity.this,
-//                    mPrefectureBg,
-//                    Constant.TRANSITION_ANIMATION_NEWS_PHOTOS));
-//            startActivity(intent, options.toBundle());
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                    AlbymActivity.this,
+                    mPrefectureBg,
+                    Constant.TRANSITION_ANIMATION_NEWS_PHOTOS);
+            startActivity(intent, options.toBundle());
         } else {
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeScaleUpAnimation(
                     mPrefectureBg,
@@ -325,17 +318,6 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
                     0);
             ActivityCompat.startActivity(AlbymActivity.this, intent, optionsCompat.toBundle());
         }
-    }
-
-    @Override
-    public void setAlbymPic(ThemeDetail themeDetail) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mAlbymPicAdapter.addAll(themeDetail.imageList);
-                mAlbymPicAdapter.notifyDataSetChanged();
-            }
-        });
     }
 
     @Override
@@ -352,4 +334,13 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
     public void onViewClicked() {
         finish();
     }
+
+    @OnClick(R.id.share)
+    public void share(){
+        ShareDialog shareDialog = new ShareDialog();
+        shareDialog.setBitmapUrl(mTheme.themeImgUrl);
+        shareDialog.show(getSupportFragmentManager(),"share");
+    }
+
+
 }

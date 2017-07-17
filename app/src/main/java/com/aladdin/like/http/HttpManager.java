@@ -9,6 +9,7 @@ import com.aladdin.like.model.CollectionImage;
 import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.model.ThemeModes;
+import com.aladdin.like.model.UserInfo;
 import com.aladdin.like.model.UserPojo;
 import com.zxl.network_lib.HttpUtil;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
@@ -282,22 +283,102 @@ public enum HttpManager {
     }
 
     /**
+     * 更改用户背景图片
+     * @param openid
+     * @param file
+     * @param callback
+     */
+    public void addUserImg(String openid, File file, HttpResultListener callback){
+//        Map<String, Object> map = new HashMap<>();
+//        if (!TextUtils.isEmpty(openid)){
+//            map.put("openid",openid);
+//        }
+//        String params = prepareParam(map);
+        HttpUtil.getInstance().upLoadPic(HttpUrl.ADD_USER_IMG,"",Headers.of("token","likeApp1qaz2wsx"),file,callback,"openid",openid);
+    }
+
+    /**
+     * 获取用户背景图
+     * @param openid
+     * @param callback
+     */
+    public void getUserInfo(String openid, HttpResultCallback<String> callback){
+        Map<String, Object> map = new HashMap<>();
+        if (!TextUtils.isEmpty(openid)){
+            map.put("openid",openid);
+        }
+        String params = prepareParam(map);
+        try{
+            shortConnectRequest(HttpUrl.GET_USER_IMG,params,RequestType.POST,callback,String.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 用户收藏图片
      * @param openid
      * @param page
      * @param page_num
+     * @param operateType 1、收藏 2、取消收藏
      * @param callback
      */
-    public void getUserCollectionImage(String openid, int page, int page_num, HttpResultCallback<CollectionImage> callback){
+    public void getUserCollectionImage(String openid, int page, int page_num,int operateType, HttpResultCallback<CollectionImage> callback){
         Map<String, Object> map = new HashMap<>();
         if (!TextUtils.isEmpty(openid)){
             map.put("openid",openid);
         }
         map.put("page",page);
         map.put("page_num",page_num);
+        map.put("operateType",operateType);
         String params = prepareParam(map);
         try{
             shortConnectRequest(HttpUrl.GET_USER_DIARY,params,RequestType.POST,callback,CollectionImage.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *  日记
+     * @param openid
+     * @param diaryId
+     * @param operateType 1、收藏 2、取消收藏
+     * @param callback
+     */
+    public void collectionDiary(String openid,String diaryId,int operateType,HttpResultCallback<String> callback){
+        Map<String, Object> map = new HashMap<>();
+        if (!TextUtils.isEmpty(openid)){
+            map.put("openid",openid);
+        }
+        map.put("diaryId",diaryId);
+        map.put("operateType",operateType);
+        String params = prepareParam(map);
+        try{
+            shortConnectRequest(HttpUrl.COLLECTION_DIARY,params,RequestType.POST,callback,String.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取用户收藏的日记
+     * @param openid
+     * @param page
+     * @param page_num
+     * @param callback
+     */
+    public void getCollectionDiary(String openid, int page, int page_num,HttpResultCallback<DiaryDetail> callback){
+        Map<String, Object> map = new HashMap<>();
+        if (!TextUtils.isEmpty(openid)){
+            map.put("openid",openid);
+        }
+
+        map.put("page",page);
+        map.put("page_num",page_num);
+        String params = prepareParam(map);
+        try{
+            shortConnectRequest(HttpUrl.GET_COLLECTION_DIARY,params,RequestType.POST,callback,DiaryDetail.class);
         }catch (Exception e){
             e.printStackTrace();
         }

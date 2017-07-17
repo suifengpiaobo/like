@@ -15,6 +15,6 @@ public interface PictureContract {
     }
 
     interface Presenter extends BasePresenter {
-        void getPicture(String openid, int page, int page_num);
+        void getPicture(String openid, int page, int page_num,int operateType);
     }
 }

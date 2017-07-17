@@ -1,39 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:id="@+id/result_item"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="center"
-              android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/albym_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical"
     >
+
     <com.sunfusheng.glideimageview.GlideImageView
-        android:id="@+id/result_img"
-        android:layout_width="match_parent"
+        android:id="@+id/albym_img"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
         app:siv_radius="10dp"
-        android:transitionName="transition_animation_main_photos"
+        android:transitionName="transition_animation_albym"
         />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
+        android:layout_below="@+id/albym_img"
         >
+
         <TextView
-            android:id="@+id/result_type_name"
+            android:id="@+id/albym_type_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="5dp"
             android:layout_marginBottom="5dp"
-            android:textSize="16sp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
             android:textColor="@color/Black"
+            android:textSize="16sp"
             />
 
         <TextView
-            android:id="@+id/result_time"
+            android:id="@+id/albym_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -43,4 +45,4 @@
             />
     </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>

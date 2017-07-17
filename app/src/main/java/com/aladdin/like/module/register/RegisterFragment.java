@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseFragment;
-import com.aladdin.utils.ImageLoaderUtils;
+import com.sunfusheng.glideimageview.GlideImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,13 +60,15 @@ public class RegisterFragment extends BaseFragment {
         mViews = new ArrayList<>();
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        params.topMargin=0;
 
         for (int i = 0; i < mList.length; i++) {
-            ImageView imageView = new ImageView(getActivity());
+            GlideImageView imageView = new GlideImageView(getActivity());
             imageView.setLayoutParams(params);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            ImageLoaderUtils.loadImg(getActivity(),mList[i],imageView);
+//            ImageLoaderUtils.loadImg(getActivity(),mList[i],imageView);
+            imageView.loadLocalImage(mList[i],0);
             mViews.add(imageView);
         }
 

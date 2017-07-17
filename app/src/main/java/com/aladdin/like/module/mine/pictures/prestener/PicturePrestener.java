@@ -24,8 +24,8 @@ public class PicturePrestener implements PictureContract.Presenter {
     }
 
     @Override
-    public void getPicture(String openid, int page, int page_num) {
-        HttpManager.INSTANCE.getUserCollectionImage(openid, page, page_num, new HttpResultCallback<CollectionImage>() {
+    public void getPicture(String openid, int page, int page_num,int operateType) {
+        HttpManager.INSTANCE.getUserCollectionImage(openid, page, page_num,operateType, new HttpResultCallback<CollectionImage>() {
             @Override
             public void onSuccess(CollectionImage result) {
                 if (mView == null) return;

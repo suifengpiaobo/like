@@ -45,4 +45,13 @@
             />
     </RelativeLayout>
 
+    <com.sunfusheng.glideimageview.GlideImageView
+        android:id="@+id/img_layer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CCFFFFFF"
+        android:scaleType="centerCrop"
+        app:siv_radius="10dp"
+        />
+
 </RelativeLayout>

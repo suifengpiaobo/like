@@ -8,8 +8,9 @@
         android:id="@+id/listview_header_content"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
-        android:background="#F0F0F0"
         android:paddingTop="10dip">
+
+        <!--android:background="#FFFFFF"-->
 
         <LinearLayout
             android:id="@+id/listview_header_text"

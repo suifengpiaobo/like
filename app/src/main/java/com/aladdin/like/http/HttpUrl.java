@@ -36,4 +36,15 @@ public class HttpUrl {
 
     //获取专辑信息
     public static final String GET_ALBYM_DETAIL=API_URL+"user/getAlbymDetail";
+
+    //日记收藏
+    public static final String COLLECTION_DIARY=API_URL+"user/collectDiary";
+
+    //获取用户收藏的日记
+    public static final String GET_COLLECTION_DIARY = API_URL+"user/getUserCollectDiary";
+    //添加用户背景
+    public static final String ADD_USER_IMG = API_URL+"user/addBackground";
+
+    //获取背景图片
+    public static final String GET_USER_IMG = API_URL+"user/getUserInfo";
 }

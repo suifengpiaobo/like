@@ -36,6 +36,8 @@ dependencies {
     //    compile 'com.trello.rxlifecycle2:rxlifecycle-components:2.0.1'
     //图片缩放
     compile 'com.commit451:PhotoView:1.2.4'
+//    compile 'com.github.chrisbanes:PhotoView:2.0.0'
+    compile 'com.sunfusheng:glideimageview:1.0.0'
     compile 'jp.wasabeef:glide-transformations:2.0.1'
     //图片压缩
     compile 'top.zibin:Luban:1.0.9'

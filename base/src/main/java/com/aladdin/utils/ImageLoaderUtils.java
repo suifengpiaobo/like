@@ -3,16 +3,10 @@ package com.aladdin.utils;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Looper;
-import android.widget.ImageView;
 
 import com.aladdin.base.R;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.facebook.drawee.view.SimpleDraweeView;
-
-import jp.wasabeef.glide.transformations.BlurTransformation;
-import jp.wasabeef.glide.transformations.CropCircleTransformation;
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Description 加载图片工具类
@@ -23,13 +17,13 @@ public class ImageLoaderUtils {
     private static int placeholderId = R.drawable.ic_image_loading;
     private static int errorId = R.drawable.ic_empty_picture;
 
-    public static void loadImg(Context context, int drawable, ImageView imageView) {
+    /*public static void loadImg(Context context, int drawable, ImageView imageView) {
         Glide.with(context).load(drawable).asBitmap().into(imageView);
     }
 
-    /**
+    *//**
      * 加载图片
-     */
+     *//*
     public static void loadingImg(Context context, ImageView iv, String picUrl) {
         Glide.with(context)
                 .load(picUrl)
@@ -40,9 +34,9 @@ public class ImageLoaderUtils {
                 .into(iv);
     }
 
-    /**
+    *//**
      * 加载gif图
-     */
+     *//*
     public static void loadGif(Context context, ImageView iv, String picUrl) {
         Glide.with(context)
                 .load(picUrl)
@@ -123,7 +117,7 @@ public class ImageLoaderUtils {
                 .dontAnimate()
                 .into(imageView);
     }
-
+*/
     public static void clear(Context context) {
         clearImageDiskCache(context);
         Glide.get(context).clearDiskCache();

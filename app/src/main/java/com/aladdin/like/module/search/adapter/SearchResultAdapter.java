@@ -14,12 +14,13 @@ import android.widget.TextView;
 import com.aladdin.like.R;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.LogUtil;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.sunfusheng.glideimageview.GlideImageView;
 
 import java.io.File;
 import java.util.List;
@@ -69,27 +70,24 @@ public class SearchResultAdapter extends BaseAdapter<ThemeModes.Theme> {
         HorizontalViewHolder viewHolder = (HorizontalViewHolder) holder;
         ThemeModes.Theme item = getItemObject(position);
         if (item != null) {
-            viewHolder.mResultImg.setImageURI(item.themeImgUrl);
             viewHolder.mResultTypeName.setText(item.themeName);
             viewHolder.mResultTime.setText(item.createTimeStr);
 
-            Uri uri = Uri.parse(item.themeImgUrl);
-            Bitmap bitmap = returnBitmap(uri);
-            int width = bitmap.getWidth();//994
+            int width = item.width;//994
             float scale = (DensityUtils.mScreenWidth/2- DensityUtils.dip2px(15))/(float)width;
-            int height = bitmap.getHeight();
+            int height = item.height;
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewHolder.mResultImg.getLayoutParams();
             params.height = (int) (height*scale);
             params.weight = (int)(width*scale);
             viewHolder.mResultImg.setLayoutParams(params);
+            viewHolder.mResultImg.loadImage(item.themeImgUrl,R.color.placeholder_color);
 
-//            viewHolder.mResultImg.setImageURI(item.themeImgUrl);
-
-            viewHolder.mResultItem.setOnClickListener(new View.OnClickListener() {
+            viewHolder.mResultImg.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    LogUtil.i("--onClick--");
                     if (mItemClickListener != null) {
-                        mItemClickListener.onItemClick(item);
+                        mItemClickListener.onItemClick(viewHolder.mResultImg,item);
                     }
                 }
             });
@@ -113,7 +111,7 @@ public class SearchResultAdapter extends BaseAdapter<ThemeModes.Theme> {
 
     static class HorizontalViewHolder extends BaseViewHolder {
         @BindView(R.id.result_img)
-        SimpleDraweeView mResultImg;
+        GlideImageView mResultImg;
         @BindView(R.id.result_type_name)
         TextView mResultTypeName;
         @BindView(R.id.result_time)
@@ -132,7 +130,7 @@ public class SearchResultAdapter extends BaseAdapter<ThemeModes.Theme> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(ThemeModes.Theme item);
+        void onItemClick(GlideImageView imageView,ThemeModes.Theme item);
     }
 
 

@@ -9,13 +9,17 @@ import android.widget.TextView;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseFragment;
+import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.module.mine.atlas.MineAtlasFragment;
 import com.aladdin.like.module.mine.diary.MineDiraryFragment;
 import com.aladdin.like.module.mine.pictures.MinePictureFragment;
 import com.aladdin.like.module.set.SettingActivity;
 import com.aladdin.like.receiver.NotificationService;
 import com.aladdin.like.widget.HViewPager;
+import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.sunfusheng.glideimageview.GlideImageView;
+import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -25,6 +29,8 @@ import butterknife.OnClick;
  * Created by zxl on 2017/5/24 下午8:18.
  */
 public class MineFragment2 extends BaseFragment {
+    @BindView(R.id.bg)
+    GlideImageView mImageView;
     @BindView(R.id.user_avatar)
     SimpleDraweeView mUserAvatar;
     @BindView(R.id.user_name)
@@ -60,13 +66,12 @@ public class MineFragment2 extends BaseFragment {
         mTabLayout.addTab(mTabLayout.newTab().setText("日记"));
 
         mTabLayout.setupWithViewPager(mMineInfoViewpager);
-//        mMineInfoViewpager.CURRENT_PAGE = 0;
 
-        if (LikeAgent.getInstance().getUserPojo() != null) {
-            mUserAvatar.setImageURI(LikeAgent.getInstance().getUserPojo().headimgurl);
-            mUserName.setText(LikeAgent.getInstance().getUserPojo().nickname);
-            mDescription.setText("微信不给返回个性签名我也很无奈！");
-        }
+//        if (LikeAgent.getInstance().getUserPojo() != null) {
+//            mUserAvatar.setImageURI(LikeAgent.getInstance().getUserPojo().headimgurl);
+//            mUserName.setText(LikeAgent.getInstance().getUserPojo().nickname);
+//            mDescription.setText("微信不给返回个性签名我也很无奈！");
+//        }
 
         int count = NotificationService.getInstance(getActivity()).getNewMessageCount();
         if (count >0){
@@ -78,7 +83,21 @@ public class MineFragment2 extends BaseFragment {
 
     @Override
     protected void lazyFetchData() {
+        getUserBackground();
+    }
 
+    public void getUserBackground(){
+        HttpManager.INSTANCE.getUserInfo(LikeAgent.getInstance().getOpenid(), new HttpResultCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                LogUtil.i("---userinfo--result-->>"+result);
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+
+            }
+        });
     }
 
     @OnClick(R.id.set)
