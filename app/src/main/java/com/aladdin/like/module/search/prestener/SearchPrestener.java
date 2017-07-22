@@ -1,6 +1,7 @@
 package com.aladdin.like.module.search.prestener;
 
 import com.aladdin.like.http.HttpManager;
+import com.aladdin.like.model.AlbymModel;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.search.contract.SearchContract;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
@@ -49,6 +50,23 @@ public class SearchPrestener implements SearchContract.Presenter {
                 if (mView == null) return;
 
                 mView.setResultData(result);
+            }
+
+            @Override
+            public void onFailure(String code, String msg) {
+                if (mView == null) return;
+                mView.showErrorTip(msg);
+            }
+        });
+    }
+
+    @Override
+    public void getAlbym(String openid, String themeId, int page, int page_num) {
+        HttpManager.INSTANCE.getAlbymDetail(openid, themeId, page, page_num, new HttpResultCallback<AlbymModel>() {
+            @Override
+            public void onSuccess(AlbymModel result) {
+                if (mView == null) return;
+                mView.setAlbymData(result);
             }
 
             @Override

@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -20,8 +21,11 @@ import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseFragment;
 import com.aladdin.like.constant.Constant;
+import com.aladdin.like.model.AlbymModel;
 import com.aladdin.like.model.ThemeModes;
 import com.aladdin.like.module.albym.AlbymActivity;
+import com.aladdin.like.module.albym.AlbymDetailsActivity;
+import com.aladdin.like.module.albym.adapter.AlbymAdapter;
 import com.aladdin.like.module.search.adapter.HorizontalAdapter;
 import com.aladdin.like.module.search.adapter.SearchResultAdapter;
 import com.aladdin.like.module.search.contract.SearchContract;
@@ -46,12 +50,21 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
     RecyclerView mSearchHorizontal;
     @BindView(R.id.search_result)
     XRecyclerView mSearchResult;
+    @BindView(R.id.albym_recyclerview)
+    XRecyclerView mAlbymRecyclerview;
     @BindView(R.id.search)
     EditText mSearch;
+    @BindView(R.id.search_tip)
+    TextView mSearchTip;
 
     HorizontalAdapter mHorizontalAdapter;
 
     SearchResultAdapter mResultAdapter;
+
+    AlbymAdapter mAlbymAdapter;
+
+    int page = 1;
+    int page_num = 10;
 
     private TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
 
@@ -63,6 +76,15 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
                 if (inputMethodManager.isActive()) {
                     inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
                 }
+
+                mAlbymRecyclerview.setVisibility(View.GONE);
+                mSearchResult.setVisibility(View.VISIBLE);
+                mSearchTip.setText("搜索结果");
+                if (mAlbymAdapter!= null && mAlbymAdapter.getCommonItemCount() > 0){
+                    mAlbymAdapter.clear();
+                    mAlbymAdapter.notifyDataSetChanged();
+                }
+
                 if (mSearch.getText().toString().length() > 0) {
                     mPresenter.searchData(LikeAgent.getInstance().getOpenid(), mSearch.getText().toString());
                 }
@@ -98,7 +120,7 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mResultAdapter = new SearchResultAdapter(getActivity());
         mSearchResult.setLayoutManager(staggered);
-        mSearchResult.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(11.5f),DensityUtils.dip2px(7.5f)));
+        mSearchResult.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(11.5f), DensityUtils.dip2px(7.5f)));
         mSearchResult.setAdapter(mResultAdapter);
 
         mSearch.setOnEditorActionListener(onEditorActionListener);
@@ -106,34 +128,75 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
 
         mResultAdapter.setItemClickListener(new SearchResultAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(GlideImageView imageView,ThemeModes.Theme item) {
+            public void onItemClick(GlideImageView imageView, ThemeModes.Theme item) {
 //                Intent intent = new Intent(getActivity(),AlbymActivity.class);
 //                intent.putExtra("THEME",item);
 //                startActivity(intent);
-                LogUtil.i("--onItemClick-->>"+item);
-                startCorrelationActivity(imageView,item);
+                LogUtil.i("--onItemClick-->>" + item);
+                startCorrelationActivity(imageView, item);
+            }
+        });
+
+
+        mAlbymRecyclerview.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        mAlbymRecyclerview.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        mAlbymRecyclerview.setArrowImageView(R.drawable.icon_refresh);
+        mAlbymRecyclerview.setLoadingListener(this);
+        mAlbymRecyclerview.setPullRefreshEnabled(false);
+
+        StaggeredGridLayoutManager staggereds = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        mAlbymAdapter = new AlbymAdapter(getActivity());
+        mAlbymRecyclerview.setLayoutManager(staggereds);
+        mAlbymRecyclerview.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(11.5f), DensityUtils.dip2px(7.5f)));
+        mAlbymRecyclerview.setAdapter(mAlbymAdapter);
+
+        mHorizontalAdapter.setItemClickListener(new HorizontalAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(ThemeModes.Theme item) {
+                mSearchResult.setVisibility(View.GONE);
+                mAlbymRecyclerview.setVisibility(View.VISIBLE);
+                page = 1;
+                if (mAlbymAdapter!= null && mAlbymAdapter.getCommonItemCount() > 0){
+                    mAlbymAdapter.clear();
+                    mAlbymAdapter.notifyDataSetChanged();
+                }
+                mPresenter.getAlbym(LikeAgent.getInstance().getOpenid(),item.themeId,1,page_num);
+                mSearchTip.setText(item.themeName);
+            }
+        });
+
+        mAlbymAdapter.setItemClickListener(new AlbymAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(View v, GlideImageView mPrefectureBg, AlbymModel.AlbymDetail item) {
+                Intent intent= AlbymDetailsActivity.getPhotoDetailIntent(getActivity(),item);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onLongClickListener(View view, int position, AlbymModel.AlbymDetail item) {
+
             }
         });
     }
 
     //新添加
-    public void startCorrelationActivity(GlideImageView mPrefectureBg, ThemeModes.Theme item){
-        Intent intent = AlbymActivity.getPhotoDetailIntent(getActivity(),item);
+    public void startCorrelationActivity(GlideImageView mPrefectureBg, ThemeModes.Theme item) {
+        Intent intent = AlbymActivity.getPhotoDetailIntent(getActivity(), item);
 
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
                     getActivity(),
                     mPrefectureBg,
                     Constant.TRANSITION_ANIMATION_MAIN_PHOTOS);
-            startActivity(intent,options.toBundle());
-        }else{
+            startActivity(intent, options.toBundle());
+        } else {
             ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeScaleUpAnimation(
                     mPrefectureBg,
                     mPrefectureBg.getWidth() / 2,
                     mPrefectureBg.getHeight() / 2,
                     0,
                     0);
-            ActivityCompat.startActivity(getActivity(),intent,optionsCompat.toBundle());
+            ActivityCompat.startActivity(getActivity(), intent, optionsCompat.toBundle());
         }
     }
 
@@ -177,11 +240,13 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mHorizontalAdapter != null && mHorizontalAdapter.getCommonItemCount()>0){
+                if (mHorizontalAdapter != null && mHorizontalAdapter.getCommonItemCount() > 0) {
                     mHorizontalAdapter.clear();
                 }
-                mHorizontalAdapter.addAll(data.themeList);
-                mHorizontalAdapter.notifyDataSetChanged();
+                if (data != null && data.themeList.size()>0){
+                    mHorizontalAdapter.addAll(data.themeList);
+                    mHorizontalAdapter.notifyDataSetChanged();
+                }
             }
         });
     }
@@ -191,12 +256,29 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mResultAdapter != null && mResultAdapter.getCommonItemCount()>0){
+                if (mResultAdapter != null && mResultAdapter.getCommonItemCount() > 0) {
                     mResultAdapter.clear();
                 }
-                mResultAdapter.addAll(data.themeList);
-                mResultAdapter.notifyDataSetChanged();
 
+                if (data!=null && data.themeList.size()>0){
+                    mResultAdapter.addAll(data.themeList);
+                    mResultAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
+    @Override
+    public void setAlbymData(AlbymModel albymData) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (albymData != null && albymData.albymList.size()>0){
+                    mAlbymAdapter.addAll(albymData.albymList);
+                    mAlbymAdapter.notifyDataSetChanged();
+                }
+
+                page = albymData.next_page;
             }
         });
     }

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
         app:siv_radius="10dp"
-        android:transitionName="transition_animation_main_photos"
+        android:transitionName="transition_animation_albym_photos"
         />
 
     <RelativeLayout

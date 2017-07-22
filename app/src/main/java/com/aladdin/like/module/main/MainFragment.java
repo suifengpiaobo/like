@@ -63,9 +63,6 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
             @Override
             public void onItemClick(View v, GlideImageView mMainImg, RelativeLayout mMainItem, ThemeModes.Theme item) {
                 startCorrelationActivity(mMainImg,item);
-//                Intent intent = new Intent(getActivity(),AlbymActivity.class);
-//                intent.putExtra("THEME",item);
-//                startActivity(intent);
             }
         });
     }

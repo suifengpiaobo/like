@@ -80,6 +80,17 @@
                 android:layout_marginLeft="7.5dp"
                 android:layout_marginRight="7.5dp"
                 />
+
+            <com.jcodecraeer.xrecyclerview.XRecyclerView
+                android:id="@+id/albym_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="50dp"
+                android:layout_marginTop="-5dp"
+                android:layout_marginLeft="7.5dp"
+                android:layout_marginRight="7.5dp"
+                android:visibility="gone"
+                />
         </LinearLayout>
     </ScrollView>
 

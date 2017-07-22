@@ -57,6 +57,11 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+
+/**
+ * Description 专辑页
+ * Created by zxl on 2017/7/22 上午11:21.
+ */
 public class AlbymActivity extends BaseActivity implements AlbymContract.View, XRecyclerView.LoadingListener {
 
     @BindView(R.id.back)
