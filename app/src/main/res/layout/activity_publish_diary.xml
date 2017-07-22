@@ -163,6 +163,7 @@
                         android:padding="10dp"
                         android:textSize="16sp"
                         android:textColor="@color/Gray"
+                        android:visibility="gone"
                         />
 
 
@@ -174,9 +175,7 @@
                         android:background="@null"
                         android:gravity="center|top"
                         android:hint="此刻你想说点什么..."
-                        android:paddingRight="15dp"
-                        android:paddingLeft="15dp"
-                        android:paddingBottom="15dp"
+                        android:padding="15dp"
                         android:textSize="15sp"
                         android:textColor="@color/Gray"
                         />
@@ -184,7 +183,9 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp">
+                    android:layout_height="50dp"
+                    android:visibility="gone"
+                    >
 
                     <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/user_avatar"

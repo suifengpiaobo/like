@@ -8,6 +8,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.aladdin.like.LikeAgent;
@@ -24,7 +25,6 @@ import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
-import com.sunfusheng.glideimageview.GlideImageView;
 
 import butterknife.BindView;
 
@@ -68,7 +68,7 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
 
         mDetailsAdapter.setItemClickListener(new AlbymDetailsAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(View v, GlideImageView mMainImg, RelativeLayout mMainItem, ThemeDetail.Theme item) {
+            public void onItemClick(View v, ImageView mMainImg, RelativeLayout mMainItem, ThemeDetail.Theme item) {
                 startCorrelationActivity(mMainImg,item);
             }
         });
@@ -81,7 +81,7 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
     }
 
     //新添加
-    public void startCorrelationActivity(GlideImageView mPrefectureBg, ThemeDetail.Theme item){
+    public void startCorrelationActivity(ImageView mPrefectureBg, ThemeDetail.Theme item){
         Intent intent = CorrelationActivity.getPhotoDetailIntent(AlbymDetailsActivity.this,item);
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

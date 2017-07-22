@@ -4,10 +4,12 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -19,7 +21,9 @@ import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.utils.FileUtils;
+import com.aladdin.like.utils.ImageTools;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.ImageloaderUtil;
 import com.aladdin.utils.ToastUtil;
 import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.common.executors.CallerThreadExecutor;
@@ -31,7 +35,6 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.sunfusheng.glideimageview.GlideImageView;
 import com.umeng.analytics.MobclickAgent;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
@@ -43,6 +46,7 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import uk.co.senab.photoview.PhotoView;
 
 /*
  *Description 相关图片下载页
@@ -51,12 +55,14 @@ import butterknife.OnClick;
 public class CorrelationActivity extends BaseActivity {
     @BindView(R.id.back)
     ImageView mBack;
+    @BindView(R.id.root_view)
+    FrameLayout mLayout;
     @BindView(R.id.picture)
-    GlideImageView mPicture;
+    PhotoView mPicture;
     @BindView(R.id.download_status)
     ImageView mDownloadStatus;
-    @BindView(R.id.watermark_pic_rl)
-    RelativeLayout mBgRl;
+//    @BindView(R.id.watermark_pic_rl)
+//    RelativeLayout mBgRl;
     @BindView(R.id.title)
     RelativeLayout mTitle;
     @BindView(R.id.rl_bottom)
@@ -94,13 +100,14 @@ public class CorrelationActivity extends BaseActivity {
 //            setImg();
         }
 
-        float scale = DensityUtils.mScreenWidth/(float)mTheme.width;
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mPicture.getLayoutParams();
-        params.height = (int)(mTheme.height*scale);
-        params.width = (int)(mTheme.width*scale);
-        mPicture.setLayoutParams(params);
-        mPicture.loadImage(mTheme.imageUrl,R.color.placeholder_color);
+//        float scale = DensityUtils.mScreenWidth/(float)mTheme.width;
+//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mPicture.getLayoutParams();
+//        params.height = (int)(mTheme.height*scale);
+//        params.width = (int)(mTheme.width*scale);
+//        mPicture.setLayoutParams(params);
+//        mPicture.loadImage(mTheme.imageUrl,R.color.placeholder_color);
 
+        ImageloaderUtil.getInstance().loadImaFromUrl(mTheme.imageUrl,mPicture,0);
         mPicture.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -118,6 +125,7 @@ public class CorrelationActivity extends BaseActivity {
                 return false;
             }
         });
+
     }
 
     public void hide() {
@@ -239,8 +247,6 @@ public class CorrelationActivity extends BaseActivity {
 
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                     mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
-                                     Toast.makeText(CorrelationActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
                                      saveMyBitmap(bitmap, System.currentTimeMillis() + "");
 //                                     MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "title", "description");
                                  }
@@ -254,6 +260,9 @@ public class CorrelationActivity extends BaseActivity {
     }
 
     public void saveMyBitmap(Bitmap mBitmap, String bitName) {
+        Bitmap water = BitmapFactory.decodeResource(getResources(),R.drawable.logo_watermark);
+        Bitmap bitmap=ImageTools.createWaterMaskRightBottom(CorrelationActivity.this,mBitmap,water,16,16);
+
         File f = new File(FileUtils.getImageRootPath() + bitName + ".jpeg");
         FileOutputStream fOut = null;
         try {
@@ -261,12 +270,20 @@ public class CorrelationActivity extends BaseActivity {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
 
         Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         Uri uri = Uri.fromFile(f.getAbsoluteFile());
         intent.setData(uri);
         sendBroadcast(intent);
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
+                Toast.makeText(CorrelationActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 //        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
         try {
