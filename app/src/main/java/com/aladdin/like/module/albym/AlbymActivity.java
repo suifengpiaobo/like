@@ -11,7 +11,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -138,27 +137,25 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
 
             @Override
             public void onLongClickListener(View view, int position, AlbymModel.AlbymDetail item) {
-                int[] location = new int[2];
-                view.getLocationOnScreen(location);
-                int x = location[0];
-                int y = location[1];
-                mAlbymAdapter.setPressedPosition(position);
-
-                ArcMenu mArcMenu = new ArcMenu(AlbymActivity.this);
-
-                mArcMenu.setChildSize(DensityUtils.dip2px(AlbymActivity.this, 30));
-                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                if (x > DensityUtils.mScreenWidth / 2) {
-                    mArcMenu.setDrgess(90.0f, 180.0f);
-                    params.setMargins(DensityUtils.mScreenWidth / 2 - DensityUtils.dip2px(30), y + view.getHeight() - DensityUtils.dip2px(200), 0, 0);
-                } else {
-                    mArcMenu.setDrgess(0.0f, 90.0f);
-                    params.setMargins(x + view.getWidth() - DensityUtils.dip2px(100), y + view.getHeight() - DensityUtils.dip2px(200), 0, 0);
-                }
-                mArcMenu.setLayoutParams(params);
-                mRootView.addView(mArcMenu);
-
-                initArcMenu(mArcMenu, ITEM_DRAWABLES, item);
+//                int[] location = new int[2];
+//                view.getLocationOnScreen(location);
+//                int x = location[0];
+//                int y = location[1];
+//                mAlbymAdapter.setPressedPosition(position);
+//                ArcMenu mArcMenu = new ArcMenu(AlbymActivity.this);
+//                mArcMenu.setChildSize(DensityUtils.dip2px(AlbymActivity.this, 30));
+//                FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                if (x > DensityUtils.mScreenWidth / 2) {
+//                    mArcMenu.setDrgess(90.0f, 180.0f);
+//                    params.setMargins(DensityUtils.mScreenWidth / 2 - DensityUtils.dip2px(30), y + view.getHeight() - DensityUtils.dip2px(200), 0, 0);
+//                } else {
+//                    mArcMenu.setDrgess(0.0f, 90.0f);
+//                    params.setMargins(x + view.getWidth() - DensityUtils.dip2px(100), y + view.getHeight() - DensityUtils.dip2px(200), 0, 0);
+//                }
+//                mArcMenu.setLayoutParams(params);
+//                mRootView.addView(mArcMenu);
+//
+//                initArcMenu(mArcMenu, ITEM_DRAWABLES, item);
             }
         });
     }

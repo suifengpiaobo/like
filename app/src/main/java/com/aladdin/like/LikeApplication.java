@@ -1,5 +1,6 @@
 package com.aladdin.like;
 
+import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
 import android.content.Context;
@@ -7,6 +8,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
+import android.os.Bundle;
 import android.os.Message;
 
 import com.aladdin.like.receiver.NotificationService;
@@ -79,6 +81,44 @@ public class LikeApplication extends Application {
         ContextUtils.getInstance().setContext(this.getApplicationContext()); // Must!! First call this method.
         DensityUtils.setAppContext(this);
         Fresco.initialize(this);
+
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+            }
+
+            @Override
+            public void onActivityStarted(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+                ContextUtils.getInstance().setContext(activity); // Must!! First call this method.
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
+
     }
 
     //消息推送

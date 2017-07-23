@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/albym_item"
                 android:layout_width="wrap_content"
@@ -8,11 +9,13 @@
                 android:orientation="vertical"
     >
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/albym_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
+        fresco:placeholderImageScaleType="focusCrop"
+        fresco:roundedCornerRadius="10dp"
         android:transitionName="transition_animation_albym"
         />
 
@@ -43,5 +46,15 @@
             android:textSize="14sp"
             />
     </RelativeLayout>
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/img_layer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CCFFFFFF"
+        android:scaleType="centerCrop"
+        fresco:placeholderImageScaleType="focusCrop"
+        fresco:roundedCornerRadius="10dp"
+        />
 
 </RelativeLayout>

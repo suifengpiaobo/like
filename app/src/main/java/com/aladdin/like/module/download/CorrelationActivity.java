@@ -23,7 +23,7 @@ import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.utils.FileUtils;
 import com.aladdin.like.utils.ImageTools;
 import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.ImageloaderUtil;
+import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.ToastUtil;
 import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.common.executors.CallerThreadExecutor;
@@ -35,6 +35,7 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.sunfusheng.glideimageview.GlideImageView;
 import com.umeng.analytics.MobclickAgent;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
@@ -46,7 +47,6 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import uk.co.senab.photoview.PhotoView;
 
 /*
  *Description 相关图片下载页
@@ -58,7 +58,7 @@ public class CorrelationActivity extends BaseActivity {
     @BindView(R.id.root_view)
     FrameLayout mLayout;
     @BindView(R.id.picture)
-    PhotoView mPicture;
+    GlideImageView mPicture;
     @BindView(R.id.download_status)
     ImageView mDownloadStatus;
 //    @BindView(R.id.watermark_pic_rl)
@@ -100,14 +100,16 @@ public class CorrelationActivity extends BaseActivity {
 //            setImg();
         }
 
-//        float scale = DensityUtils.mScreenWidth/(float)mTheme.width;
-//        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mPicture.getLayoutParams();
-//        params.height = (int)(mTheme.height*scale);
-//        params.width = (int)(mTheme.width*scale);
-//        mPicture.setLayoutParams(params);
-//        mPicture.loadImage(mTheme.imageUrl,R.color.placeholder_color);
+        float scale = DensityUtils.mScreenWidth/(float)mTheme.width;
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mPicture.getLayoutParams();
+        params.height = (int)(mTheme.height*scale);
+        params.width = (int)(mTheme.width*scale);
+        LogUtil.i("width-->>"+params.width+"  --height-->>"+params.height);
+        mPicture.setLayoutParams(params);
 
-        ImageloaderUtil.getInstance().loadImaFromUrl(mTheme.imageUrl,mPicture,0);
+
+        mPicture.loadImage(mTheme.imageUrl,R.color.placeholder_color);
+
         mPicture.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -296,5 +298,11 @@ public class CorrelationActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+//        mPicture.setController(null);
     }
 }

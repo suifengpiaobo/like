@@ -31,6 +31,8 @@ public class DiaryDetail implements Serializable{
                     ", diaryTimeStr='" + diaryTimeStr + '\'' +
                     ", diaryTitle='" + diaryTitle + '\'' +
                     ", diaryContent='" + diaryContent + '\'' +
+                    ", width=" + width +
+                    ", height=" + height +
                     '}';
         }
     }

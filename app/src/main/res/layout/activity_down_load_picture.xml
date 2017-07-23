@@ -9,12 +9,11 @@
     android:background="@color/color_4d"
     >
 
-    <uk.co.senab.photoview.PhotoView
+    <com.sunfusheng.glideimageview.GlideImageView
         android:id="@+id/picture"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:scaleType="fitXY"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:transitionName="transition_animation_albym"
         />
 

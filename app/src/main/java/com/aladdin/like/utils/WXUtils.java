@@ -58,7 +58,7 @@ public class WXUtils {
         message.mediaObject = image;
         Bitmap thumbBitmap = Bitmap.createScaledBitmap(bitmap,150,150,true);
         bitmap.recycle();
-        message.thumbData = BitmapUtils.bmpToByteArray(thumbBitmap,true);
+        message.thumbData = BitmapUtils.bmpToByteArray2(thumbBitmap,true);
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = UUID.randomUUID().toString();
         req.message = message;
