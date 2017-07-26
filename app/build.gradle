@@ -94,7 +94,7 @@ dependencies {
     //        exclude group: 'com.android.support', module: 'support-annotations'
     //    })
     compile project(':base')
-    compile project(':picture_library')
+    //    compile project(':picture_library')
     compile project(':network_lib')
     compile project(':ease')
     compile project(':xrecycleview')
@@ -110,4 +110,10 @@ dependencies {
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile 'com.tencent.xinge:xinge:3.1.1-alpha'
     compile 'com.tencent.mid:mid:3.721-alpha'
+    //    compile 'com.squareup.picasso:picasso:2.5.2'
+    //    compile project(':GlideImageView')
+    //    compile project(':takephoto_library')
+    compile project(':ucrop')
+    compile project(':refresh-layout')
+    compile 'com.github.todou:appbarspring:1.0.3'
 }

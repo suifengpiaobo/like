@@ -1,7 +1,11 @@
 package com.aladdin.like.module.main;
 
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,7 +23,10 @@ import com.aladdin.like.module.circle.CircleFragment;
 import com.aladdin.like.module.mine.MineFragment2;
 import com.aladdin.like.module.search.SearchFragment;
 import com.aladdin.like.widget.NoScrollViewPager;
+import com.aladdin.utils.LogUtil;
+import com.yalantis.ucrop.UCrop;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +69,11 @@ public class MainActivity extends BaseActivity {
 
     onSearchClickListener mSearchClickListener;
     onCircleClickListener mOnCircleClickListener;
+
+    onChoosePicListener mChoosePicListener;
+
+    public static final int REQUEST_SELECT_PICTURE = 0x03;
+    public static final String SAMPLE_CROPPED_IMAGE_NAME = "CropImage_";
 
     int currentTabPosition = 0;
     public static final String CURRENT_TAB_POSITION = "HOME_CURRENT_TAB_POSITION";
@@ -111,6 +123,55 @@ public class MainActivity extends BaseActivity {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_SELECT_PICTURE:
+                    final Uri selectedUri = data.getData();
+                    LogUtil.i("---selectedUri--main-->>"+selectedUri);
+                    if (selectedUri != null) {
+                        startCropActivity(data.getData());
+                    }
+                    break;
+                case UCrop.REQUEST_CROP:
+                    final Uri resultUri = UCrop.getOutput(data);
+                    if (mChoosePicListener != null){
+                        mChoosePicListener.onFile(resultUri);
+                    }
+//                    handleCropResult(data);
+                    break;
+            }
+        }
+    }
+
+    private void startCropActivity(@NonNull Uri uri) {
+        String destinationFileName = SAMPLE_CROPPED_IMAGE_NAME+System.currentTimeMillis();
+        destinationFileName += ".jpg";
+
+        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), destinationFileName)));
+
+        uCrop = basisConfig(uCrop);
+        uCrop = advancedConfig(uCrop);
+
+        uCrop.start(MainActivity.this);
+    }
+
+    private UCrop basisConfig(@NonNull UCrop uCrop) {
+        uCrop = uCrop.useSourceImageAspectRatio();
+//        uCrop = uCrop.withAspectRatio(ratioX, ratioY);
+        return uCrop;
+    }
+
+    private UCrop advancedConfig(@NonNull UCrop uCrop) {
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+        options.setCompressionQuality(90);
+        options.setHideBottomControls(true);
+        options.setFreeStyleCropEnabled(true);
+        return uCrop.withOptions(options);
+    }
+
     private void resetTab() {
         mMainPage.setSelected(false);
         mSearchPadge.setSelected(false);
@@ -153,6 +214,9 @@ public class MainActivity extends BaseActivity {
         mOnCircleClickListener = onCircleClickListener;
     }
 
+    public void setChoosePicListener(onChoosePicListener choosePicListener) {
+        mChoosePicListener = choosePicListener;
+    }
 
     public interface onSearchClickListener {
         void onSearch(String s);
@@ -160,6 +224,10 @@ public class MainActivity extends BaseActivity {
 
     public interface onCircleClickListener {
         void onClick();
+    }
+
+    public interface onChoosePicListener{
+        void onFile(Uri path);
     }
 
     //隐藏键盘
@@ -177,4 +245,6 @@ public class MainActivity extends BaseActivity {
         final View v = this.getWindow().peekDecorView();
         return hiddenInputMethodManager(v);
     }
+
+
 }

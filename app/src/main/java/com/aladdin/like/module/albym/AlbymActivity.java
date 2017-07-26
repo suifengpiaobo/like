@@ -58,7 +58,7 @@ import butterknife.OnClick;
 
 
 /**
- * Description 专辑页
+ * Description 主题下面包含专辑页
  * Created by zxl on 2017/7/22 上午11:21.
  */
 public class AlbymActivity extends BaseActivity implements AlbymContract.View, XRecyclerView.LoadingListener {
@@ -299,13 +299,6 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
         Intent intent = CorrelationActivity.getPhotoDetailIntent(AlbymActivity.this, item);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            Pair<View, String> imagePair = Pair.create(mPrefectureBg, Constant.TRANSITION_ANIMATION_NEWS_PHOTOS);
-//            Pair<View, String> textPair = Pair.create(mWaterMark, Constant.TRANSITION_ANIMATION_NEWS_PHOTOS);
-//            ActivityOptionsCompat compat = ActivityOptionsCompat
-//                    .makeSceneTransitionAnimation(this, imagePair, textPair);
-//            ActivityCompat.startActivity(this, intent,
-//                    compat.toBundle());
-
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
                     AlbymActivity.this,
                     mPrefectureBg,

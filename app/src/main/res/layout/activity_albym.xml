@@ -107,7 +107,7 @@
                         android:layout_height="1dp"
                         android:layout_below="@+id/albym_horizontal"
                         android:layout_marginTop="15dp"
-                        android:background="@color/grey"
+                        android:background="@color/color_d4d4d4"
                         />
 
                     <TextView

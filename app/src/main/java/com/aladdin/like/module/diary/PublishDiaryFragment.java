@@ -8,13 +8,18 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
@@ -23,22 +28,30 @@ import com.aladdin.like.module.diary.contract.PublishContract;
 import com.aladdin.like.module.diary.prestener.PublishPrestener;
 import com.aladdin.like.module.publishcollection.ChooseCollectionActivity;
 import com.aladdin.like.utils.FileUtils;
+import com.aladdin.like.utils.ImageTools;
 import com.aladdin.like.utils.WXUtils;
 import com.aladdin.like.widget.PublishDialog;
+import com.aladdin.utils.BitmapUtils;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.ImageLoaderUtils;
+import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.ToastUtil;
+import com.facebook.common.executors.CallerThreadExecutor;
+import com.facebook.common.references.CloseableReference;
+import com.facebook.datasource.DataSource;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.core.ImagePipeline;
+import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
+import com.facebook.imagepipeline.image.CloseableImage;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.scwang.smartrefresh.layout.util.DensityUtil;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
-import com.yalantis.ucrop.ui.AlbumDirectoryActivity;
-import com.yalantis.ucrop.ui.ImageGridActivity;
-import com.yalantis.ucrop.util.Constants;
-import com.yalantis.ucrop.util.LocalMediaLoader;
-import com.yalantis.ucrop.util.Options;
+import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.ArrayList;
 import java.util.UUID;
 
 import butterknife.BindView;
@@ -53,6 +66,8 @@ import static android.R.attr.width;
  * Created by zxl on 2017/5/21 下午9:25.
  */
 public class PublishDiaryFragment extends BaseActivity implements PublishContract.View {
+    private static final int REQUEST_SELECT_PICTURE = 0x03;
+    private static final String SAMPLE_CROPPED_IMAGE_NAME = "CropImage";
     PublishContract.Presenter mPresenter;
 
     @BindView(R.id.back)
@@ -90,15 +105,13 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
     @BindView(R.id.publish_time)
     TextView mPublishTime;
 
-    private int selectType = LocalMediaLoader.TYPE_IMAGE;
-    private int copyMode = Constants.COPY_MODEL_DEFAULT;
-    private int selectMode = Constants.MODE_SINGLE;
-
     String mPath;
 
     PublishDialog mDialog;
 
-    int mFinishWidth,mFinishHeight;//生成的图片宽高
+    int mFinishWidth, mFinishHeight;//生成的图片宽高
+
+    Bitmap mUesrAvatar;
 
     @Override
     protected int getLayoutId() {
@@ -112,26 +125,48 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         mShareInfo.setVisibility(View.GONE);
         mPublishFinishPic.setVisibility(View.GONE);
         mRootView.setVisibility(View.VISIBLE);
+        getUserAvatar();
+    }
+
+    public void getUserAvatar() {
+        Uri uri = Uri.parse(LikeAgent.getInstance().getUserPojo().headimgurl);
+        ImageRequest imageRequest = ImageRequestBuilder
+                .newBuilderWithSource(uri)
+                .setProgressiveRenderingEnabled(true)
+                .build();
+
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        DataSource<CloseableReference<CloseableImage>>
+                dataSource = imagePipeline.fetchDecodedImage(imageRequest, this);
+
+        dataSource.subscribe(new BaseBitmapDataSubscriber() {
+
+                                 @Override
+                                 public void onNewResultImpl(@Nullable Bitmap bitmap) {
+                                     Bitmap bitmap1 = BitmapUtils.imageZoom(ImageTools.scaleWithWH(bitmap,DensityUtil.px2dp(40),DensityUtil.px2dp(40)),35);
+                                     LogUtil.i("bitmap--->>>"+bitmap1.getHeight()+"  width-->>"+bitmap1.getWidth());
+                                     mUesrAvatar = bitmap1;
+                                 }
+
+                                 @Override
+                                 public void onFailureImpl(DataSource dataSource) {
+                                 }
+                             },
+                CallerThreadExecutor.getInstance());
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
-                case ImageGridActivity.REQUEST_IMAGE:
-                    ArrayList<String> result = (ArrayList<String>) data.getSerializableExtra(ImageGridActivity.REQUEST_OUTPUT);
-                    if (result != null) {
-                        mAddPicture.setVisibility(View.GONE);
-                        Bitmap bitmap = BitmapFactory.decodeFile(result.get(0));
-                        int width = bitmap.getWidth();
-                        int height = bitmap.getHeight();
-                        float scale = (DensityUtils.mScreenWidth - DensityUtils.dip2px(30)) / (float) width;
-                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShoosePicture.getLayoutParams();
-                        params.height = (int) (height * scale);
-                        params.width = (int) (width * scale);
-                        mShoosePicture.setLayoutParams(params);
-                        ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mShoosePicture, result.get(0));
+                case REQUEST_SELECT_PICTURE:
+                    final Uri selectedUri = data.getData();
+                    if (selectedUri != null) {
+                        startCropActivity(data.getData());
                     }
+                    break;
+                case UCrop.REQUEST_CROP:
+                    handleCropResult(data);
                     break;
                 case ChooseCollectionActivity.CHOOSE_COLLECTION:
                     mAddPicture.setVisibility(View.GONE);
@@ -146,6 +181,66 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         }
     }
 
+    private void handleCropResult(@NonNull Intent result) {
+        final Uri resultUri = UCrop.getOutput(result);
+        if (resultUri != null) {
+            mAddPicture.setVisibility(View.GONE);
+            Bitmap bitmap = getBitmapFromUri(resultUri);
+
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+            float scale = (DensityUtils.mScreenWidth - DensityUtils.dip2px(30)) / (float) width;
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShoosePicture.getLayoutParams();
+            params.height = (int) (height * scale);
+            params.width = (int) (width * scale);
+
+            mShoosePicture.setLayoutParams(params);
+            ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mShoosePicture, resultUri.toString());
+        } else {
+            Toast.makeText(PublishDiaryFragment.this, "Cannot retrieve cropped image", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private Bitmap getBitmapFromUri(Uri uri) {
+        try {
+            // 读取uri所在的图片
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+            return bitmap;
+        } catch (Exception e) {
+            Log.e("[Android]", e.getMessage());
+            Log.e("[Android]", "目录为：" + uri);
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    private void startCropActivity(@NonNull Uri uri) {
+        String destinationFileName = SAMPLE_CROPPED_IMAGE_NAME + System.currentTimeMillis();
+        destinationFileName += ".jpg";
+
+        UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), destinationFileName)));
+
+        uCrop = basisConfig(uCrop);
+        uCrop = advancedConfig(uCrop);
+
+        uCrop.start(PublishDiaryFragment.this);
+    }
+
+    private UCrop basisConfig(@NonNull UCrop uCrop) {
+        uCrop = uCrop.useSourceImageAspectRatio();
+//        uCrop = uCrop.withAspectRatio(ratioX, ratioY);
+        return uCrop;
+    }
+
+    private UCrop advancedConfig(@NonNull UCrop uCrop) {
+        UCrop.Options options = new UCrop.Options();
+        options.setCompressionFormat(Bitmap.CompressFormat.JPEG);
+        options.setCompressionQuality(90);
+        options.setHideBottomControls(true);
+        options.setFreeStyleCropEnabled(true);
+        return uCrop.withOptions(options);
+    }
 
     final Runnable runnable = new Runnable() {
         @Override
@@ -154,7 +249,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         }
     };
 
-    @OnClick({R.id.back, R.id.finish, R.id.add_picture,R.id.share_weixin,
+    @OnClick({R.id.back, R.id.finish, R.id.add_picture, R.id.share_weixin,
             R.id.share_friends, R.id.share_weixin_collection})
     public void onViewClicked(View view) {
         switch (view.getId()) {
@@ -165,9 +260,9 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 mFinish.requestFocus();
                 mContent.setEnabled(false);
                 mDescription.setEnabled(false);
-                if (!TextUtils.isEmpty(LikeAgent.getInstance().getOpenid())){
+                if (!TextUtils.isEmpty(LikeAgent.getInstance().getOpenid())) {
                     new Handler().post(runnable);
-                }else{
+                } else {
                     ToastUtil.showToast("请登录后发表日记");
                 }
                 break;
@@ -176,42 +271,25 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 break;
             case R.id.share_weixin:
                 Bitmap bitmap = BitmapFactory.decodeFile(mPath);
-                WXUtils.shareBitmap(PublishDiaryFragment.this,bitmap, SendMessageToWX.Req.WXSceneSession);
+                WXUtils.shareBitmap(PublishDiaryFragment.this, bitmap, SendMessageToWX.Req.WXSceneSession);
                 break;
             case R.id.share_friends:
                 Bitmap bitmap1 = BitmapFactory.decodeFile(mPath);
-                WXUtils.shareBitmap(PublishDiaryFragment.this,bitmap1, SendMessageToWX.Req.WXSceneTimeline);
+                WXUtils.shareBitmap(PublishDiaryFragment.this, bitmap1, SendMessageToWX.Req.WXSceneTimeline);
                 break;
             case R.id.share_weixin_collection:
                 Bitmap bitmap2 = BitmapFactory.decodeFile(mPath);
-                WXUtils.shareBitmap(PublishDiaryFragment.this,bitmap2, SendMessageToWX.Req.WXSceneFavorite);
+                WXUtils.shareBitmap(PublishDiaryFragment.this, bitmap2, SendMessageToWX.Req.WXSceneFavorite);
                 break;
         }
     }
 
     void choosePicture() {
-        /**
-         * type --> 1图片 or 2视频
-         * copyMode -->裁剪比例，默认、1:1、3:4、3:2、16:9
-         * maxSelectNum --> 可选择图片的数量
-         * selectMode         --> 单选 or 多选
-         * isShow       --> 是否显示拍照选项 这里自动根据type 启动拍照或录视频
-         * isPreview    --> 是否打开预览选项
-         * isCrop       --> 是否打开剪切选项
-         * isPreviewVideo -->是否预览视频(播放) mode or 多选有效
-         * 注意-->type为2时 设置isPreview or isCrop 无效
-         * 注意：Options可以为空，默认标准模式
-         */
-        Options options = new Options();
-        options.setType(selectType);
-        options.setCopyMode(copyMode);
-        options.setMaxSelectNum(1);
-        options.setSelectMode(selectMode);
-        options.setShowCamera(true);
-        options.setEnablePreview(true);
-        options.setEnableCrop(true);
-        options.setPreviewVideo(false);
-        AlbumDirectoryActivity.startPhoto(PublishDiaryFragment.this, options);
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(intent, REQUEST_SELECT_PICTURE);
     }
 
     public void showDialog() {
@@ -239,12 +317,12 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
         // 把一个View转换成图片
         Bitmap cachebmp = loadBitmapFromView(view);
+        LogUtil.i("---cachebmp--->>>"+cachebmp.getWidth()+"   "+cachebmp.getHeight());
+
+        ImageTools.createWaterMaskRightBottom(PublishDiaryFragment.this,cachebmp,mUesrAvatar, DensityUtil.dp2px(15),DensityUtil.dp2px(5));
 
         mFinishWidth = cachebmp.getWidth();
         mFinishHeight = cachebmp.getHeight();
-        // 添加水印
-//        Bitmap bitmap = Bitmap.createBitmap(createWatermarkBitmap(cachebmp,
-//                "@ Zhang Phil"));
 
         FileOutputStream fos;
         File file = null;
@@ -350,7 +428,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 params.width = mFinishWidth;
                 mPublishFinishPic.setLayoutParams(params);
 
-                ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mPublishFinishPic,mPath);
+                ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mPublishFinishPic, mPath);
 
 //                mPath = "";
                 mDescription.setText("");

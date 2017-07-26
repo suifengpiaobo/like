@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_4d"
+    android:background="@color/color_d4d4d4"
     tools:context="com.aladdin.like.module.diarydetails.DiaryDetailsActivity">
 
     <ScrollView

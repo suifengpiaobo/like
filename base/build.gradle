@@ -12,6 +12,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
     }
     buildTypes {
         release {
@@ -37,8 +38,8 @@ dependencies {
     //图片缩放
     compile 'com.commit451:PhotoView:1.2.4'
 //    compile 'com.github.chrisbanes:PhotoView:2.0.0'
-    compile 'com.sunfusheng:glideimageview:1.0.0'
-    compile 'jp.wasabeef:glide-transformations:2.0.1'
+    compile ('com.sunfusheng:glideimageview:1.0.0')
+//    compile 'jp.wasabeef:glide-transformations:2.0.1'
     //图片压缩
     compile 'top.zibin:Luban:1.0.9'
     //弹性布局
@@ -50,4 +51,5 @@ dependencies {
     compile project(path: ':network_lib')
     compile 'com.facebook.fresco:fresco:0.13.0'
     compile files('libs/universal-image-loader-1.9.5.jar')
+//    compile 'com.github.bumptech.glide:glide:3.7.0'
 }

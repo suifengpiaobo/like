@@ -6,7 +6,7 @@
     <color name="toolbar_subtitle">#D4D0C5</color>
     <color name="toolbar_bg">#B8B5A6</color>
     <color name="error">#ff4545</color>
-
+    <color name="transparent">#00000000</color>
     <color name="color_1F2427">#1F2427</color>
     <color name="color_82879A">#82879A</color>
     <!--常用颜色-->
@@ -150,4 +150,6 @@
     <color name="Gray">#808080</color>
     <color name="DimGray">#696969</color>
     <color name="Black">#000000</color>
+    <color name="color_d4d4d4">#d4d4d4</color>
+    <color name="black">#000000</color>
 </resources>

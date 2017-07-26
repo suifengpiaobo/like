@@ -1,15 +1,18 @@
 package com.aladdin.like.module.download;
 
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.view.MotionEvent;
+import android.support.design.widget.AppBarLayout;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,9 +26,8 @@ import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.utils.FileUtils;
 import com.aladdin.like.utils.ImageTools;
 import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.ToastUtil;
-import com.facebook.cache.common.SimpleCacheKey;
+import com.bumptech.glide.Glide;
 import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
@@ -35,7 +37,6 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.sunfusheng.glideimageview.GlideImageView;
 import com.umeng.analytics.MobclickAgent;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
@@ -47,35 +48,35 @@ import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 /*
  *Description 相关图片下载页
  *Created by zxl on 2017/6/19下午4:43.
 */
 public class CorrelationActivity extends BaseActivity {
-    @BindView(R.id.back)
-    ImageView mBack;
     @BindView(R.id.root_view)
-    FrameLayout mLayout;
+    RelativeLayout mLayout;
     @BindView(R.id.picture)
-    GlideImageView mPicture;
+    ImageView mPicture;
     @BindView(R.id.download_status)
     ImageView mDownloadStatus;
-//    @BindView(R.id.watermark_pic_rl)
-//    RelativeLayout mBgRl;
-    @BindView(R.id.title)
-    RelativeLayout mTitle;
+
     @BindView(R.id.rl_bottom)
     RelativeLayout mBottom;
 
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout mBarLayout;
+    @BindView(R.id.toolbar)
+    Toolbar mToolbar;
+
+    PhotoViewAttacher mPhotoViewAttacher;
     ThemeDetail.Theme mTheme;
 
     File mFile;
     String fileName;
 
-    public static final String TRANSIT_PIC = "picture";
-
-    boolean hidden = false;
+    protected boolean mIsHidden = false;
 
     double mAnimStart;
     double mLastTime, mCurrent;
@@ -89,74 +90,51 @@ public class CorrelationActivity extends BaseActivity {
         return R.layout.activity_down_load_picture;
     }
 
-
     @Override
     protected void initView() {
+        ViewCompat.setTransitionName(mPicture, "transition_animation_albym");
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationIcon(R.drawable.back_selector);
+//        ActionBar actionBar = getSupportActionBar();
+//        if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
+
         mTheme = (ThemeDetail.Theme) getIntent().getSerializableExtra("CORRELATION");
         mFile = new File(FileUtils.getImageRootPath());
-        boolean isCacheinDisk = Fresco.getImagePipelineFactory().getMainDiskStorageCache().hasKey(new SimpleCacheKey(Uri.parse(mTheme.imageUrl).toString()));
         mCollectionTimes.setText(mTheme.collectionTimes+"人喜欢了此图片");
-        if (isCacheinDisk) {
-//            setImg();
-        }
 
-        float scale = DensityUtils.mScreenWidth/(float)mTheme.width;
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mPicture.getLayoutParams();
-        params.height = (int)(mTheme.height*scale);
-        params.width = (int)(mTheme.width*scale);
-        LogUtil.i("width-->>"+params.width+"  --height-->>"+params.height);
-        mPicture.setLayoutParams(params);
-
-
-        mPicture.loadImage(mTheme.imageUrl,R.color.placeholder_color);
-
-        mPicture.setOnTouchListener(new View.OnTouchListener() {
+        Glide.with(CorrelationActivity.this).load(mTheme.imageUrl).into(mPicture);
+        mBarLayout.setAlpha(0.7f);
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        mLastTime = mCurrent;
-                        mCurrent = System.currentTimeMillis();
-                        if (mCurrent - mLastTime < 500 && mCurrent - mAnimStart > 500) {
-                            hide();
-                            mAnimStart = System.currentTimeMillis();
-                            return true;
-                        }
-                        break;
-                }
-                return false;
+            public void run() {
+                mPhotoViewAttacher = new PhotoViewAttacher(mPicture);
+                mPhotoViewAttacher.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
+                    @Override
+                    public void onViewTap(View view, float x, float y) {
+                        hideOrShowToolbar();
+                    }
+                });
             }
-        });
-
+        },300);
     }
 
-    public void hide() {
-        if (!hidden) {
-            startAnimation(true, 1.0f, 0.0f);
+    @Override public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         } else {
-            startAnimation(false, 0.0f, 1.0f);
+            return super.onOptionsItemSelected(item);
         }
-        hidden = !hidden;
     }
 
-    private void startAnimation(final boolean endState, float startValue, float endValue) {
-        ValueAnimator animator = ValueAnimator.ofFloat(startValue, endValue).setDuration(500);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float y1, y2;
-                if (endState) {
-                    y1 = (0 - animation.getAnimatedFraction()) * DensityUtils.dip2px(48);
-                    y2 = (animation.getAnimatedFraction()) * DensityUtils.dip2px(48);
-                } else {
-                    y1 = (animation.getAnimatedFraction() - 1) * DensityUtils.dip2px(48);
-                    y2 = (1 - animation.getAnimatedFraction()) * DensityUtils.dip2px(48);
-                }
-                mTitle.setTranslationY(y1);
-                mBottom.setTranslationY(y2);
-            }
-        });
-        animator.start();
+    protected void hideOrShowToolbar() {
+        mBarLayout.animate()
+                .translationY(mIsHidden ? 0 : -mBarLayout.getHeight())
+                .setInterpolator(new DecelerateInterpolator(2))
+                .start();
+        mBottom.animate().translationY(mIsHidden?0:DensityUtils.dip2px(48)).setInterpolator(new DecelerateInterpolator(2))
+                .start();
+        mIsHidden = !mIsHidden;
     }
 
     void setImg() {
@@ -201,12 +179,9 @@ public class CorrelationActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.back, R.id.download_status,R.id.collection_picture})
+    @OnClick({ R.id.download_status,R.id.collection_picture})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.back:
-                super.onBackPressed();
-                break;
             case R.id.download_status:
                 MobclickAgent.onEvent(CorrelationActivity.this, "DownLoad");
                 fileName = UUID.randomUUID().toString().substring(0, 16) + ".jpeg";
@@ -250,7 +225,6 @@ public class CorrelationActivity extends BaseActivity {
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
                                      saveMyBitmap(bitmap, System.currentTimeMillis() + "");
-//                                     MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "title", "description");
                                  }
 
                                  @Override
@@ -258,7 +232,6 @@ public class CorrelationActivity extends BaseActivity {
                                  }
                              },
                 CallerThreadExecutor.getInstance());
-//        mPicture.setImageURI(mTheme.imageUrl);
     }
 
     public void saveMyBitmap(Bitmap mBitmap, String bitName) {
@@ -303,6 +276,7 @@ public class CorrelationActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mPhotoViewAttacher.cleanup();
 //        mPicture.setController(null);
     }
 }

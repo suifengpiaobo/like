@@ -112,12 +112,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/shape_publish_diary"
+                android:paddingBottom="50dp"
                 android:orientation="vertical">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:minHeight="250dp"
+                    android:minHeight="200dp"
                     >
 
                     <com.facebook.drawee.view.SimpleDraweeView
@@ -201,7 +202,7 @@
                         android:id="@+id/user_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/black"
+                        android:textColor="@color/Black"
                         android:textSize="13sp"
                         android:text="Ghani"
                         android:layout_toRightOf="@+id/user_avatar"
@@ -216,7 +217,7 @@
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="15dp"
                         android:layout_centerVertical="true"
-                        android:textColor="@color/black"
+                        android:textColor="@color/Black"
                         android:textSize="13sp"
                         android:text="2017.7.1"
                         />

@@ -67,7 +67,6 @@ public class RegisterFragment extends BaseFragment {
             GlideImageView imageView = new GlideImageView(getActivity());
             imageView.setLayoutParams(params);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//            ImageLoaderUtils.loadImg(getActivity(),mList[i],imageView);
             imageView.loadLocalImage(mList[i],0);
             mViews.add(imageView);
         }

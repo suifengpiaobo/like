@@ -36,7 +36,6 @@ import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
@@ -44,6 +43,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.sunfusheng.glideimageview.GlideImageView;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 import java.io.File;
@@ -99,7 +99,7 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
 
         mDetailsAdapter.setItemClickListener(new AlbymDetailsAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(View v, SimpleDraweeView mMainImg, ThemeDetail.Theme item) {
+            public void onItemClick(View v, GlideImageView mMainImg, ThemeDetail.Theme item) {
                 startCorrelationActivity(mMainImg, item);
             }
 
@@ -232,7 +232,7 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
     }
 
     //新添加
-    public void startCorrelationActivity(SimpleDraweeView mPrefectureBg, ThemeDetail.Theme item) {
+    public void startCorrelationActivity(GlideImageView mPrefectureBg, ThemeDetail.Theme item) {
         Intent intent = CorrelationActivity.getPhotoDetailIntent(AlbymDetailsActivity.this, item);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

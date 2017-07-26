@@ -12,7 +12,7 @@ import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.utils.DensityUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.sunfusheng.glideimageview.GlideImageView;
 
 import java.text.NumberFormat;
 
@@ -70,7 +70,7 @@ public class AlbymDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
             params.width = (int) (item.width * Float.valueOf(scale));
             viewHolder.mMainImg.setLayoutParams(params);
 
-            viewHolder.mMainImg.setImageURI(item.imageUrl);
+            viewHolder.mMainImg.loadImage(item.imageUrl,R.color.placeholder_color);
 //            ImageloaderUtil.getInstance().loadRoundImaFromUrl(item.imageUrl,viewHolder.mMainImg,0);
             viewHolder.mMainTypeName.setText(item.imageName);
             viewHolder.mMainTime.setText(item.createTimeStr);
@@ -114,7 +114,7 @@ public class AlbymDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
 
     class MainViewHolder extends BaseViewHolder  {
         @BindView(R.id.albym_img)
-        SimpleDraweeView mMainImg;
+        GlideImageView mMainImg;
         @BindView(R.id.albym_type_name)
         TextView mMainTypeName;
         @BindView(R.id.albym_time)
@@ -122,7 +122,7 @@ public class AlbymDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
         @BindView(R.id.albym_item)
         RelativeLayout mMainItem;
         @BindView(R.id.img_layer)
-        SimpleDraweeView mLayer;
+        GlideImageView mLayer;
         ThemeDetail.Theme item;
 
         MainViewHolder(View view) {
@@ -136,7 +136,7 @@ public class AlbymDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(View v, SimpleDraweeView mMainImg, ThemeDetail.Theme item);
+        void onItemClick(View v, GlideImageView mMainImg, ThemeDetail.Theme item);
         void onLongClickListener(View view, int position, ThemeDetail.Theme item);
     }
 

@@ -26,12 +26,12 @@
             android:paddingLeft="10dp"
             android:drawablePadding="10dp"
             android:focusable="true"
-            android:textCursorDrawable="@color/black"
+            android:textCursorDrawable="@color/Black"
             android:hint="搜索"
             android:singleLine="true"
             android:imeOptions="actionSearch"
-            android:textColor="@color/black"
-            android:textColorHint="@color/grey"
+            android:textColor="@color/Black"
+            android:textColorHint="@color/color_d4d4d4"
             android:textSize="15sp"
             />
     </RelativeLayout>

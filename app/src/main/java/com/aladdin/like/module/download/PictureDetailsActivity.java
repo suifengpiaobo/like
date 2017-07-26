@@ -35,7 +35,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * Description 图片详情页
+ * Description 专辑详情页
  * Created by zxl on 2017/5/1 上午3:24.
  */
 public class PictureDetailsActivity extends BaseActivity implements PictureDetailsContract.View,XRecyclerView.LoadingListener{

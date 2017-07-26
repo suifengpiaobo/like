@@ -13,7 +13,7 @@
         android:text="从Like收藏开始"
         android:gravity="center"
         android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="@color/Black"
         />
 
     <View
@@ -28,7 +28,7 @@
         android:text="从手机相册开始"
         android:gravity="center"
         android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="@color/Black"
         />
     <View
         android:layout_width="match_parent"
@@ -42,6 +42,6 @@
         android:text="取消"
         android:gravity="center"
         android:textSize="16sp"
-        android:textColor="@color/black"
+        android:textColor="@color/Black"
         />
 </LinearLayout>

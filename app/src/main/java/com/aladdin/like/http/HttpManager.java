@@ -9,7 +9,6 @@ import com.aladdin.like.model.CollectionImage;
 import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.model.ThemeModes;
-import com.aladdin.like.model.UserInfo;
 import com.aladdin.like.model.UserPojo;
 import com.zxl.network_lib.HttpUtil;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
@@ -270,14 +269,14 @@ public enum HttpManager {
      * @param diaryContent
      */
     public void addUserDiary(String openid, String image, File file, String diaryTitle, String diaryContent, HttpResultListener callback){
-        Map<String, Object> map = new HashMap<>();
-        if (!TextUtils.isEmpty(openid)){
-            map.put("openid",openid);
-        }
-        map.put("image",image);
-        map.put("diaryTitle",diaryTitle);
-        map.put("diaryContent",diaryContent);
-        String params = prepareParam(map);
+//        Map<String, Object> map = new HashMap<>();
+//        if (!TextUtils.isEmpty(openid)){
+//            map.put("openid",openid);
+//        }
+//        map.put("image",image);
+//        map.put("diaryTitle",diaryTitle);
+//        map.put("diaryContent",diaryContent);
+//        String params = prepareParam(map);
         HttpUtil.getInstance().upLoadPic(HttpUrl.USER_ADD_DIARY,image, Headers.of("token","likeApp1qaz2wsx"),file,callback,
                 "openid",openid,"image",image,"diaryTitle",diaryTitle,"diaryContent",diaryContent);
     }
@@ -289,11 +288,6 @@ public enum HttpManager {
      * @param callback
      */
     public void addUserImg(String openid, File file, HttpResultListener callback){
-//        Map<String, Object> map = new HashMap<>();
-//        if (!TextUtils.isEmpty(openid)){
-//            map.put("openid",openid);
-//        }
-//        String params = prepareParam(map);
         HttpUtil.getInstance().upLoadPic(HttpUrl.ADD_USER_IMG,"",Headers.of("token","likeApp1qaz2wsx"),file,callback,"openid",openid);
     }
 
