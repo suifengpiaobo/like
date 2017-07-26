@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
                 xmlns:arc="http://schemas.android.com/apk/res-auto"
               xmlns:xmenu="http://schemas.android.com/apk/res-auto"
               android:id="@+id/main_item"
@@ -9,13 +9,12 @@
               android:layout_gravity="center"
               >
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <com.sunfusheng.glideimageview.GlideImageView
         android:id="@+id/main_img"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        fresco:placeholderImageScaleType="focusCrop"
-        fresco:roundedCornerRadius="10dp"
+        app:siv_radius="10dp"
         android:transitionName="transition_animation_circe_photos"
         />
 
@@ -32,13 +31,12 @@
         />
 
 
-    <com.facebook.drawee.view.SimpleDraweeView
+    <com.sunfusheng.glideimageview.GlideImageView
         android:id="@+id/main_img_layer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        fresco:placeholderImageScaleType="focusCrop"
-        fresco:roundedCornerRadius="10dp"
+        app:siv_radius="10dp"
         android:transitionName="transition_animation_circe_photos"
         android:background="#CCFFFFFF"
         android:visibility="gone"

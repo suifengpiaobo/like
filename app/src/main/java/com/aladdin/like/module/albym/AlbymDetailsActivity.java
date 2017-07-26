@@ -4,6 +4,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -28,9 +29,11 @@ import com.aladdin.like.module.albym.contract.AlbymDetailsContract;
 import com.aladdin.like.module.albym.presenter.AlbymDetailsPrestener;
 import com.aladdin.like.module.download.CorrelationActivity;
 import com.aladdin.like.utils.FileUtils;
+import com.aladdin.like.utils.ImageTools;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.SharedPreferencesUtil;
 import com.aladdin.utils.ToastUtil;
 import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
@@ -191,7 +194,6 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
 
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                     ToastUtil.showToast("下载成功");
                                      saveMyBitmap(bitmap, System.currentTimeMillis() + "");
                                  }
 
@@ -203,6 +205,8 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
     }
 
     public void saveMyBitmap(Bitmap mBitmap, String bitName) {
+        Bitmap water = BitmapFactory.decodeResource(getResources(),R.drawable.logo_watermark);
+
         File f = new File(FileUtils.getImageRootPath() + bitName + ".jpeg");
         FileOutputStream fOut = null;
         try {
@@ -210,8 +214,22 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+
+        int shareCount = SharedPreferencesUtil.INSTANCE.getInt(Constant.SHARE_TIMES,0);
+        if(shareCount <20){
+            Bitmap bitmap= ImageTools.createWaterMaskRightBottom(AlbymDetailsActivity.this,mBitmap,water,16,16);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+        }else{
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+        }
+
         sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtil.showToast("下载成功");
+            }
+        });
         try {
             fOut.flush();
         } catch (IOException e) {

@@ -18,7 +18,8 @@ public class Constant {
 
     public static final String TRANSITION_ANIMATION_CIRCLE_PHOTOS = "transition_animation_circe_photos";
 
-    public static final String SHARE_TIMES = "share_times";
+    public static final String SHARE_TIMES = "share_counts";//下载的水印
+    public static final String PUBLISH_WATER = "publish_water";//发布的水印
 
     public class User {
         public final static String WEIXIN_INFO = "USER_INFO";

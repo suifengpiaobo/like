@@ -13,6 +13,7 @@ import com.aladdin.like.http.WChatHttpClient;
 import com.aladdin.like.model.LoginStateEvent;
 import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.LogUtil;
+import com.aladdin.utils.SharedPreferencesUtil;
 import com.aladdin.utils.ToastUtil;
 import com.tencent.mm.opensdk.constants.ConstantsAPI;
 import com.tencent.mm.opensdk.modelbase.BaseReq;
@@ -79,6 +80,8 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
                     LikeAgent.getInstance().setCode(code);
                 } else {
                     EventBus.getDefault().post(new ShareEvent(ShareEvent.SHARE_SUCCESS));
+                    int shareCount = SharedPreferencesUtil.INSTANCE.getInt(Constant.SHARE_TIMES,0);
+                    SharedPreferencesUtil.INSTANCE.putInt(Constant.SHARE_TIMES,shareCount+1);
                 }
                 break;
 

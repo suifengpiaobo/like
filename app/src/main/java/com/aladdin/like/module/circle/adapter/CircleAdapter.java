@@ -11,7 +11,7 @@ import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.utils.DensityUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.sunfusheng.glideimageview.GlideImageView;
 
 import java.util.List;
 
@@ -70,7 +70,7 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
                 viewHolder.mMainImg.setLayoutParams(params);
                 viewHolder.mMainImgLayer.setLayoutParams(params);
 
-                viewHolder.mMainImg.setImageURI(item.diaryImage);
+                viewHolder.mMainImg.loadImage(item.diaryImage,R.color.placeholder_color);
 
                 if (pressedPosition >=0){
                     if (pressedPosition!=position){
@@ -112,9 +112,9 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
 
     class CircleViewHolder extends BaseViewHolder {
         @BindView(R.id.main_img)
-        SimpleDraweeView mMainImg;
+        GlideImageView mMainImg;
         @BindView(R.id.main_img_layer)
-        SimpleDraweeView mMainImgLayer;
+        GlideImageView mMainImgLayer;
 
         DiaryDetail.Diary item;
 
@@ -134,7 +134,7 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
     }
 
     public interface onItemClickListener {
-        void onItemClick(View view,SimpleDraweeView simpleDraweeView,DiaryDetail.Diary item);
+        void onItemClick(View view,GlideImageView simpleDraweeView,DiaryDetail.Diary item);
 
         void onLongClickListener(View view,int position,DiaryDetail.Diary item);
     }

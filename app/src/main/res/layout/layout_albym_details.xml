@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/albym_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -8,50 +9,59 @@
                 android:orientation="vertical"
     >
 
-    <com.sunfusheng.glideimageview.GlideImageView
-        android:id="@+id/albym_img"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
-        app:siv_radius="10dp"
-        android:transitionName="transition_animation_albym"
-        />
-
     <RelativeLayout
+        android:id="@+id/img_rl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/albym_img"
-        >
-
-        <TextView
-            android:id="@+id/albym_type_name"
-            android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <com.sunfusheng.glideimageview.GlideImageView
+            android:id="@+id/albym_img"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="5dp"
-            android:textColor="@color/Black"
-            android:textSize="16sp"
+            android:scaleType="centerCrop"
+            app:siv_radius="10dp"
+            android:transitionName="transition_animation_albym"
             />
 
-        <TextView
-            android:id="@+id/albym_time"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:textColor="@color/Gray"
-            android:textSize="14sp"
-            />
+            android:layout_below="@+id/albym_img"
+            >
+            <TextView
+                android:id="@+id/albym_type_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/Black"
+                android:textSize="16sp"
+                />
+
+            <TextView
+                android:id="@+id/albym_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/Gray"
+                android:textSize="14sp"
+                />
+        </RelativeLayout>
     </RelativeLayout>
 
-    <com.sunfusheng.glideimageview.GlideImageView
+
+    <ImageView
         android:id="@+id/img_layer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#CCFFFFFF"
+        android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        app:siv_radius="10dp"
+        android:layout_alignBottom="@+id/img_rl"
+        android:layout_alignRight="@+id/img_rl"
+        android:layout_alignTop="@+id/img_rl"
+        android:layout_alignLeft="@+id/img_rl"
+        android:transitionName="transition_animation_circe_photos"
+        android:background="#CCFFFFFF"
         android:visibility="gone"
         />
 

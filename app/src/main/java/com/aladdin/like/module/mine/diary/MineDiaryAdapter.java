@@ -11,7 +11,7 @@ import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.utils.DensityUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.sunfusheng.glideimageview.GlideImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +22,8 @@ import butterknife.ButterKnife;
  * Email:444288256@qq.com
  */
 public class MineDiaryAdapter extends BaseAdapter<DiaryDetail.Diary> {
+
+    onItemClickListener mItemClickListener;
 
     public MineDiaryAdapter(Context mContext) {
         super(mContext);
@@ -43,7 +45,16 @@ public class MineDiaryAdapter extends BaseAdapter<DiaryDetail.Diary> {
             params.weight = (int)(item.width*scale);
             viewHolder.mMinePictureImg.setLayoutParams(params);
 
-            viewHolder.mMinePictureImg.setImageURI(item.diaryImage);
+            viewHolder.mMinePictureImg.loadImage(item.diaryImage,R.color.placeholder_color);
+
+            viewHolder.mMinePictureImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mItemClickListener != null){
+                        mItemClickListener.onItemClick(v,viewHolder.mMinePictureImg,item);
+                    }
+                }
+            });
         }
     }
 
@@ -66,11 +77,19 @@ public class MineDiaryAdapter extends BaseAdapter<DiaryDetail.Diary> {
 
     static class PictureViewHolder extends BaseViewHolder {
         @BindView(R.id.mine_picture_img)
-        SimpleDraweeView mMinePictureImg;
+        GlideImageView mMinePictureImg;
 
         PictureViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
+    }
+
+    public void setItemClickListener(onItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
+    }
+
+    public interface onItemClickListener {
+        void onItemClick(View view, GlideImageView pic, DiaryDetail.Diary item);
     }
 }

@@ -11,7 +11,7 @@ import com.aladdin.like.model.CollectionImage;
 import com.aladdin.utils.DensityUtils;
 import com.ease.adapter.BaseAdapter;
 import com.ease.holder.BaseViewHolder;
-import com.facebook.drawee.view.SimpleDraweeView;
+import com.sunfusheng.glideimageview.GlideImageView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +43,7 @@ public class PictureAdapter extends BaseAdapter<CollectionImage.Collection> {
             params.weight = (int)(item.width*scale);
             viewHolder.mMinePictureImg.setLayoutParams(params);
 
-            viewHolder.mMinePictureImg.setImageURI(item.imageUrl);
+            viewHolder.mMinePictureImg.loadImage(item.imageUrl,R.color.placeholder_color);
         }
     }
 
@@ -66,7 +66,7 @@ public class PictureAdapter extends BaseAdapter<CollectionImage.Collection> {
 
     static class PictureViewHolder extends BaseViewHolder{
         @BindView(R.id.mine_picture_img)
-        SimpleDraweeView mMinePictureImg;
+        GlideImageView mMinePictureImg;
 
         PictureViewHolder(View view) {
             super(view);

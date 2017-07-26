@@ -23,7 +23,6 @@ import com.aladdin.like.module.circle.CircleFragment;
 import com.aladdin.like.module.mine.MineFragment2;
 import com.aladdin.like.module.search.SearchFragment;
 import com.aladdin.like.widget.NoScrollViewPager;
-import com.aladdin.utils.LogUtil;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
@@ -102,17 +101,16 @@ public class MainActivity extends BaseActivity {
             mFragments.add(mMineFragment);
         }
 
-        resetTab();
+//        resetTab();
         mAdapter = new BaseFragmentAdapter(getSupportFragmentManager(), mFragments);
         mMainViewPager.setAdapter(mAdapter);
         mMainViewPager.setCurrentItem(currentTabPosition);
-        mLayout.setBackgroundColor(getResources().getColor(R.color.color_e6ffffff));
         mMainPage.setSelected(true);
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        //奔溃前保存位置
+        //崩溃前保存位置
         outState.putInt(CURRENT_TAB_POSITION, currentTabPosition);
         super.onSaveInstanceState(outState);
     }
@@ -129,7 +127,6 @@ public class MainActivity extends BaseActivity {
             switch (requestCode) {
                 case REQUEST_SELECT_PICTURE:
                     final Uri selectedUri = data.getData();
-                    LogUtil.i("---selectedUri--main-->>"+selectedUri);
                     if (selectedUri != null) {
                         startCropActivity(data.getData());
                     }
@@ -200,7 +197,7 @@ public class MainActivity extends BaseActivity {
                 mMinePage.setSelected(true);
                 break;
             default:
-                mLayout.setBackgroundColor(getResources().getColor(R.color.color_e6ffffff));
+//                mLayout.setBackgroundColor(getResources().getColor(R.color.color_e6ffffff));
                 break;
         }
         mMainViewPager.setCurrentItem(currentTabPosition, false);

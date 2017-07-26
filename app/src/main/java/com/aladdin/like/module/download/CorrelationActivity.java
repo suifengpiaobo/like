@@ -21,11 +21,13 @@ import android.widget.Toast;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseActivity;
+import com.aladdin.like.constant.Constant;
 import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.utils.FileUtils;
 import com.aladdin.like.utils.ImageTools;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.SharedPreferencesUtil;
 import com.aladdin.utils.ToastUtil;
 import com.bumptech.glide.Glide;
 import com.facebook.common.executors.CallerThreadExecutor;
@@ -78,8 +80,6 @@ public class CorrelationActivity extends BaseActivity {
 
     protected boolean mIsHidden = false;
 
-    double mAnimStart;
-    double mLastTime, mCurrent;
     @BindView(R.id.collection_times)
     TextView mCollectionTimes;
     @BindView(R.id.collection_picture)
@@ -236,7 +236,6 @@ public class CorrelationActivity extends BaseActivity {
 
     public void saveMyBitmap(Bitmap mBitmap, String bitName) {
         Bitmap water = BitmapFactory.decodeResource(getResources(),R.drawable.logo_watermark);
-        Bitmap bitmap=ImageTools.createWaterMaskRightBottom(CorrelationActivity.this,mBitmap,water,16,16);
 
         File f = new File(FileUtils.getImageRootPath() + bitName + ".jpeg");
         FileOutputStream fOut = null;
@@ -245,7 +244,14 @@ public class CorrelationActivity extends BaseActivity {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+
+        int shareCount = SharedPreferencesUtil.INSTANCE.getInt(Constant.SHARE_TIMES,0);
+        if(shareCount <20){
+            Bitmap bitmap=ImageTools.createWaterMaskRightBottom(CorrelationActivity.this,mBitmap,water,16,16);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+        }else{
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+        }
 
         Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         Uri uri = Uri.fromFile(f.getAbsoluteFile());

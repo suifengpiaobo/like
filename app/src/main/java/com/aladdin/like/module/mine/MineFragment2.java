@@ -70,11 +70,6 @@ public class MineFragment2 extends BaseFragment {
 
     @Override
     protected void initView() {
-//        AppBarLayout appBar = (AppBarLayout) findViewById(R.id.bar_layout);
-//        CoordinatorLayout.LayoutParams params = new CoordinatorLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-//        params.setBehavior(new AppBarLayoutOverScrollViewBehavior());
-//        appBar.setLayoutParams(params);
-
         mAdapter = new Mine2PagerAdapter(getFragmentManager());
         mAdapter.addFragment(new MineAtlasFragment(), "主题");
         mAdapter.addFragment(new MinePictureFragment(), "图片");
@@ -134,7 +129,6 @@ public class MineFragment2 extends BaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         final Uri selectedUri = data.getData();
-        LogUtil.i("---selectedUri--fragment-->>"+selectedUri);
     }
 
     @Override

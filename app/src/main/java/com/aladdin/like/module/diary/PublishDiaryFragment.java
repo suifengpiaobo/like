@@ -24,17 +24,19 @@ import android.widget.Toast;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseActivity;
+import com.aladdin.like.constant.Constant;
 import com.aladdin.like.module.diary.contract.PublishContract;
 import com.aladdin.like.module.diary.prestener.PublishPrestener;
 import com.aladdin.like.module.publishcollection.ChooseCollectionActivity;
 import com.aladdin.like.utils.FileUtils;
 import com.aladdin.like.utils.ImageTools;
+import com.aladdin.like.utils.TimeUtils;
 import com.aladdin.like.utils.WXUtils;
 import com.aladdin.like.widget.PublishDialog;
 import com.aladdin.utils.BitmapUtils;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.ImageLoaderUtils;
-import com.aladdin.utils.LogUtil;
+import com.aladdin.utils.SharedPreferencesUtil;
 import com.aladdin.utils.ToastUtil;
 import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
@@ -111,7 +113,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
     int mFinishWidth, mFinishHeight;//生成的图片宽高
 
-    Bitmap mUesrAvatar;
+    Bitmap mUesrBitmap;
 
     @Override
     protected int getLayoutId() {
@@ -143,9 +145,8 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                     Bitmap bitmap1 = BitmapUtils.imageZoom(ImageTools.scaleWithWH(bitmap,DensityUtil.px2dp(40),DensityUtil.px2dp(40)),35);
-                                     LogUtil.i("bitmap--->>>"+bitmap1.getHeight()+"  width-->>"+bitmap1.getWidth());
-                                     mUesrAvatar = bitmap1;
+                                     Bitmap bitmap1 = ImageTools.scaleWithWH(bitmap,DensityUtil.dp2px(40),DensityUtil.dp2px(40));//BitmapUtils.imageZoom(ImageTools.scaleWithWH(bitmap,DensityUtil.px2dp(40),DensityUtil.px2dp(40)),35);
+                                     mUesrBitmap = ImageTools.getOvalBitmap(bitmap1);
                                  }
 
                                  @Override
@@ -270,15 +271,15 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 showDialog();
                 break;
             case R.id.share_weixin:
-                Bitmap bitmap = BitmapFactory.decodeFile(mPath);
+                Bitmap bitmap = BitmapUtils.imageZoom(BitmapFactory.decodeFile(mPath),200);
                 WXUtils.shareBitmap(PublishDiaryFragment.this, bitmap, SendMessageToWX.Req.WXSceneSession);
                 break;
             case R.id.share_friends:
-                Bitmap bitmap1 = BitmapFactory.decodeFile(mPath);
+                Bitmap bitmap1 = BitmapUtils.imageZoom(BitmapFactory.decodeFile(mPath),200);
                 WXUtils.shareBitmap(PublishDiaryFragment.this, bitmap1, SendMessageToWX.Req.WXSceneTimeline);
                 break;
             case R.id.share_weixin_collection:
-                Bitmap bitmap2 = BitmapFactory.decodeFile(mPath);
+                Bitmap bitmap2 = BitmapUtils.imageZoom(BitmapFactory.decodeFile(mPath),200);
                 WXUtils.shareBitmap(PublishDiaryFragment.this, bitmap2, SendMessageToWX.Req.WXSceneFavorite);
                 break;
         }
@@ -317,9 +318,8 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
         // 把一个View转换成图片
         Bitmap cachebmp = loadBitmapFromView(view);
-        LogUtil.i("---cachebmp--->>>"+cachebmp.getWidth()+"   "+cachebmp.getHeight());
 
-        ImageTools.createWaterMaskRightBottom(PublishDiaryFragment.this,cachebmp,mUesrAvatar, DensityUtil.dp2px(15),DensityUtil.dp2px(5));
+        boolean isWater = SharedPreferencesUtil.INSTANCE.getBoolean(Constant.PUBLISH_WATER,false);
 
         mFinishWidth = cachebmp.getWidth();
         mFinishHeight = cachebmp.getHeight();
@@ -340,7 +340,18 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
             } else
                 throw new Exception("创建文件失败!");
 
-            cachebmp.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+            if (!isWater){
+                Bitmap waterBitmap=ImageTools.createWaterMaskLeftBottom(PublishDiaryFragment.this,cachebmp,mUesrBitmap,6,5);
+                Bitmap nameBitmap = ImageTools.drawTextToLeftBottom(PublishDiaryFragment.this,waterBitmap,LikeAgent.getInstance().getUserPojo().nickname,
+                        14,getResources().getColor(R.color.Black),(int)(12+DensityUtil.px2dp(mUesrBitmap.getWidth())),
+                        (int)(3+DensityUtil.px2dp(mUesrBitmap.getHeight())/2));
+
+                Bitmap timeBitmap = ImageTools.drawTextToRightBottom(PublishDiaryFragment.this,nameBitmap, TimeUtils.getCurrentTime(),14,
+                        getResources().getColor(R.color.Black),6,(int)(3+DensityUtil.px2dp(mUesrBitmap.getHeight())/2));
+                timeBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+            }else{
+                cachebmp.compress(Bitmap.CompressFormat.JPEG, 90, fos);
+            }
 
             fos.flush();
             fos.close();
@@ -429,8 +440,6 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 mPublishFinishPic.setLayoutParams(params);
 
                 ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mPublishFinishPic, mPath);
-
-//                mPath = "";
                 mDescription.setText("");
             }
         });

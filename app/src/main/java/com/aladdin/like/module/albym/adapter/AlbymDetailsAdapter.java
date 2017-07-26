@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -50,6 +51,24 @@ public class AlbymDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
         ThemeDetail.Theme item = getItemObject(position);
         if (item != null) {
             viewHolder.item = item;
+            double scale1 = ((DensityUtils.mScreenWidth/2 -DensityUtils.dip2px(15))) / (float) item.width;
+            NumberFormat ddf1= NumberFormat.getNumberInstance() ;
+            ddf1.setMaximumFractionDigits(2);
+            String scale = ddf1.format(scale1);
+
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
+            params.height = (int) (item.height * Float.valueOf(scale));
+            params.width = (int) (item.width * Float.valueOf(scale));
+            viewHolder.mMainImg.setLayoutParams(params);
+
+//            RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
+//            params.height = (int) (item.height+DensityUtils.dip2px(100) * Float.valueOf(scale));
+//            params.width = (int) (item.width * Float.valueOf(scale));
+//            viewHolder.mLayer.setLayoutParams(params1);
+
+            viewHolder.mMainImg.loadImage(item.imageUrl,R.color.placeholder_color);
+            viewHolder.mMainTypeName.setText(item.imageName);
+            viewHolder.mMainTime.setText(item.createTimeStr);
 
             if (pressedPosition >= 0) {
                 if (pressedPosition != position) {
@@ -60,20 +79,6 @@ public class AlbymDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
             } else {
                 viewHolder.mLayer.setVisibility(View.GONE);
             }
-
-            double scale1 = ((DensityUtils.mScreenWidth/2 -DensityUtils.dip2px(15))) / (float) item.width;
-            NumberFormat ddf1= NumberFormat.getNumberInstance() ;
-            ddf1.setMaximumFractionDigits(2);
-            String scale = ddf1.format(scale1);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
-            params.height = (int) (item.height * Float.valueOf(scale));
-            params.width = (int) (item.width * Float.valueOf(scale));
-            viewHolder.mMainImg.setLayoutParams(params);
-
-            viewHolder.mMainImg.loadImage(item.imageUrl,R.color.placeholder_color);
-//            ImageloaderUtil.getInstance().loadRoundImaFromUrl(item.imageUrl,viewHolder.mMainImg,0);
-            viewHolder.mMainTypeName.setText(item.imageName);
-            viewHolder.mMainTime.setText(item.createTimeStr);
 
             viewHolder.mMainImg.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -122,7 +127,8 @@ public class AlbymDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
         @BindView(R.id.albym_item)
         RelativeLayout mMainItem;
         @BindView(R.id.img_layer)
-        GlideImageView mLayer;
+        ImageView mLayer;
+
         ThemeDetail.Theme item;
 
         MainViewHolder(View view) {

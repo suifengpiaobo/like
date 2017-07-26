@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
@@ -9,89 +9,156 @@
     android:background="@color/color_d4d4d4"
     tools:context="com.aladdin.like.module.diarydetails.DiaryDetailsActivity">
 
-    <ScrollView
+    <!--<ScrollView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:scrollbars="none">-->
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_gravity="center"-->
+    <!--&gt;-->
+    <!--<com.facebook.drawee.view.SimpleDraweeView-->
+    <!--android:id="@+id/dirary_img"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:scaleType="centerCrop"-->
+    <!--fresco:roundedCornerRadius="10dp"-->
+    <!--fresco:placeholderImageScaleType="focusCrop"-->
+    <!--android:transitionName="transition_animation_circe_photos"-->
+    <!--android:layout_gravity="center"-->
+    <!--/>-->
+    <!--</LinearLayout>-->
+    <!--</ScrollView>-->
+
+
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/title"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:background="@color/white"-->
+    <!--android:layout_gravity="top"-->
+    <!--android:layout_height="48dp"-->
+    <!--&gt;-->
+    <!--<ImageView-->
+    <!--android:id="@+id/back"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:src="@drawable/back_selector"-->
+    <!--android:padding="15dp"-->
+    <!--/>-->
+
+    <!--<ImageView-->
+    <!--android:id="@+id/share_img"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:src="@drawable/share_icon"-->
+    <!--android:layout_alignParentRight="true"-->
+    <!--android:layout_centerVertical="true"-->
+    <!--android:padding="15dp"-->
+    <!--/>-->
+    <!--</RelativeLayout>-->
+
+    <ImageView
+        android:id="@+id/picture"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="none">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            >
-            <com.facebook.drawee.view.SimpleDraweeView
-                android:id="@+id/dirary_img"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                fresco:roundedCornerRadius="10dp"
-                fresco:placeholderImageScaleType="focusCrop"
-                android:transitionName="transition_animation_circe_photos"
-                android:layout_gravity="center"
-                />
-        </LinearLayout>
-
-    </ScrollView>
-
-
-    <RelativeLayout
-        android:id="@+id/title"
-        android:layout_width="match_parent"
-        android:background="@color/white"
-        android:layout_gravity="top"
-        android:layout_height="48dp"
-        >
-        <ImageView
-            android:id="@+id/back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:src="@drawable/back_selector"
-            android:padding="15dp"
-            />
-
-        <ImageView
-            android:id="@+id/share_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/share_icon"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:padding="15dp"
-            />
-    </RelativeLayout>
+        android:layout_centerInParent="true"
+        />
 
     <RelativeLayout
         android:id="@+id/picture_info"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/white"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/black"
         android:gravity="center_vertical"
-        android:layout_gravity="bottom"
-        android:visibility="gone"
         >
+
+        <RelativeLayout
+            android:id="@+id/user_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/user_avatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/avatar"
+                fresco:actualImageScaleType="focusCrop"
+                fresco:roundAsCircle="true"
+                fresco:roundingBorderColor="@color/white"
+                fresco:roundingBorderWidth="2dp"
+                />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@+id/user_avatar"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/user_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Anne"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    />
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2017.5.24"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    />
+            </LinearLayout>
+        </RelativeLayout>
+
 
         <TextView
             android:id="@+id/collection_times"
+            android:layout_below="@+id/user_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:drawableLeft="@drawable/parise_icon"
-            android:layout_centerVertical="true"
             android:gravity="center"
-            android:text="15人喜欢了此图片"
+            android:text="15人喜欢了此日记"
+            android:textColor="@color/white"
             />
 
         <ImageView
             android:id="@+id/collection_picture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/parise_icon"
-            android:layout_alignParentRight="true"
-            android:padding="5dp"
+            android:layout_toLeftOf="@+id/download_picture"
+            android:layout_alignBottom="@+id/collection_times"
             android:layout_marginRight="5dp"
+            android:padding="5dp"
+            android:src="@drawable/parise_icon"
+            />
+
+        <ImageView
+            android:id="@+id/download_picture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@+id/collection_times"
+            android:layout_marginRight="5dp"
+            android:padding="5dp"
+            android:src="@drawable/download_icon"
             />
     </RelativeLayout>
 
 
-</FrameLayout>
+</RelativeLayout>

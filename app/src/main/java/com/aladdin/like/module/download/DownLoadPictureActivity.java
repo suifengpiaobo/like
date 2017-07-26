@@ -73,10 +73,6 @@ public class DownLoadPictureActivity extends BaseActivity {
                 MobclickAgent.onEvent(DownLoadPictureActivity.this,"DownLoad");
                 fileName = UUID.randomUUID().toString().substring(0,16)+".png";
                 savePicture();
-//                Aria.download(this)
-//                        .load(mTheme.themeImgUrl)     //读取下载地址
-//                        .setDownloadPath(mFile.getAbsolutePath()+"/"+fileName)    //设置文件保存的完整路径
-//                        .start();   //启动下载
                 break;
         }
     }
@@ -99,7 +95,6 @@ public class DownLoadPictureActivity extends BaseActivity {
                                      mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
                                      Toast.makeText(DownLoadPictureActivity.this,"下载成功",Toast.LENGTH_SHORT).show();
                                      saveMyBitmap(bitmap,System.currentTimeMillis()+"");
-//                                     MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, "title", "description");
                                  }
 
                                  @Override

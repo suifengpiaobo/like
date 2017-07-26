@@ -37,7 +37,6 @@ import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
@@ -45,6 +44,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.sunfusheng.glideimageview.GlideImageView;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 import java.io.File;
@@ -102,7 +102,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
 
         mAdapter.setItemClickListener(new CircleAdapter.onItemClickListener() {
             @Override
-            public void onItemClick(View view, SimpleDraweeView simpleDraweeView, DiaryDetail.Diary item) {
+            public void onItemClick(View view, GlideImageView simpleDraweeView, DiaryDetail.Diary item) {
                 startDiaryDetailsActivity(simpleDraweeView, item);
             }
 
@@ -229,7 +229,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
     }
 
     //新添加
-    public void startDiaryDetailsActivity(SimpleDraweeView mPrefectureBg, DiaryDetail.Diary item) {
+    public void startDiaryDetailsActivity(GlideImageView mPrefectureBg, DiaryDetail.Diary item) {
         Intent intent = new Intent(getActivity(), DiaryDetailsActivity.class);
         intent.putExtra("DIARY", item);
 

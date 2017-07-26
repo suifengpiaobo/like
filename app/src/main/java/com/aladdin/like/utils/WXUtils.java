@@ -36,7 +36,6 @@ public class WXUtils {
      * @return
      */
     public static boolean shareBitmap(Context context,String bitmapUrl,int scene){
-        LogUtil.i("--bitmapUrl-->>>"+bitmapUrl);
         boolean result = false;
         String appid = "wxcd27b7e580be7978";
 
@@ -67,7 +66,6 @@ public class WXUtils {
     }
 
     public static boolean shareBitmap(Context context,Bitmap bitmap,int scene){
-        boolean result = false;
         String appid = "wxcd27b7e580be7978";
 
         IWXAPI api = WXAPIFactory.createWXAPI(context, appid);
@@ -82,13 +80,13 @@ public class WXUtils {
             return false;
         }
 
-        LogUtil.i("--bitmap--"+bitmap);
+        LogUtil.i("--bitmap--"+bitmap.getByteCount());
         WXImageObject image = new WXImageObject(bitmap);
         WXMediaMessage message = new WXMediaMessage();
         message.mediaObject = image;
         Bitmap thumbBitmap = Bitmap.createScaledBitmap(bitmap,150,150,true);
         bitmap.recycle();
-        message.thumbData = BitmapUtils.bmpToByteArray(thumbBitmap,true);
+        message.thumbData = BitmapUtils.bmpToByteArray2(thumbBitmap,true);
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = UUID.randomUUID().toString();
         req.message = message;
