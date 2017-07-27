@@ -1,5 +1,6 @@
 package com.aladdin.like.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -7,12 +8,12 @@ import java.util.List;
  * Created by zxl on 2017/6/4 下午7:50.
  * Email:444288256@qq.com
  */
-public class CollectionImage {
+public class CollectionImage implements Serializable {
     public int total;
     public int per_page;
     public List<Collection> recordList;
 
-    public class Collection{
+    public class Collection implements Serializable{
         public String recordId;
         public String imageId;
         public String imageUrl;

@@ -43,7 +43,7 @@ public class PictureDetailsPrestener implements PictureDetailsContract.Prestener
 
     @Override
     public void collectionImage(String openid, String imageId) {
-        HttpManager.INSTANCE.collectionImage(openid, imageId, new HttpResultCallback<String>() {
+        HttpManager.INSTANCE.collectionImage(openid, imageId,1, new HttpResultCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 if (mView == null) return;

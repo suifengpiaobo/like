@@ -194,7 +194,7 @@ public class AlbymActivity extends BaseActivity implements AlbymContract.View, X
     }
 
     public void collectionPic(AlbymModel.AlbymDetail themeDetail) {
-        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), themeDetail.albymUrl, new HttpResultCallback<String>() {
+        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), themeDetail.albymUrl, 1,new HttpResultCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 runOnUiThread(new Runnable() {

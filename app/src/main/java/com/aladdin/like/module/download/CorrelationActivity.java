@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -20,12 +21,13 @@ import android.widget.Toast;
 
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
-import com.aladdin.like.base.BaseActivity;
+import com.aladdin.like.base.BaseSwipbackActivity;
 import com.aladdin.like.constant.Constant;
 import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.utils.FileUtils;
 import com.aladdin.like.utils.ImageTools;
+import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.SharedPreferencesUtil;
 import com.aladdin.utils.ToastUtil;
@@ -56,7 +58,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  *Description 相关图片下载页
  *Created by zxl on 2017/6/19下午4:43.
 */
-public class CorrelationActivity extends BaseActivity {
+public class CorrelationActivity extends BaseSwipbackActivity {
     @BindView(R.id.root_view)
     RelativeLayout mLayout;
     @BindView(R.id.picture)
@@ -92,15 +94,14 @@ public class CorrelationActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+//        super.setDragEdge(SwipeBackLayout.DragEdge.BOTTOM);
         ViewCompat.setTransitionName(mPicture, "transition_animation_albym");
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(R.drawable.back_selector);
-//        ActionBar actionBar = getSupportActionBar();
-//        if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
 
         mTheme = (ThemeDetail.Theme) getIntent().getSerializableExtra("CORRELATION");
         mFile = new File(FileUtils.getImageRootPath());
-        mCollectionTimes.setText(mTheme.collectionTimes+"人喜欢了此图片");
+        mCollectionTimes.setText(mTheme.collectionTimes + "人喜欢了此图片");
 
         Glide.with(CorrelationActivity.this).load(mTheme.imageUrl).into(mPicture);
         mBarLayout.setAlpha(0.7f);
@@ -115,16 +116,26 @@ public class CorrelationActivity extends BaseActivity {
                     }
                 });
             }
-        },300);
+        }, 300);
     }
 
-    @Override public boolean onOptionsItemSelected(MenuItem item) {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.share, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        } else {
-            return super.onOptionsItemSelected(item);
+        } else if (item.getItemId() == R.id.action_share) {
+            ShareDialog dialog = new ShareDialog();
+            dialog.setBitmapUrl(mTheme.imageUrl);
+            dialog.show(getSupportFragmentManager(), "share_dialog");
         }
+        return super.onOptionsItemSelected(item);
     }
 
     protected void hideOrShowToolbar() {
@@ -132,44 +143,9 @@ public class CorrelationActivity extends BaseActivity {
                 .translationY(mIsHidden ? 0 : -mBarLayout.getHeight())
                 .setInterpolator(new DecelerateInterpolator(2))
                 .start();
-        mBottom.animate().translationY(mIsHidden?0:DensityUtils.dip2px(48)).setInterpolator(new DecelerateInterpolator(2))
+        mBottom.animate().translationY(mIsHidden ? 0 : DensityUtils.dip2px(48)).setInterpolator(new DecelerateInterpolator(2))
                 .start();
         mIsHidden = !mIsHidden;
-    }
-
-    void setImg() {
-        Uri uri = Uri.parse(mTheme.imageUrl);
-        ImageRequest imageRequest = ImageRequestBuilder
-                .newBuilderWithSource(uri)
-                .setProgressiveRenderingEnabled(true)
-                .build();
-
-        ImagePipeline imagePipeline = Fresco.getImagePipeline();
-        DataSource<CloseableReference<CloseableImage>>
-                dataSource = imagePipeline.fetchDecodedImage(imageRequest, this);
-
-        dataSource.subscribe(new BaseBitmapDataSubscriber() {
-
-                                 @Override
-                                 public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                     runOnUiThread(new Runnable() {
-                                         @Override
-                                         public void run() {
-                                             float scale = (DensityUtils.mScreenWidth) / (float) bitmap.getWidth();
-                                             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mPicture.getLayoutParams();
-                                             params.height = (int) (bitmap.getHeight() * scale);
-                                             params.width = (int) (bitmap.getWidth() * scale);
-                                             mPicture.setLayoutParams(params);
-                                             mPicture.setImageBitmap(bitmap);
-                                         }
-                                     });
-                                 }
-
-                                 @Override
-                                 public void onFailureImpl(DataSource dataSource) {
-                                 }
-                             },
-                CallerThreadExecutor.getInstance());
     }
 
     public static Intent getPhotoDetailIntent(Context context, ThemeDetail.Theme theme) {
@@ -178,8 +154,7 @@ public class CorrelationActivity extends BaseActivity {
         return intent;
     }
 
-
-    @OnClick({ R.id.download_status,R.id.collection_picture})
+    @OnClick({R.id.download_status, R.id.collection_picture})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.download_status:
@@ -189,7 +164,7 @@ public class CorrelationActivity extends BaseActivity {
 
                 break;
             case R.id.collection_picture:
-                HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), mTheme.imageId, new HttpResultCallback<String>() {
+                HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), mTheme.imageId, 1, new HttpResultCallback<String>() {
                     @Override
                     public void onSuccess(String result) {
                         runOnUiThread(new Runnable() {
@@ -235,7 +210,7 @@ public class CorrelationActivity extends BaseActivity {
     }
 
     public void saveMyBitmap(Bitmap mBitmap, String bitName) {
-        Bitmap water = BitmapFactory.decodeResource(getResources(),R.drawable.logo_watermark);
+        Bitmap water = BitmapFactory.decodeResource(getResources(), R.drawable.logo_watermark);
 
         File f = new File(FileUtils.getImageRootPath() + bitName + ".jpeg");
         FileOutputStream fOut = null;
@@ -245,11 +220,11 @@ public class CorrelationActivity extends BaseActivity {
             e.printStackTrace();
         }
 
-        int shareCount = SharedPreferencesUtil.INSTANCE.getInt(Constant.SHARE_TIMES,0);
-        if(shareCount <20){
-            Bitmap bitmap=ImageTools.createWaterMaskRightBottom(CorrelationActivity.this,mBitmap,water,16,16);
+        int shareCount = SharedPreferencesUtil.INSTANCE.getInt(Constant.SHARE_TIMES, 0);
+        if (shareCount < 20) {
+            Bitmap bitmap = ImageTools.createWaterMaskRightBottom(CorrelationActivity.this, mBitmap, water, 16, 16);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
-        }else{
+        } else {
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
         }
 
@@ -266,7 +241,7 @@ public class CorrelationActivity extends BaseActivity {
             }
         });
 
-//        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
+        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
         try {
             fOut.flush();
         } catch (IOException e) {

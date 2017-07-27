@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import com.aladdin.dialog.DialogTools;
 import com.aladdin.utils.AppManager;
 import com.aladdin.utils.ToastUtil;
+import com.liuguangqiang.swipeback.SwipeBackActivity;
 import com.umeng.analytics.MobclickAgent;
 
 import butterknife.ButterKnife;
@@ -23,7 +23,7 @@ import butterknife.ButterKnife;
  * Created by zxl on 2017/4/27 下午5:16.
  * Email:444288256@qq.com
  */
-public abstract class BaseActivity extends AppCompatActivity {
+public abstract class BaseSwipbackActivity extends SwipeBackActivity {
     //    private CompositeSubscription mSubscriptions;
     protected Context mContext;
     protected Context mApplicationContext;

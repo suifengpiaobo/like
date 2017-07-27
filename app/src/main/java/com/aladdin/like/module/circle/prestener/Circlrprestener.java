@@ -43,7 +43,7 @@ public class Circlrprestener implements CircleContract.Presenter{
 
     @Override
     public void collectionPic(String openid, String imageId) {
-        HttpManager.INSTANCE.collectionImage(openid, imageId, new HttpResultCallback<String>() {
+        HttpManager.INSTANCE.collectionImage(openid, imageId,1, new HttpResultCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 if (mView == null) return;

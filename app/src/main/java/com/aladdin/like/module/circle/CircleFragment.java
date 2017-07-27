@@ -162,7 +162,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
     }
 
     public void collectionPic(DiaryDetail.Diary diary) {
-        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), diary.diaryId, new HttpResultCallback<String>() {
+        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), diary.diaryId,1, new HttpResultCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 getActivity().runOnUiThread(new Runnable() {

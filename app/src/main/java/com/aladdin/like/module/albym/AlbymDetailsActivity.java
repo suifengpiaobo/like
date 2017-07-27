@@ -161,7 +161,7 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
     }
 
     public void collectionPic(ThemeDetail.Theme themeDetail) {
-        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), themeDetail.imageId, new HttpResultCallback<String>() {
+        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), themeDetail.imageId,1, new HttpResultCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 runOnUiThread(new Runnable() {

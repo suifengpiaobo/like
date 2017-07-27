@@ -218,16 +218,18 @@ public enum HttpManager {
     }
     /**
      * 图片收藏
+     * @param operateType 1、收藏  2、取消收藏
      * @param openid
      * @param imageId
      * @param callback
      */
-    public void collectionImage(String openid,String imageId, HttpResultCallback<String> callback){
+    public void collectionImage(String openid,String imageId, int operateType,HttpResultCallback<String> callback){
         Map<String, Object> map = new HashMap<>();
         if (!TextUtils.isEmpty(openid)){
             map.put("openid",openid);
         }
         map.put("imageId",imageId);
+        map.put("operateType",operateType);
         String params = prepareParam(map);
         try{
             shortConnectRequest(HttpUrl.USER_COLLECT_THEME,params,RequestType.POST,callback,String.class);

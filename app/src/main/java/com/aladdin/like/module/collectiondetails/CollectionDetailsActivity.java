@@ -1,4 +1,4 @@
-package com.aladdin.like.module.diarydetails;
+package com.aladdin.like.module.collectiondetails;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,7 +21,7 @@ import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.http.HttpManager;
-import com.aladdin.like.model.DiaryDetail;
+import com.aladdin.like.model.CollectionImage;
 import com.aladdin.like.utils.FileUtils;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.utils.DensityUtils;
@@ -49,7 +49,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-public class DiaryDetailsActivity extends BaseActivity {
+/**
+ * Description 收藏详情
+ * Created by zxl on 2017/7/27 下午2:07.
+ */
+public class CollectionDetailsActivity extends BaseActivity {
 
     @BindView(R.id.picture)
     ImageView mPicture;
@@ -58,7 +62,7 @@ public class DiaryDetailsActivity extends BaseActivity {
     @BindView(R.id.picture_info)
     RelativeLayout mPictureInfo;
 
-    DiaryDetail.Diary mDiary;
+    CollectionImage.Collection mCollection;
 
     ShareDialog shareDialog;
 
@@ -92,17 +96,17 @@ public class DiaryDetailsActivity extends BaseActivity {
     @Override
     protected void initView() {
         ViewCompat.setTransitionName(mPicture, "transition_animation_circe_photos");
-        mDiary = (DiaryDetail.Diary) getIntent().getSerializableExtra("DIARY");
+        mCollection = (CollectionImage.Collection) getIntent().getSerializableExtra("COLLECTION");
 
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(R.drawable.back_selector);
 
         mUserAvatar.setImageURI(LikeAgent.getInstance().getUserPojo().headimgurl);
         mUserName.setText(LikeAgent.getInstance().getUserPojo().nickname);
-        mTime.setText(mDiary.diaryTimeStr);
+        mTime.setText(mCollection.recordTimeStr);
 
 
-        Glide.with(DiaryDetailsActivity.this).load(mDiary.diaryImage).into(mPicture);
+        Glide.with(CollectionDetailsActivity.this).load(mCollection.imageUrl).into(mPicture);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -131,7 +135,7 @@ public class DiaryDetailsActivity extends BaseActivity {
             return true;
         } else if (item.getItemId() == R.id.action_share) {
             ShareDialog dialog = new ShareDialog();
-            dialog.setBitmapUrl(mDiary.diaryImage);
+            dialog.setBitmapUrl(mCollection.imageUrl);
             dialog.show(getSupportFragmentManager(), "share_dialog");
         }
         return super.onOptionsItemSelected(item);
@@ -161,7 +165,7 @@ public class DiaryDetailsActivity extends BaseActivity {
     }
 
     public void savePicture() {
-        Uri uri = Uri.parse(mDiary.diaryImage);
+        Uri uri = Uri.parse(mCollection.imageUrl);
         ImageRequest imageRequest = ImageRequestBuilder
                 .newBuilderWithSource(uri)
                 .setProgressiveRenderingEnabled(true)
@@ -205,7 +209,7 @@ public class DiaryDetailsActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(DiaryDetailsActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CollectionDetailsActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -222,27 +226,21 @@ public class DiaryDetailsActivity extends BaseActivity {
         }
     }
 
-    public void showShareDialog() {
-        shareDialog = new ShareDialog();
-        shareDialog.setBitmapUrl(mDiary.diaryImage);
-        shareDialog.show(getSupportFragmentManager(), "share_dialog");
-    }
-
     public void collection() {
-        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), mDiary.diaryId, 1,new HttpResultCallback<String>() {
+        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), mCollection.imageId, 2,new HttpResultCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ToastUtil.showToast("收藏成功");
+                        ToastUtil.showToast("取消收藏成功");
                     }
                 });
             }
 
             @Override
             public void onFailure(String code, String msg) {
-                ToastUtil.showToast("收藏失败");
+                ToastUtil.showToast("取消收藏失败");
             }
         });
     }

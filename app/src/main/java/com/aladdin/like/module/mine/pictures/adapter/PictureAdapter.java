@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
  */
 public class PictureAdapter extends BaseAdapter<CollectionImage.Collection> {
 
+    onItemClickListener mItemClickListener;
     public PictureAdapter(Context mContext) {
         super(mContext);
     }
@@ -44,6 +45,15 @@ public class PictureAdapter extends BaseAdapter<CollectionImage.Collection> {
             viewHolder.mMinePictureImg.setLayoutParams(params);
 
             viewHolder.mMinePictureImg.loadImage(item.imageUrl,R.color.placeholder_color);
+
+            viewHolder.mMinePictureImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mItemClickListener != null){
+                        mItemClickListener.onItemClick(v,viewHolder.mMinePictureImg,item);
+                    }
+                }
+            });
         }
     }
 
@@ -72,5 +82,13 @@ public class PictureAdapter extends BaseAdapter<CollectionImage.Collection> {
             super(view);
             ButterKnife.bind(this, view);
         }
+    }
+
+    public void setItemClickListener(onItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
+    }
+
+    public interface onItemClickListener {
+        void onItemClick(View view, GlideImageView pic, CollectionImage.Collection item);
     }
 }

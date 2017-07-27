@@ -1,12 +1,20 @@
 package com.aladdin.like.module.mine.pictures;
 
 
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.view.View;
 
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseFragment;
+import com.aladdin.like.constant.Constant;
 import com.aladdin.like.model.CollectionImage;
+import com.aladdin.like.module.collectiondetails.CollectionDetailsActivity;
 import com.aladdin.like.module.mine.pictures.adapter.PictureAdapter;
 import com.aladdin.like.module.mine.pictures.contract.PictureContract;
 import com.aladdin.like.module.mine.pictures.prestener.PicturePrestener;
@@ -14,6 +22,7 @@ import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+import com.sunfusheng.glideimageview.GlideImageView;
 
 import butterknife.BindView;
 
@@ -53,6 +62,34 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
         mPicture.setLayoutManager(staggered);
         mPicture.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(11.5f),DensityUtils.dip2px(7.5f)));
         mPicture.setAdapter(mPictureAdapter);
+
+        mPictureAdapter.setItemClickListener(new PictureAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(View view, GlideImageView pic, CollectionImage.Collection item) {
+                startCollectionDetailsActivity(pic,item);
+            }
+        });
+    }
+
+    private void startCollectionDetailsActivity(GlideImageView pic, CollectionImage.Collection item) {
+        Intent intent = new Intent(getActivity(), CollectionDetailsActivity.class);
+        intent.putExtra("COLLECTION", item);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
+                    getActivity(),
+                    pic,
+                    Constant.TRANSITION_ANIMATION_CIRCLE_PHOTOS);
+            startActivity(intent, options.toBundle());
+        } else {
+            ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeScaleUpAnimation(
+                    pic,
+                    pic.getWidth() / 2,
+                    pic.getHeight() / 2,
+                    0,
+                    0);
+            ActivityCompat.startActivity(getActivity(), intent, optionsCompat.toBundle());
+        }
     }
 
     @Override
