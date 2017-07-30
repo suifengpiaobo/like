@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.aladdin.like.LikeAgent;
@@ -19,6 +19,7 @@ import com.aladdin.like.module.mine.diary.contract.DiaryContract;
 import com.aladdin.like.module.mine.diary.prestener.DiaryPrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.LogUtil;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.sunfusheng.glideimageview.GlideImageView;
@@ -37,7 +38,7 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
     MineDiaryAdapter mDiaryAdapter;
 
     int page = 1;
-    int page_num = 10;
+    int page_num = 200;
     int total_page = 1;
     @Override
     protected int getLayoutId() {
@@ -48,14 +49,11 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
     protected void initView() {
         mPresenter = new DiaryPrestener(this);
         mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
-
         mMineDiary.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mMineDiary.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mMineDiary.setArrowImageView(R.drawable.icon_refresh);
         mMineDiary.setLoadingListener(this);
-        mMineDiary.setPullRefreshEnabled(false);
 
-        GridLayoutManager staggered = new GridLayoutManager(getActivity(), 2);
+        StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mDiaryAdapter = new MineDiaryAdapter(getActivity());
         mMineDiary.setLayoutManager(staggered);
         mMineDiary.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(7.5f),DensityUtils.dip2px(7.5f)));
@@ -132,10 +130,15 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (page == 1){
+                    if (mDiaryAdapter != null && mDiaryAdapter.getCommonItemCount()>0){
+                        mDiaryAdapter.clear();
+                    }
+                }
                 mMineDiary.refreshComplete();
                 mMineDiary.loadMoreComplete();
                 mDiaryAdapter.addAll(detail.diaryList);
-                page = detail.per_page;
+                page = page+1;
                 total_page = detail.total;
             }
         });
@@ -143,13 +146,16 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
 
     @Override
     public void onRefresh() {
-
+        LogUtil.i("---onRefresh--->>>");
+        page = 1;
+        mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
     }
 
     @Override
     public void onLoadMore() {
-        if (page < total_page){
-            mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
-        }
+        LogUtil.i("---onLoadMore--->>>");
+        LogUtil.i("count--->>"+mDiaryAdapter.getCommonItemCount());
+        LogUtil.i("total--->>>"+total_page);
+        mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
     }
 }

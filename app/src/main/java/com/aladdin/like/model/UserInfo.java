@@ -7,5 +7,6 @@ package com.aladdin.like.model;
  */
 public class UserInfo {
     public String openid;
-    public String backgroundUrl;
+    public String userId;
+    public String backgroudUrl;
 }

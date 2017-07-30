@@ -2,12 +2,15 @@ package com.aladdin.like.module.collectiondetails;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,11 +23,14 @@ import android.widget.Toast;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseActivity;
+import com.aladdin.like.constant.Constant;
 import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.CollectionImage;
 import com.aladdin.like.utils.FileUtils;
+import com.aladdin.like.utils.ImageTools;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.SharedPreferencesUtil;
 import com.aladdin.utils.ToastUtil;
 import com.bumptech.glide.Glide;
 import com.facebook.common.executors.CallerThreadExecutor;
@@ -37,6 +43,7 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.umeng.analytics.MobclickAgent;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 import java.io.File;
@@ -101,12 +108,22 @@ public class CollectionDetailsActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(R.drawable.back_selector);
 
-        mUserAvatar.setImageURI(LikeAgent.getInstance().getUserPojo().headimgurl);
-        mUserName.setText(LikeAgent.getInstance().getUserPojo().nickname);
+        if (!TextUtils.isEmpty(mCollection.avatar)){
+            mUserAvatar.setImageURI(mCollection.avatar);
+        }else{
+            mUserAvatar.setImageURI(LikeAgent.getInstance().getUserPojo().headimgurl);
+        }
+        if (!TextUtils.isEmpty(mCollection.nickName)){
+            mUserName.setText(mCollection.nickName);
+        }else{
+            mUserName.setText(LikeAgent.getInstance().getUserPojo().nickname);
+        }
         mTime.setText(mCollection.recordTimeStr);
+        if (!"".equals(mCollection.collectTimes) && Integer.valueOf(mCollection.collectTimes)>0){
+            mCollectionTimes.setText(mCollection.collectTimes+"人喜欢了此图片");
+        }
 
-
-        Glide.with(CollectionDetailsActivity.this).load(mCollection.imageUrl).into(mPicture);
+        Glide.with(CollectionDetailsActivity.this).load(mCollection.resourceUrl).into(mPicture);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -135,7 +152,7 @@ public class CollectionDetailsActivity extends BaseActivity {
             return true;
         } else if (item.getItemId() == R.id.action_share) {
             ShareDialog dialog = new ShareDialog();
-            dialog.setBitmapUrl(mCollection.imageUrl);
+            dialog.setBitmapUrl(mCollection.resourceUrl);
             dialog.show(getSupportFragmentManager(), "share_dialog");
         }
         return super.onOptionsItemSelected(item);
@@ -165,7 +182,7 @@ public class CollectionDetailsActivity extends BaseActivity {
     }
 
     public void savePicture() {
-        Uri uri = Uri.parse(mCollection.imageUrl);
+        Uri uri = Uri.parse(mCollection.resourceUrl);
         ImageRequest imageRequest = ImageRequestBuilder
                 .newBuilderWithSource(uri)
                 .setProgressiveRenderingEnabled(true)
@@ -179,7 +196,7 @@ public class CollectionDetailsActivity extends BaseActivity {
 
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                     saveMyBitmap(bitmap, System.currentTimeMillis() + "");
+                                     saveMyBitmap(bitmap);
                                  }
 
                                  @Override
@@ -189,9 +206,9 @@ public class CollectionDetailsActivity extends BaseActivity {
                 CallerThreadExecutor.getInstance());
     }
 
-    public void saveMyBitmap(Bitmap mBitmap, String bitName) {
-
-        File f = new File(FileUtils.getImageRootPath() + bitName + ".jpeg");
+    public void saveMyBitmap(Bitmap mBitmap) {
+        Bitmap water = BitmapFactory.decodeResource(getResources(), R.drawable.logo_watermark);
+        File f = new File(FileUtils.getPhotoDirectory(),fileName);
         FileOutputStream fOut = null;
         try {
             fOut = new FileOutputStream(f);
@@ -199,41 +216,52 @@ public class CollectionDetailsActivity extends BaseActivity {
             e.printStackTrace();
         }
 
-        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+        int shareCount = SharedPreferencesUtil.INSTANCE.getInt(Constant.SHARE_TIMES, 0);
+        if (shareCount < 20) {
+            Bitmap bitmap = ImageTools.createWaterMaskRightBottom(CollectionDetailsActivity.this, mBitmap, water, 16, 16);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+        } else {
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+        }
 
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(f.getAbsoluteFile());
-        intent.setData(uri);
-        sendBroadcast(intent);
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(CollectionDetailsActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
+        MobclickAgent.onEvent(CollectionDetailsActivity.this,"DownLoad");
         try {
             fOut.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             fOut.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            MediaStore.Images.Media.insertImage(getContentResolver(),
+                    f.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                // 保存后无法在相册查看到，发送更新图库的广播
+                Uri uri = Uri.fromFile(f);
+                Intent intent = new Intent(
+                        Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,uri);
+                sendBroadcast(intent);
+                Toast.makeText(CollectionDetailsActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void collection() {
-        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), mCollection.imageId, 2,new HttpResultCallback<String>() {
+        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), mCollection.resourceId, 2,new HttpResultCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         ToastUtil.showToast("取消收藏成功");
+                        MobclickAgent.onEvent(CollectionDetailsActivity.this,"Collection");
                     }
                 });
             }

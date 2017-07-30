@@ -1,22 +1,17 @@
 package com.aladdin.like;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.CheckResult;
 import android.text.TextUtils;
 
 import com.aladdin.like.constant.Constant;
 import com.aladdin.like.constant.LoginType;
 import com.aladdin.like.constant.SharedPreferencesManager;
-import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.LoginStateEvent;
 import com.aladdin.like.model.User2Pojo;
 import com.aladdin.like.model.UserPojo;
-import com.aladdin.like.module.main.MainActivity;
 import com.aladdin.like.module.register.entity.WeiXinResult;
 import com.aladdin.like.utils.LoginHttpRequestUtil;
 import com.aladdin.like.utils.UserSettingHelper;
-import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.GsonUtils;
 import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.SharedPreferencesUtil;
@@ -178,9 +173,6 @@ public class LikeAgent {
      * @param openId
      */
     public void weixinLogin(String accessToken, String refreshToken, String openId) {
-        if (isAuthed()) {
-            exitAgent();
-        }
         WeiXinLoginRequtst("weixin", accessToken, refreshToken);
         //  singleThreadExecutor.execute(new WeixinLoginHandler(accessToken, refreshToken, openId, isBackground));
     }
@@ -215,59 +207,6 @@ public class LikeAgent {
 
             EventBus.getDefault().post(new LoginStateEvent(LoginStateEvent.SUCCESS));
         }
-
-    }
-
-    /**
-     * 自动登陆
-     */
-    public void autoLogin(Context context) {
-        HttpManager.INSTANCE.login(1, LikeAgent.getInstance().getUserPojo().nickname,
-                LikeAgent.getInstance().getUserPojo().headimgurl, LikeAgent.getInstance().getOpenid(),
-                LikeAgent.getInstance().getOpenid(), new HttpResultCallback<UserPojo>() {
-                    @Override
-                    public void onSuccess(UserPojo result) {
-                        UserPojo userPojo = LikeAgent.getInstance().getUserPojo();
-                        if (!"".equals(result.headimgurl) && result.headimgurl !=null){
-                            userPojo.headimgurl=result.headimgurl;
-                        }
-                        if (!"".equals(result.nickname) && result.nickname !=null){
-                            userPojo.nickname=result.nickname;
-                        }
-                        if (!TextUtils.isEmpty(result.openid)){
-                            userPojo.openid = result.openid;
-                        }
-
-                        if (result.IsFirstLogin == 1){
-                            userPojo.IsFirstLogin = 1;
-                        }else{
-                            userPojo.IsFirstLogin = 0;
-                        }
-                        LikeAgent.getInstance().updateUserInfo(userPojo);
-                        Intent intent = new Intent(ContextUtils.getInstance().getContext(), MainActivity.class);
-                        context.startActivity(intent);
-                    }
-
-                    @Override
-                    public void onFailure(String code, String msg) {
-
-                    }
-                });
-    }
-
-    public void autoLogin(String mAuth, LoginType type, boolean isBackground) {
-        if (isAuthed()) {
-            exitAgent();
-        }
-//        mAuthLoginRequtst(mAuth , type);
-        // singleThreadExecutor.execute(new AutoLoginHandler(mAuth, type, isBackground));
-    }
-
-    private void exitAgent() {
-        logout();
-    }
-
-    public void logout() {
 
     }
 }

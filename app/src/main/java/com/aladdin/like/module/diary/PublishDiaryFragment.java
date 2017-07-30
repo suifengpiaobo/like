@@ -36,6 +36,7 @@ import com.aladdin.like.widget.PublishDialog;
 import com.aladdin.utils.BitmapUtils;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.ImageLoaderUtils;
+import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.SharedPreferencesUtil;
 import com.aladdin.utils.ToastUtil;
 import com.facebook.common.executors.CallerThreadExecutor;
@@ -48,7 +49,7 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.scwang.smartrefresh.layout.util.DensityUtil;
+//import com.scwang.smartrefresh.layout.util.DensityUtil;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.yalantis.ucrop.UCrop;
 
@@ -145,7 +146,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                     Bitmap bitmap1 = ImageTools.scaleWithWH(bitmap,DensityUtil.dp2px(40),DensityUtil.dp2px(40));//BitmapUtils.imageZoom(ImageTools.scaleWithWH(bitmap,DensityUtil.px2dp(40),DensityUtil.px2dp(40)),35);
+                                     Bitmap bitmap1 = ImageTools.scaleWithWH(bitmap,DensityUtils.dip2px(40),DensityUtils.dip2px(40));//BitmapUtils.imageZoom(ImageTools.scaleWithWH(bitmap,DensityUtil.px2dp(40),DensityUtil.px2dp(40)),35);
                                      mUesrBitmap = ImageTools.getOvalBitmap(bitmap1);
                                  }
 
@@ -177,6 +178,8 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                     params.width = (int) (width * scale);
                     mShoosePicture.setLayoutParams(params);
                     mShoosePicture.setImageURI(data.getStringExtra("url"));
+                    LogUtil.i("url--ABAB-->>>"+data.getStringExtra("url"));
+//                    ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this,mShoosePicture,data.getStringExtra("url"));
                     break;
             }
         }
@@ -196,6 +199,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
             params.width = (int) (width * scale);
 
             mShoosePicture.setLayoutParams(params);
+//            mShoosePicture.setImageURI(resultUri);
             ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mShoosePicture, resultUri.toString());
         } else {
             Toast.makeText(PublishDiaryFragment.this, "Cannot retrieve cropped image", Toast.LENGTH_SHORT).show();
@@ -343,11 +347,11 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
             if (!isWater){
                 Bitmap waterBitmap=ImageTools.createWaterMaskLeftBottom(PublishDiaryFragment.this,cachebmp,mUesrBitmap,6,5);
                 Bitmap nameBitmap = ImageTools.drawTextToLeftBottom(PublishDiaryFragment.this,waterBitmap,LikeAgent.getInstance().getUserPojo().nickname,
-                        14,getResources().getColor(R.color.Black),(int)(12+DensityUtil.px2dp(mUesrBitmap.getWidth())),
-                        (int)(3+DensityUtil.px2dp(mUesrBitmap.getHeight())/2));
+                        14,getResources().getColor(R.color.Black),(int)(12+DensityUtils.px2dip(mUesrBitmap.getWidth())),
+                        (int)(3+DensityUtils.px2dip(mUesrBitmap.getHeight())/2));
 
                 Bitmap timeBitmap = ImageTools.drawTextToRightBottom(PublishDiaryFragment.this,nameBitmap, TimeUtils.getCurrentTime(),14,
-                        getResources().getColor(R.color.Black),6,(int)(3+DensityUtil.px2dp(mUesrBitmap.getHeight())/2));
+                        getResources().getColor(R.color.Black),6,(int)(3+DensityUtils.px2dip(mUesrBitmap.getHeight())/2));
                 timeBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fos);
             }else{
                 cachebmp.compress(Bitmap.CompressFormat.JPEG, 90, fos);
@@ -438,7 +442,6 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                 params.height = mFinishHeight;
                 params.width = mFinishWidth;
                 mPublishFinishPic.setLayoutParams(params);
-
                 ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this, mPublishFinishPic, mPath);
                 mDescription.setText("");
             }

@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -47,6 +48,7 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.sunfusheng.glideimageview.GlideImageView;
+import com.umeng.analytics.MobclickAgent;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 import java.io.File;
@@ -74,6 +76,8 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
     private int page_num = 10;
 
     AlbymModel.AlbymDetail mAlbymDetail;
+
+    String fileName;
 
     private static final int[] ITEM_DRAWABLES = {R.drawable.compress_share, R.drawable.compress_collection, R.drawable.compress_download};
 
@@ -168,6 +172,7 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
                     @Override
                     public void run() {
                         ToastUtil.showToast("收藏成功");
+                        MobclickAgent.onEvent(AlbymDetailsActivity.this,"Collection");
                     }
                 });
             }
@@ -194,7 +199,7 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
 
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                     saveMyBitmap(bitmap, System.currentTimeMillis() + "");
+                                     saveMyBitmap(bitmap);
                                  }
 
                                  @Override
@@ -204,10 +209,11 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
                 CallerThreadExecutor.getInstance());
     }
 
-    public void saveMyBitmap(Bitmap mBitmap, String bitName) {
+    public void saveMyBitmap(Bitmap mBitmap) {
+        fileName = System.currentTimeMillis()+"jpeg";
         Bitmap water = BitmapFactory.decodeResource(getResources(),R.drawable.logo_watermark);
 
-        File f = new File(FileUtils.getImageRootPath() + bitName + ".jpeg");
+        File f = new File(FileUtils.getImageRootPath() ,fileName);
         FileOutputStream fOut = null;
         try {
             fOut = new FileOutputStream(f);
@@ -218,28 +224,34 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
         int shareCount = SharedPreferencesUtil.INSTANCE.getInt(Constant.SHARE_TIMES,0);
         if(shareCount <20){
             Bitmap bitmap= ImageTools.createWaterMaskRightBottom(AlbymDetailsActivity.this,mBitmap,water,16,16);
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
         }else{
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
         }
 
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ToastUtil.showToast("下载成功");
-            }
-        });
+
+        MobclickAgent.onEvent(AlbymDetailsActivity.this,"DownLoad");
         try {
             fOut.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             fOut.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            MediaStore.Images.Media.insertImage(getContentResolver(),
+                    f.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
+                ToastUtil.showToast("下载成功");
+            }
+        });
     }
 
 

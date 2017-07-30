@@ -43,7 +43,7 @@ public class HttpUrl {
     //获取用户收藏的日记
     public static final String GET_COLLECTION_DIARY = API_URL+"user/getUserCollectDiary";
     //添加用户背景
-    public static final String ADD_USER_IMG = API_URL+"user/addBackground";
+    public static final String ADD_USER_IMG = API_URL+"user/addBackgroud";
 
     //获取背景图片
     public static final String GET_USER_IMG = API_URL+"user/getUserInfo";

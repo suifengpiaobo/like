@@ -25,6 +25,7 @@ import com.tencent.mm.opensdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.opensdk.openapi.IWXAPI;
 import com.tencent.mm.opensdk.openapi.IWXAPIEventHandler;
 import com.tencent.mm.opensdk.openapi.WXAPIFactory;
+import com.umeng.analytics.MobclickAgent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -60,8 +61,11 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
 
                 break;
             case ConstantsAPI.COMMAND_SHOWMESSAGE_FROM_WX:
-                runOnUiThread(()->{
-                    ToastUtil.showToast(goToShowMsg((ShowMessageFromWX.Req)req));
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ToastUtil.showToast(goToShowMsg((ShowMessageFromWX.Req)req));
+                    }
                 });
                 break;
             default:
@@ -82,6 +86,7 @@ public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHan
                     EventBus.getDefault().post(new ShareEvent(ShareEvent.SHARE_SUCCESS));
                     int shareCount = SharedPreferencesUtil.INSTANCE.getInt(Constant.SHARE_TIMES,0);
                     SharedPreferencesUtil.INSTANCE.putInt(Constant.SHARE_TIMES,shareCount+1);
+                    MobclickAgent.onEvent(WXEntryActivity.this,"Share");
                 }
                 break;
 

@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewCompat;
@@ -21,7 +22,7 @@ import android.widget.Toast;
 
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
-import com.aladdin.like.base.BaseSwipbackActivity;
+import com.aladdin.like.base.BaseActivity;
 import com.aladdin.like.constant.Constant;
 import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.ThemeDetail;
@@ -58,7 +59,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
  *Description 相关图片下载页
  *Created by zxl on 2017/6/19下午4:43.
 */
-public class CorrelationActivity extends BaseSwipbackActivity {
+public class CorrelationActivity extends BaseActivity {
     @BindView(R.id.root_view)
     RelativeLayout mLayout;
     @BindView(R.id.picture)
@@ -228,30 +229,28 @@ public class CorrelationActivity extends BaseSwipbackActivity {
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
         }
 
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(f.getAbsoluteFile());
-        intent.setData(uri);
-        sendBroadcast(intent);
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
-                Toast.makeText(CorrelationActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
         try {
             fOut.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             fOut.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            MediaStore.Images.Media.insertImage(getContentResolver(),
+                    f.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
+                mDownloadStatus.setBackgroundResource(R.drawable.download_success_icon);
+                Toast.makeText(CorrelationActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override

@@ -155,6 +155,7 @@ public class RequestContent {
         checkUrl(url);
         MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         builder.addFormDataPart("image", file.getName(), RequestBody.create(MEDIA_TYPE_PNG, file));
+        Log.i("path--->>>","file"+file.getName());
         if (params != null && params.length % 2 == 0) {
             for (int i = 0; i < params.length; i += 2){
                 builder.addFormDataPart(params[i], params[i+1]);
@@ -304,7 +305,7 @@ public class RequestContent {
     }
 
     /**
-     * 兼容首播
+     *
      *
      * @param request
      * @param i

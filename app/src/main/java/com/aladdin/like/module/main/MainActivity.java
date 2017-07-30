@@ -101,7 +101,7 @@ public class MainActivity extends BaseActivity {
             mFragments.add(mMineFragment);
         }
 
-//        resetTab();
+        resetTab();
         mAdapter = new BaseFragmentAdapter(getSupportFragmentManager(), mFragments);
         mMainViewPager.setAdapter(mAdapter);
         mMainViewPager.setCurrentItem(currentTabPosition);

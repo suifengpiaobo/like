@@ -2,12 +2,15 @@ package com.aladdin.like.module.diarydetails;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,11 +23,14 @@ import android.widget.Toast;
 import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseActivity;
+import com.aladdin.like.constant.Constant;
 import com.aladdin.like.http.HttpManager;
 import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.utils.FileUtils;
+import com.aladdin.like.utils.ImageTools;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.SharedPreferencesUtil;
 import com.aladdin.utils.ToastUtil;
 import com.bumptech.glide.Glide;
 import com.facebook.common.executors.CallerThreadExecutor;
@@ -37,6 +43,7 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.umeng.analytics.MobclickAgent;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 import java.io.File;
@@ -97,10 +104,18 @@ public class DiaryDetailsActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(R.drawable.back_selector);
 
-        mUserAvatar.setImageURI(LikeAgent.getInstance().getUserPojo().headimgurl);
-        mUserName.setText(LikeAgent.getInstance().getUserPojo().nickname);
+        if (!TextUtils.isEmpty(mDiary.avatar)){
+            mUserAvatar.setImageURI(mDiary.avatar);
+        }else{
+            mUserAvatar.setImageURI(LikeAgent.getInstance().getUserPojo().headimgurl);
+        }
+        if (!TextUtils.isEmpty(mDiary.nickName)){
+            mUserName.setText(mDiary.nickName);
+        }else{
+            mUserName.setText(LikeAgent.getInstance().getUserPojo().nickname);
+        }
         mTime.setText(mDiary.diaryTimeStr);
-
+        mCollectionTimes.setText(mDiary.collectTimes+"人喜欢了此日记");
 
         Glide.with(DiaryDetailsActivity.this).load(mDiary.diaryImage).into(mPicture);
         new Handler().postDelayed(new Runnable() {
@@ -175,7 +190,7 @@ public class DiaryDetailsActivity extends BaseActivity {
 
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                     saveMyBitmap(bitmap, System.currentTimeMillis() + "");
+                                     saveMyBitmap(bitmap);
                                  }
 
                                  @Override
@@ -185,9 +200,9 @@ public class DiaryDetailsActivity extends BaseActivity {
                 CallerThreadExecutor.getInstance());
     }
 
-    public void saveMyBitmap(Bitmap mBitmap, String bitName) {
-
-        File f = new File(FileUtils.getImageRootPath() + bitName + ".jpeg");
+    public void saveMyBitmap(Bitmap mBitmap) {
+        Bitmap water = BitmapFactory.decodeResource(getResources(),R.drawable.logo_watermark);
+        File f = new File(FileUtils.getPhotoDirectory(),fileName);
         FileOutputStream fOut = null;
         try {
             fOut = new FileOutputStream(f);
@@ -195,21 +210,16 @@ public class DiaryDetailsActivity extends BaseActivity {
             e.printStackTrace();
         }
 
-        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+        int shareCount = SharedPreferencesUtil.INSTANCE.getInt(Constant.SHARE_TIMES,0);
+        if(shareCount <20){
+            Bitmap bitmap= ImageTools.createWaterMaskRightBottom(DiaryDetailsActivity.this,mBitmap,water,16,16);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+        }else{
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+        }
 
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(f.getAbsoluteFile());
-        intent.setData(uri);
-        sendBroadcast(intent);
+        MobclickAgent.onEvent(DiaryDetailsActivity.this,"DownLoad");
 
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(DiaryDetailsActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
         try {
             fOut.flush();
         } catch (IOException e) {
@@ -220,12 +230,24 @@ public class DiaryDetailsActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
 
-    public void showShareDialog() {
-        shareDialog = new ShareDialog();
-        shareDialog.setBitmapUrl(mDiary.diaryImage);
-        shareDialog.show(getSupportFragmentManager(), "share_dialog");
+        try {
+            MediaStore.Images.Media.insertImage(getContentResolver(),
+                    f.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                Uri uri = Uri.fromFile(f.getAbsoluteFile());
+                intent.setData(uri);
+                sendBroadcast(intent);
+                Toast.makeText(DiaryDetailsActivity.this, "下载成功", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void collection() {
@@ -236,6 +258,8 @@ public class DiaryDetailsActivity extends BaseActivity {
                     @Override
                     public void run() {
                         ToastUtil.showToast("收藏成功");
+                        MobclickAgent.onEvent(DiaryDetailsActivity.this,"Collection");
+
                     }
                 });
             }

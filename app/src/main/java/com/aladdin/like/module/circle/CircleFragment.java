@@ -4,8 +4,10 @@ package com.aladdin.like.module.circle;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -29,9 +31,11 @@ import com.aladdin.like.module.circle.prestener.Circlrprestener;
 import com.aladdin.like.module.diary.PublishDiaryFragment;
 import com.aladdin.like.module.diarydetails.DiaryDetailsActivity;
 import com.aladdin.like.utils.FileUtils;
+import com.aladdin.like.utils.ImageTools;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.SharedPreferencesUtil;
 import com.aladdin.utils.ToastUtil;
 import com.facebook.common.executors.CallerThreadExecutor;
 import com.facebook.common.references.CloseableReference;
@@ -45,6 +49,7 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.sunfusheng.glideimageview.GlideImageView;
+import com.umeng.analytics.MobclickAgent;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 
 import java.io.File;
@@ -76,6 +81,8 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
     int total = 1;
     int page = 1;
     int page_num = 10;
+
+    String fileName;
 
     private static final int[] ITEM_DRAWABLES = {R.drawable.compress_share, R.drawable.compress_collection, R.drawable.compress_download};
 
@@ -162,13 +169,14 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
     }
 
     public void collectionPic(DiaryDetail.Diary diary) {
-        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), diary.diaryId,1, new HttpResultCallback<String>() {
+        HttpManager.INSTANCE.collectionDiary(LikeAgent.getInstance().getOpenid(), diary.diaryId,1, new HttpResultCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         ToastUtil.showToast("收藏成功");
+                        MobclickAgent.onEvent(getActivity(),"Collection");
                     }
                 });
             }
@@ -195,8 +203,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
 
                                  @Override
                                  public void onNewResultImpl(@Nullable Bitmap bitmap) {
-                                     ToastUtil.showToast("下载成功");
-                                     saveMyBitmap(bitmap, System.currentTimeMillis() + "");
+                                     saveMyBitmap(bitmap);
                                  }
 
                                  @Override
@@ -206,26 +213,47 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
                 CallerThreadExecutor.getInstance());
     }
 
-    public void saveMyBitmap(Bitmap mBitmap, String bitName) {
-        File f = new File(FileUtils.getImageRootPath() + bitName + ".jpeg");
+    public void saveMyBitmap(Bitmap mBitmap) {
+        fileName = System.currentTimeMillis()+"jpeg";
+        Bitmap water = BitmapFactory.decodeResource(getResources(),R.drawable.logo_watermark);
+        File f = new File(FileUtils.getImageRootPath(),fileName);
         FileOutputStream fOut = null;
         try {
             fOut = new FileOutputStream(f);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
-        getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
+        int shareCount = SharedPreferencesUtil.INSTANCE.getInt(Constant.SHARE_TIMES,0);
+        if(shareCount <20){
+            Bitmap bitmap= ImageTools.createWaterMaskRightBottom(getActivity(),mBitmap,water,16,16);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+        }else{
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+        }
+
+        MobclickAgent.onEvent(getActivity(),"Download");
+
         try {
             fOut.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
             fOut.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            MediaStore.Images.Media.insertImage(getActivity().getContentResolver(),
+                    f.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
+                ToastUtil.showToast("下载成功");
+            }
+        });
     }
 
     //新添加

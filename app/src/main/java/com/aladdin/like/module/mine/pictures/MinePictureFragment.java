@@ -40,7 +40,7 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
     PictureAdapter mPictureAdapter;
 
     int page = 1;
-    int page_num =10;
+    int page_num =200;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_mine_picture;
@@ -53,9 +53,7 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
 
         mPicture.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mPicture.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
-//        mPicture.setArrowImageView(R.drawable.icon_refresh);
         mPicture.setLoadingListener(this);
-        mPicture.setPullRefreshEnabled(false);
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mPictureAdapter = new PictureAdapter(getActivity());
@@ -93,6 +91,15 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
     }
 
     @Override
+    protected void onvisible() {
+        if (mPictureAdapter != null && mPictureAdapter.getCommonItemCount()>0){
+            mPictureAdapter.clear();
+        }
+        page = 1;
+        mPresenter.getPicture(LikeAgent.getInstance().getOpenid(),page,page_num,1);
+    }
+
+    @Override
     protected void lazyFetchData() {
     }
 
@@ -123,18 +130,24 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if (page ==1){
+                    if (mPictureAdapter != null && mPictureAdapter.getCommonItemCount()>0){
+                        mPictureAdapter.clear();
+                    }
+                }
                 mPicture.loadMoreComplete();
                 mPicture.refreshComplete();
                 mPictureAdapter.addAll(collectImage.recordList);
                 mPictureAdapter.notifyDataSetChanged();
-                page = collectImage.per_page;
+                page = page+1;
             }
         });
     }
 
     @Override
     public void onRefresh() {
-
+        page = 1;
+        mPresenter.getPicture(LikeAgent.getInstance().getOpenid(),page,page_num,1);
     }
 
     @Override

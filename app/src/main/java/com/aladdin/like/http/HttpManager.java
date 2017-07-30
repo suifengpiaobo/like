@@ -9,7 +9,9 @@ import com.aladdin.like.model.CollectionImage;
 import com.aladdin.like.model.DiaryDetail;
 import com.aladdin.like.model.ThemeDetail;
 import com.aladdin.like.model.ThemeModes;
+import com.aladdin.like.model.UserInfo;
 import com.aladdin.like.model.UserPojo;
+import com.aladdin.utils.LogUtil;
 import com.zxl.network_lib.HttpUtil;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 import com.zxl.network_lib.Inteface.HttpResultListener;
@@ -251,7 +253,6 @@ public enum HttpManager {
         if (!TextUtils.isEmpty(openid)){
             map.put("openid",openid);
         }
-
         map.put("auditSign",auditSign);
         map.put("page",page);
         map.put("page_num",page_num);
@@ -271,15 +272,8 @@ public enum HttpManager {
      * @param diaryContent
      */
     public void addUserDiary(String openid, String image, File file, String diaryTitle, String diaryContent, HttpResultListener callback){
-//        Map<String, Object> map = new HashMap<>();
-//        if (!TextUtils.isEmpty(openid)){
-//            map.put("openid",openid);
-//        }
-//        map.put("image",image);
-//        map.put("diaryTitle",diaryTitle);
-//        map.put("diaryContent",diaryContent);
-//        String params = prepareParam(map);
-        HttpUtil.getInstance().upLoadPic(HttpUrl.USER_ADD_DIARY,image, Headers.of("token","likeApp1qaz2wsx"),file,callback,
+        HttpUtil.getInstance().upLoadPic(HttpUrl.USER_ADD_DIARY,image, Headers.of("token","likeApp1qaz2wsx"),
+                file,callback,
                 "openid",openid,"image",image,"diaryTitle",diaryTitle,"diaryContent",diaryContent);
     }
 
@@ -289,8 +283,10 @@ public enum HttpManager {
      * @param file
      * @param callback
      */
-    public void addUserImg(String openid, File file, HttpResultListener callback){
-        HttpUtil.getInstance().upLoadPic(HttpUrl.ADD_USER_IMG,"",Headers.of("token","likeApp1qaz2wsx"),file,callback,"openid",openid);
+    public void addUserImg(String openid, String image,File file, HttpResultListener callback){
+        LogUtil.i("---addUserImg---");
+        HttpUtil.getInstance().upLoadPic(HttpUrl.ADD_USER_IMG,image,Headers.of("token","likeApp1qaz2wsx"),
+                file,callback,"openid",openid,"image",image);
     }
 
     /**
@@ -298,14 +294,14 @@ public enum HttpManager {
      * @param openid
      * @param callback
      */
-    public void getUserInfo(String openid, HttpResultCallback<String> callback){
+    public void getUserInfo(String openid, HttpResultCallback<UserInfo> callback){
         Map<String, Object> map = new HashMap<>();
         if (!TextUtils.isEmpty(openid)){
             map.put("openid",openid);
         }
         String params = prepareParam(map);
         try{
-            shortConnectRequest(HttpUrl.GET_USER_IMG,params,RequestType.POST,callback,String.class);
+            shortConnectRequest(HttpUrl.GET_USER_IMG,params,RequestType.POST,callback,UserInfo.class);
         }catch (Exception e){
             e.printStackTrace();
         }

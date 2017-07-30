@@ -14,12 +14,17 @@ public class CollectionImage implements Serializable {
     public List<Collection> recordList;
 
     public class Collection implements Serializable{
+        public String nickName;
+        public String avatar;
+        public String collectTimes;
         public String recordId;
         public String imageId;
-        public String imageUrl;
+        public String resourceUrl;
         public String imageName;
         public String themeName;
         public String recordTimeStr;
+        public int resourceType;//1、图片 2、日记
+        public String resourceId;
         public int width;
         public int height;
 
@@ -28,7 +33,7 @@ public class CollectionImage implements Serializable {
             return "Collection{" +
                     "recordId='" + recordId + '\'' +
                     ", imageId='" + imageId + '\'' +
-                    ", imageUrl='" + imageUrl + '\'' +
+                    ", imageUrl='" + resourceUrl + '\'' +
                     ", imageName='" + imageName + '\'' +
                     ", themeName='" + themeName + '\'' +
                     ", recordTimeStr='" + recordTimeStr + '\'' +

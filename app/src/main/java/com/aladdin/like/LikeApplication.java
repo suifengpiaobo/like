@@ -9,6 +9,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Message;
 
 import com.aladdin.like.receiver.NotificationService;
@@ -17,10 +18,6 @@ import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.tencent.android.tpush.XGCustomPushNotificationBuilder;
 import com.tencent.android.tpush.XGIOperateCallback;
 import com.tencent.android.tpush.XGPushManager;
@@ -39,11 +36,16 @@ public class LikeApplication extends Application {
     private boolean isFirst = false;
     private static Context mAppContext;
     private Message m;
+    public static String APP_PATH;
+    // 应用SD卡扩展路径
+    public final static String APP_EXT_PATH = Environment
+            .getExternalStorageDirectory().getAbsolutePath() + "/Like/";
     @Override
     public void onCreate() {
         super.onCreate();
         mAppContext = this.getApplicationContext();
-        initImageLoader(getApplicationContext());
+        APP_PATH = this.getFilesDir().getAbsolutePath() + "/";
+//        initImageLoader(getApplicationContext());
         if (!isFirst){
             isFirst = true;
             instance = this;
@@ -57,18 +59,18 @@ public class LikeApplication extends Application {
         }
     }
 
-    public void initImageLoader(Context context){
-        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
-        config.threadPriority(Thread.NORM_PRIORITY - 2);
-        config.denyCacheImageMultipleSizesInMemory();
-        config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
-        config.diskCacheSize(10 * 1024 * 1024); // 10 MiB
-        config.tasksProcessingOrder(QueueProcessingType.LIFO);
-        config.writeDebugLogs(); // Remove for release app
-
-        // Initialize ImageLoader with configuration.
-        ImageLoader.getInstance().init(config.build());
-    }
+//    public void initImageLoader(Context context){
+//        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);
+//        config.threadPriority(Thread.NORM_PRIORITY - 2);
+//        config.denyCacheImageMultipleSizesInMemory();
+//        config.diskCacheFileNameGenerator(new Md5FileNameGenerator());
+//        config.diskCacheSize(10 * 1024 * 1024); // 10 MiB
+//        config.tasksProcessingOrder(QueueProcessingType.LIFO);
+//        config.writeDebugLogs(); // Remove for release app
+//
+//        // Initialize ImageLoader with configuration.
+//        ImageLoader.getInstance().init(config.build());
+//    }
 
     public void initConfig() {
         //替换字体

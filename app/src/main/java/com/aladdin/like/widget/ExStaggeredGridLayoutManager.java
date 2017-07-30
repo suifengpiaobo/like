@@ -11,6 +11,7 @@ import android.view.ViewGroup;
  * Email:444288256@qq.com
  */
 public class ExStaggeredGridLayoutManager extends StaggeredGridLayoutManager {
+
     public ExStaggeredGridLayoutManager(int spanCount, int orientation) {
         super(spanCount, orientation);
     }

@@ -16,10 +16,15 @@ public class DiaryDetail implements Serializable{
 
     public class Diary implements Serializable{
         public String diaryId;
+        public String uesrId;
+        public String avatar;
+        public String nickName;
         public String diaryImage;
         public String diaryTimeStr;
         public String diaryTitle;//日志题目
         public String diaryContent;//日志内容
+        public String collectTimes;
+        public int auditSign;
         public int width;
         public int height;
 

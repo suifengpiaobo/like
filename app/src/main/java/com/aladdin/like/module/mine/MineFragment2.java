@@ -15,6 +15,7 @@ import com.aladdin.like.LikeAgent;
 import com.aladdin.like.R;
 import com.aladdin.like.base.BaseFragment;
 import com.aladdin.like.http.HttpManager;
+import com.aladdin.like.model.UserInfo;
 import com.aladdin.like.module.main.MainActivity;
 import com.aladdin.like.module.mine.atlas.MineAtlasFragment;
 import com.aladdin.like.module.mine.diary.MineDiraryFragment;
@@ -23,19 +24,17 @@ import com.aladdin.like.module.set.SettingActivity;
 import com.aladdin.like.receiver.NotificationService;
 import com.aladdin.like.utils.UriUtils;
 import com.aladdin.like.widget.HViewPager;
-import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.sunfusheng.glideimageview.GlideImageView;
 import com.zxl.network_lib.Inteface.HttpResultCallback;
 import com.zxl.network_lib.Inteface.HttpResultListener;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
 
 /**
  * Description
@@ -70,7 +69,7 @@ public class MineFragment2 extends BaseFragment {
 
     @Override
     protected void initView() {
-        mAdapter = new Mine2PagerAdapter(getFragmentManager());
+        mAdapter = new Mine2PagerAdapter(getChildFragmentManager());
         mAdapter.addFragment(new MineAtlasFragment(), "主题");
         mAdapter.addFragment(new MinePictureFragment(), "图片");
         mAdapter.addFragment(new MineDiraryFragment(), "日记");
@@ -89,6 +88,9 @@ public class MineFragment2 extends BaseFragment {
             mNewMessage.setVisibility(View.GONE);
         }
 
+        mUserAvatar.setImageURI(LikeAgent.getInstance().getUserPojo().headimgurl);
+        mUserName.setText(LikeAgent.getInstance().getUserPojo().nickname);
+
         mImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,14 +102,6 @@ public class MineFragment2 extends BaseFragment {
             @Override
             public void onFile(Uri path) {
                 if (path != null) {
-//                    Bitmap bitmap = getBitmapFromUri(path);
-//                    int width = bitmap.getWidth();
-//                    int height = bitmap.getHeight();
-//                    float scale = (DensityUtils.mScreenWidth / (float) width;
-//                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mShoosePicture.getLayoutParams();
-//                    params.height = (int) (height * scale);
-//                    params.width = (int) (width * scale);
-//                    mShoosePicture.setLayoutParams(params);
                     mUri = path;
                     new Handler().post(runnable);
                 } else {
@@ -137,24 +131,18 @@ public class MineFragment2 extends BaseFragment {
     }
 
     public void getUserBackground(){
-        HttpManager.INSTANCE.getUserInfo(LikeAgent.getInstance().getOpenid(), new HttpResultCallback<String>() {
+        HttpManager.INSTANCE.getUserInfo(LikeAgent.getInstance().getOpenid(), new HttpResultCallback<UserInfo>() {
             @Override
-            public void onSuccess(String result){
+            public void onSuccess(UserInfo result){
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        LogUtil.i("---userinfo--result-->>"+result);
-                        JSONObject object= null;
-                        try {
-                            object = new JSONObject(result);
-                            String url = object.getString("data");
-                            if (!TextUtils.isEmpty(url)){
-                                mImageView.loadLocalImage(R.drawable.mine_title,0);
+                        if (result != null){
+                            if (!TextUtils.isEmpty(result.backgroudUrl)){
+                                mImageView.loadImage(result.backgroudUrl,R.drawable.mine_title);
                             }else{
-                                mImageView.loadImage(url,0);
+                                mImageView.loadLocalImage(R.drawable.mine_title,0);
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
                     }
                 });
@@ -180,19 +168,40 @@ public class MineFragment2 extends BaseFragment {
     };
 
     public void changeBg(Uri url){
-        String path = UriUtils.getImageAbsolutePath(getActivity(),url);
-        File file = new File(path);
-        HttpManager.INSTANCE.addUserImg(LikeAgent.getInstance().getOpenid(), file, new HttpResultListener() {
+        String path = UriUtils.getRealFilePath(getActivity(),url);
+        File file1 = new File(path);
+        Luban.get(getActivity()).load(file1).putGear(Luban.THIRD_GEAR).setCompressListener(new OnCompressListener() {
             @Override
-            public void onSuccess(String str) {
-                mImageView.loadLocalImage(path,0);
+            public void onStart() {
             }
 
             @Override
-            public void onFailure(String str) {
+            public void onSuccess(File file) {
+                HttpManager.INSTANCE.addUserImg(LikeAgent.getInstance().getOpenid(),file.getName(), file, new HttpResultListener() {
+                    @Override
+                    public void onSuccess(String str) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mImageView.loadLocalImage(file.getAbsolutePath(),0);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(String str) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Throwable e) {
 
             }
-        });
+        }).launch();
     }
+
+
 
 }

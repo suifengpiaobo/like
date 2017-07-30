@@ -151,7 +151,6 @@
             android:layout_marginLeft="10dp"
             android:drawableLeft="@drawable/parise_icon"
             android:gravity="center"
-            android:text="15人喜欢了此日记"
             android:textColor="@color/white"
             />
 

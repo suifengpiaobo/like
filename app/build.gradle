@@ -11,8 +11,8 @@ android {
         applicationId "com.aladdin.like"
         minSdkVersion 18
         targetSdkVersion 22
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -94,6 +94,7 @@ dependencies {
     //        exclude group: 'com.android.support', module: 'support-annotations'
     //    })
     compile project(':base')
+    compile 'com.android.support:appcompat-v7:25.3.0'
     //    compile project(':picture_library')
     compile project(':network_lib')
     compile project(':ease')
@@ -114,7 +115,7 @@ dependencies {
     //    compile project(':GlideImageView')
     //    compile project(':takephoto_library')
     compile project(':ucrop')
-    compile project(':refresh-layout')
-    compile 'com.github.todou:appbarspring:1.0.3'
-    compile 'com.github.liuguangqiang.swipeback:library:1.0.2@aar'
+//    compile project(':refresh-layout')
+//    compile 'com.github.todou:appbarspring:1.0.3'
+//    compile 'com.github.liuguangqiang.swipeback:library:1.0.2@aar'
 }

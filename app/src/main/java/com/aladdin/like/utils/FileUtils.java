@@ -2,6 +2,7 @@ package com.aladdin.like.utils;
 
 import android.os.Environment;
 
+import com.aladdin.like.LikeApplication;
 import com.aladdin.utils.ContextUtils;
 
 import java.io.File;
@@ -68,4 +69,22 @@ public class FileUtils {
             }
         }
     }
+
+    public static String getPhotoDirectory() {
+        String path;
+        if (Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            path = LikeApplication.APP_EXT_PATH + "/photos/";
+        } else {
+            path = LikeApplication.APP_PATH +"/Like/" + "/photos/";
+        }
+
+        File dir = new File(path);
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        return path;
+    }
+
 }

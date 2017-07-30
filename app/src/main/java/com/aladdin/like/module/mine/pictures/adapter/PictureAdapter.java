@@ -44,7 +44,7 @@ public class PictureAdapter extends BaseAdapter<CollectionImage.Collection> {
             params.weight = (int)(item.width*scale);
             viewHolder.mMinePictureImg.setLayoutParams(params);
 
-            viewHolder.mMinePictureImg.loadImage(item.imageUrl,R.color.placeholder_color);
+            viewHolder.mMinePictureImg.loadImage(item.resourceUrl,R.color.placeholder_color);
 
             viewHolder.mMinePictureImg.setOnClickListener(new View.OnClickListener() {
                 @Override
