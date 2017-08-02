@@ -26,7 +26,7 @@ public class ContextUtils {
 
     // No need, do not call this method !!
     public void setContext(Context context) {
-        ContextUtils.context = context;
+        this.context = context;
     }
 
     public Context getApplicationContext() {
@@ -38,11 +38,11 @@ public class ContextUtils {
     }
 
     public Context getContext() {
-        Context context = null;
-        if (ContextUtils.context != null) {
-            context = ContextUtils.context;
+        Context mContext = null;
+        if (context != null) {
+            mContext = context;
         }
-        return context;
+        return mContext;
     }
 
     public void onDestroyContext() {

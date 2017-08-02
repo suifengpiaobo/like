@@ -39,7 +39,7 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
 
     int page = 1;
     int page_num = 200;
-    int total_page = 1;
+//    int total_page = 1;
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_mine_dirary;
@@ -50,7 +50,7 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
         mPresenter = new DiaryPrestener(this);
         mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
         mMineDiary.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mMineDiary.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+//        mMineDiary.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mMineDiary.setLoadingListener(this);
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
@@ -138,8 +138,8 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
                 mMineDiary.refreshComplete();
                 mMineDiary.loadMoreComplete();
                 mDiaryAdapter.addAll(detail.diaryList);
+                mDiaryAdapter.notifyDataSetChanged();
                 page = page+1;
-                total_page = detail.total;
             }
         });
     }
@@ -155,7 +155,6 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
     public void onLoadMore() {
         LogUtil.i("---onLoadMore--->>>");
         LogUtil.i("count--->>"+mDiaryAdapter.getCommonItemCount());
-        LogUtil.i("total--->>>"+total_page);
         mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
     }
 }

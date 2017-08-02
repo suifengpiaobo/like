@@ -70,6 +70,9 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
     @BindView(R.id.albym_item)
     FrameLayout mRootView;
 
+    @BindView(R.id.back)
+    ImageView mBack;
+
     AlbymDetailsAdapter mDetailsAdapter;
 
     private int page = 1;
@@ -135,6 +138,13 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
                 initArcMenu(mArcMenu, ITEM_DRAWABLES, item);
             }
         });
+
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void initArcMenu(ArcMenu menu, int[] itemDrawables, ThemeDetail.Theme themeDetail) {
@@ -165,14 +175,14 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
     }
 
     public void collectionPic(ThemeDetail.Theme themeDetail) {
-        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), themeDetail.imageId,1, new HttpResultCallback<String>() {
+        HttpManager.INSTANCE.collectionImage(LikeAgent.getInstance().getOpenid(), themeDetail.imageId, 1, new HttpResultCallback<String>() {
             @Override
             public void onSuccess(String result) {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         ToastUtil.showToast("收藏成功");
-                        MobclickAgent.onEvent(AlbymDetailsActivity.this,"Collection");
+                        MobclickAgent.onEvent(AlbymDetailsActivity.this, "Collection");
                     }
                 });
             }
@@ -210,10 +220,10 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
     }
 
     public void saveMyBitmap(Bitmap mBitmap) {
-        fileName = System.currentTimeMillis()+"jpeg";
-        Bitmap water = BitmapFactory.decodeResource(getResources(),R.drawable.logo_watermark);
+        fileName = System.currentTimeMillis() + "jpeg";
+        Bitmap water = BitmapFactory.decodeResource(getResources(), R.drawable.logo_watermark);
 
-        File f = new File(FileUtils.getImageRootPath() ,fileName);
+        File f = new File(FileUtils.getImageRootPath(), fileName);
         FileOutputStream fOut = null;
         try {
             fOut = new FileOutputStream(f);
@@ -221,16 +231,16 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
             e.printStackTrace();
         }
 
-        int shareCount = SharedPreferencesUtil.INSTANCE.getInt(Constant.SHARE_TIMES,0);
-        if(shareCount <20){
-            Bitmap bitmap= ImageTools.createWaterMaskRightBottom(AlbymDetailsActivity.this,mBitmap,water,16,16);
+        int shareCount = SharedPreferencesUtil.INSTANCE.getInt(Constant.SHARE_TIMES, 0);
+        if (shareCount < 20) {
+            Bitmap bitmap = ImageTools.createWaterMaskRightBottom(AlbymDetailsActivity.this, mBitmap, water, 16, 16);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
-        }else{
+        } else {
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
         }
 
 
-        MobclickAgent.onEvent(AlbymDetailsActivity.this,"DownLoad");
+        MobclickAgent.onEvent(AlbymDetailsActivity.this, "DownLoad");
         try {
             fOut.flush();
             fOut.close();

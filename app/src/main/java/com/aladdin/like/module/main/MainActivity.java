@@ -4,12 +4,9 @@ package com.aladdin.like.module.main;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -66,16 +63,14 @@ public class MainActivity extends BaseActivity {
     private MineFragment2 mMineFragment;
     private BaseFragmentAdapter mAdapter;
 
-    onSearchClickListener mSearchClickListener;
     onCircleClickListener mOnCircleClickListener;
 
     onChoosePicListener mChoosePicListener;
 
     public static final int REQUEST_SELECT_PICTURE = 0x03;
-    public static final String SAMPLE_CROPPED_IMAGE_NAME = "CropImage_";
+    public final String SAMPLE_CROPPED_IMAGE_NAME = "CropImage_";
 
     int currentTabPosition = 0;
-    public static final String CURRENT_TAB_POSITION = "HOME_CURRENT_TAB_POSITION";
 
     @Override
     protected int getLayoutId() {
@@ -109,19 +104,6 @@ public class MainActivity extends BaseActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        //崩溃前保存位置
-        outState.putInt(CURRENT_TAB_POSITION, currentTabPosition);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        currentTabPosition = savedInstanceState.getInt(CURRENT_TAB_POSITION);
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
@@ -136,7 +118,6 @@ public class MainActivity extends BaseActivity {
                     if (mChoosePicListener != null){
                         mChoosePicListener.onFile(resultUri);
                     }
-//                    handleCropResult(data);
                     break;
             }
         }
@@ -144,7 +125,7 @@ public class MainActivity extends BaseActivity {
 
     private void startCropActivity(@NonNull Uri uri) {
         String destinationFileName = SAMPLE_CROPPED_IMAGE_NAME+System.currentTimeMillis();
-        destinationFileName += ".jpg";
+        destinationFileName += ".jpeg";
 
         UCrop uCrop = UCrop.of(uri, Uri.fromFile(new File(getCacheDir(), destinationFileName)));
 
@@ -156,7 +137,6 @@ public class MainActivity extends BaseActivity {
 
     private UCrop basisConfig(@NonNull UCrop uCrop) {
         uCrop = uCrop.useSourceImageAspectRatio();
-//        uCrop = uCrop.withAspectRatio(ratioX, ratioY);
         return uCrop;
     }
 
@@ -197,14 +177,9 @@ public class MainActivity extends BaseActivity {
                 mMinePage.setSelected(true);
                 break;
             default:
-//                mLayout.setBackgroundColor(getResources().getColor(R.color.color_e6ffffff));
                 break;
         }
         mMainViewPager.setCurrentItem(currentTabPosition, false);
-    }
-
-    public void setSearchClickListener(onSearchClickListener searchClickListener) {
-        mSearchClickListener = searchClickListener;
     }
 
     public void setOnCircleClickListener(onCircleClickListener onCircleClickListener) {
@@ -213,10 +188,6 @@ public class MainActivity extends BaseActivity {
 
     public void setChoosePicListener(onChoosePicListener choosePicListener) {
         mChoosePicListener = choosePicListener;
-    }
-
-    public interface onSearchClickListener {
-        void onSearch(String s);
     }
 
     public interface onCircleClickListener {
@@ -228,20 +199,18 @@ public class MainActivity extends BaseActivity {
     }
 
     //隐藏键盘
-    protected boolean hiddenInputMethodManager(View v) {
-        if (v != null && v.getWindowToken() != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            return imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-        }
-        return false;
-    }
+//    protected boolean hiddenInputMethodManager(View v) {
+//        if (v != null && v.getWindowToken() != null) {
+//            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+//            return imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//        }
+//        return false;
+//    }
 
     //点击空白隐藏软键盘
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        final View v = this.getWindow().peekDecorView();
-        return hiddenInputMethodManager(v);
-    }
-
-
+//    @Override
+//    public boolean onTouchEvent(MotionEvent event) {
+//        final View v = this.getWindow().peekDecorView();
+//        return hiddenInputMethodManager(v);
+//    }
 }

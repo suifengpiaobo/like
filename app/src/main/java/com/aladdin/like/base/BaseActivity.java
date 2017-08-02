@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.aladdin.dialog.DialogTools;
-import com.aladdin.utils.AppManager;
+import com.aladdin.like.R;
 import com.aladdin.utils.ToastUtil;
 import com.umeng.analytics.MobclickAgent;
 
@@ -37,8 +37,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         mContext = this;
         mApplicationContext = this.getApplicationContext();
 
-        AppManager.instance.addActivity(this);
-        baseView = View.inflate(mContext, com.aladdin.base.R.layout.base_activity_container, null);
+//        AppManager.instance.addActivity(this);
+        baseView = View.inflate(mContext, R.layout.base_activity_container, null);
         setContentView(baseView);
         setupContentView();
 
@@ -47,7 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
     // 加载子类布局文件
     private void setupContentView() {
-        FrameLayout frameLayout = (FrameLayout) findViewById(com.aladdin.base.R.id.root);
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.root);
         if (getLayoutId() != 0) {
             contentView = View.inflate(mContext, getLayoutId(), null);
             frameLayout.addView(contentView);
@@ -85,8 +85,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        AppManager.instance.removeActivity(this);
-
+//        AppManager.instance.removeActivity(this);
+        mContext = null;
+        mApplicationContext = null;
     }
 
     public void startActivity(Class<?> cls) {

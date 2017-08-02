@@ -49,7 +49,7 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
         mPresenter = new MainPresenter(this) ;
 
         mMainRecycle.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mMainRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+//        mMainRecycle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
 //        mMainRecycle.setArrowImageView(R.drawable.icon_refresh);
         mMainRecycle.setLoadingListener(this);
 
@@ -105,12 +105,12 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
     @Override
     public void showLoading() {
-        startProgressDialog();
+//        startProgressDialog();
     }
 
     @Override
     public void stopLoading() {
-        stopProgressDialog();
+//        stopProgressDialog();
     }
 
     @Override
@@ -157,14 +157,13 @@ public class MainFragment extends BaseFragment implements MainContract.View, XRe
 
     @Override
     public void onLoadMore() {
-//        mPresenter.loadData(LikeAgent.getInstance().getUid());
-        if (getActivity() == null) return;
-
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mMainRecycle.loadMoreComplete();
-            }
-        });
+        mPresenter.loadData(LikeAgent.getInstance().getUid());
+//        if (getActivity() == null) return;
+//        getActivity().runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                mMainRecycle.loadMoreComplete();
+//            }
+//        });
     }
 }

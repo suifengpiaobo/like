@@ -30,6 +30,7 @@ import com.aladdin.like.utils.FileUtils;
 import com.aladdin.like.utils.ImageTools;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.utils.DensityUtils;
+import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.SharedPreferencesUtil;
 import com.aladdin.utils.ToastUtil;
 import com.bumptech.glide.Glide;
@@ -104,6 +105,7 @@ public class DiaryDetailsActivity extends BaseActivity {
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationIcon(R.drawable.back_selector);
 
+        LogUtil.i("---avatar"+mDiary.avatar);
         if (!TextUtils.isEmpty(mDiary.avatar)){
             mUserAvatar.setImageURI(mDiary.avatar);
         }else{
@@ -271,4 +273,9 @@ public class DiaryDetailsActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPhotoViewAttacher.cleanup();
+    }
 }

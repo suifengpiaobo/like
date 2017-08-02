@@ -143,15 +143,14 @@ public class MineAtlasFragment extends BaseFragment implements MineThemeContract
                             mNotFollowThemes.add(themes);
                         }
                     }
-                    LogUtil.i("---mFollowThemes--->>>"+mFollowThemes+"   ---mNotFollowThemes--->>>"+mNotFollowThemes);
                     if (mFollowThemes != null && mFollowThemes.size()>0){
                         mAtlasAdapter.addAll(mFollowThemes);
-                        mAtlasAdapter.notifyDataSetChanged();
                     }
+                    mAtlasAdapter.notifyDataSetChanged();
                     if (mNotFollowThemes != null && mNotFollowThemes.size()>0){
                         mNotChooseAdapter.addAll(mNotFollowThemes);
-                        mNotChooseAdapter.notifyDataSetChanged();
                     }
+                    mNotChooseAdapter.notifyDataSetChanged();
                 }
             }
         });

@@ -11,8 +11,8 @@ android {
         applicationId "com.aladdin.like"
         minSdkVersion 18
         targetSdkVersion 22
-        versionCode 3
-        versionName "1.2"
+        versionCode 4
+        versionName "1.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -111,11 +111,9 @@ dependencies {
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile 'com.tencent.xinge:xinge:3.1.1-alpha'
     compile 'com.tencent.mid:mid:3.721-alpha'
-    //    compile 'com.squareup.picasso:picasso:2.5.2'
-    //    compile project(':GlideImageView')
-    //    compile project(':takephoto_library')
     compile project(':ucrop')
-//    compile project(':refresh-layout')
-//    compile 'com.github.todou:appbarspring:1.0.3'
-//    compile 'com.github.liuguangqiang.swipeback:library:1.0.2@aar'
+
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 }

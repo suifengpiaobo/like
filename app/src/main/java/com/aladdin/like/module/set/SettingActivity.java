@@ -32,7 +32,7 @@ public class SettingActivity extends BaseActivity {
     @BindView(R.id.mine_message)
     RelativeLayout mMineMessage;
     @BindView(R.id.mine_picture)
-    LinearLayout mMinePicture;
+    RelativeLayout mMinePicture;
     @BindView(R.id.mine_about)
     LinearLayout mMineAbout;
     @BindView(R.id.new_message)

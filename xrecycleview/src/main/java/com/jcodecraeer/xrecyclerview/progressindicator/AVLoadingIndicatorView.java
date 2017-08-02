@@ -159,19 +159,31 @@ public class AVLoadingIndicatorView extends View{
 
     private boolean mHasAnimation;
 
+    private Context mContext;
+
+    public void destory(){
+        mHasAnimation = true;
+        if (mIndicatorController != null){
+            mIndicatorController = null;
+        }
+        mPaint = null;
+    }
 
     public AVLoadingIndicatorView(Context context) {
         super(context);
+        this.mContext = context;
         init(null, 0);
     }
 
     public AVLoadingIndicatorView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.mContext = context;
         init(attrs, 0);
     }
 
     public AVLoadingIndicatorView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.mContext = context;
         init(attrs, defStyleAttr);
     }
 
@@ -179,6 +191,7 @@ public class AVLoadingIndicatorView extends View{
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public AVLoadingIndicatorView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        this.mContext = context;
         init(attrs, defStyleAttr);
     }
 

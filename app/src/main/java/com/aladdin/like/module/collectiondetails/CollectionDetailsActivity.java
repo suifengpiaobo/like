@@ -273,4 +273,9 @@ public class CollectionDetailsActivity extends BaseActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPhotoViewAttacher.cleanup();
+    }
 }

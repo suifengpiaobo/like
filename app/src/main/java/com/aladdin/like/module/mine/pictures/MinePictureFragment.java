@@ -52,7 +52,7 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
         mPresenter.getPicture(LikeAgent.getInstance().getOpenid(),page,page_num,1);
 
         mPicture.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mPicture.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+//        mPicture.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mPicture.setLoadingListener(this);
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);

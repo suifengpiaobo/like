@@ -61,11 +61,6 @@ public class AlbymDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
             params.width = (int) (item.width * Float.valueOf(scale));
             viewHolder.mMainImg.setLayoutParams(params);
 
-//            RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) viewHolder.mMainImg.getLayoutParams();
-//            params.height = (int) (item.height+DensityUtils.dip2px(100) * Float.valueOf(scale));
-//            params.width = (int) (item.width * Float.valueOf(scale));
-//            viewHolder.mLayer.setLayoutParams(params1);
-
             viewHolder.mMainImg.loadImage(item.imageUrl,R.color.placeholder_color);
             viewHolder.mMainTypeName.setText(item.imageName);
             viewHolder.mMainTime.setText(item.createTimeStr);

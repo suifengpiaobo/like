@@ -1,7 +1,9 @@
 package com.aladdin.like.module.circle;
 
 
+import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,6 +36,7 @@ import com.aladdin.like.utils.FileUtils;
 import com.aladdin.like.utils.ImageTools;
 import com.aladdin.like.widget.ShareDialog;
 import com.aladdin.like.widget.SpacesItemDecoration;
+import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.SharedPreferencesUtil;
 import com.aladdin.utils.ToastUtil;
@@ -84,6 +87,8 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
 
     String fileName;
 
+    private Context mContext;
+
     private static final int[] ITEM_DRAWABLES = {R.drawable.compress_share, R.drawable.compress_collection, R.drawable.compress_download};
 
     @Override
@@ -94,17 +99,15 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
     @Override
     protected void initView() {
         mPresenter = new Circlrprestener(this);
-
+        mContext = getActivity() != null ? getActivity() : ContextUtils.getInstance().getContext();
         mCircle.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mCircle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
-//        mCircle.setArrowImageView(R.drawable.icon_refresh);
+//        mCircle.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mCircle.setLoadingListener(this);
-        mCircle.setRefreshing(true);
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mCircle.setLayoutManager(staggered);
         mCircle.addItemDecoration(new SpacesItemDecoration(DensityUtils.dip2px(7.5f), DensityUtils.dip2px(7.5f)));
-        mAdapter = new CircleAdapter(getActivity());
+        mAdapter = new CircleAdapter(mContext);
         mCircle.setAdapter(mAdapter);
 
         mAdapter.setItemClickListener(new CircleAdapter.onItemClickListener() {
@@ -121,7 +124,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
                 int y = location[1];
                 mAdapter.setPressedPosition(position);
 
-                ArcMenu mArcMenu = new ArcMenu(getActivity());
+                ArcMenu mArcMenu = new ArcMenu(mContext);
 
                 mArcMenu.setChildSize(DensityUtils.dip2px(getActivity(), 30));
                 FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -144,7 +147,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
     private void initArcMenu(ArcMenu menu, int[] itemDrawables, DiaryDetail.Diary diary) {
         final int itemCount = itemDrawables.length;
         for (int i = 0; i < itemCount; i++) {
-            ImageView item = new ImageView(getActivity());
+            ImageView item = new ImageView(mContext);
             item.setImageResource(itemDrawables[i]);
 
             final int position = i;
@@ -176,7 +179,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
                     @Override
                     public void run() {
                         ToastUtil.showToast("收藏成功");
-                        MobclickAgent.onEvent(getActivity(),"Collection");
+                        MobclickAgent.onEvent(mContext,"Collection");
                     }
                 });
             }
@@ -250,7 +253,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
+                mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(f.getAbsoluteFile())));
                 ToastUtil.showToast("下载成功");
             }
         });
@@ -258,12 +261,12 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
 
     //新添加
     public void startDiaryDetailsActivity(GlideImageView mPrefectureBg, DiaryDetail.Diary item) {
-        Intent intent = new Intent(getActivity(), DiaryDetailsActivity.class);
+        Intent intent = new Intent(mContext, DiaryDetailsActivity.class);
         intent.putExtra("DIARY", item);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(
-                    getActivity(),
+                    (Activity) mContext,
                     mPrefectureBg,
                     Constant.TRANSITION_ANIMATION_CIRCLE_PHOTOS);
             startActivity(intent, options.toBundle());
@@ -274,43 +277,29 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
                     mPrefectureBg.getHeight() / 2,
                     0,
                     0);
-            ActivityCompat.startActivity(getActivity(), intent, optionsCompat.toBundle());
+            ActivityCompat.startActivity(mContext, intent, optionsCompat.toBundle());
         }
     }
 
     @Override
     protected void lazyFetchData() {
+        mCircle.setRefreshing(true);
     }
 
     @Override
     protected void onvisible() {
-        mAdapter.setPressedPosition(0);
-        mAdapter.notifyDataSetChanged();
-        page = 1;
-        if (mAdapter != null && mAdapter.getCommonItemCount() > 0) {
-            mAdapter.clear();
-        }
-        mPresenter.getData(LikeAgent.getInstance().getOpenid(), 1, page, page_num);
+        mCircle.setRefreshing(true);
     }
 
     @Override
     public void onRefresh() {
-        if (mAdapter != null) {
-            mAdapter.setPressedPosition(0);
-            mAdapter.notifyDataSetChanged();
-        }
         page = 1;
         mPresenter.getData(LikeAgent.getInstance().getOpenid(), 1, page, page_num);
     }
 
     @Override
     public void onLoadMore() {
-        if (page < total) {
-            mPresenter.getData(LikeAgent.getInstance().getOpenid(), 1, page, page_num);
-        } else {
-            mCircle.loadMoreComplete();
-        }
-
+        mPresenter.getData(LikeAgent.getInstance().getOpenid(), 1, page, page_num);
     }
 
     @OnClick(R.id.publish)
@@ -351,6 +340,11 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
                     if (mAdapter != null && mAdapter.getItemCount() > 0) {
                         mAdapter.clear();
                     }
+                }
+
+                if (mAdapter != null) {
+                    mAdapter.setPressedPosition(0);
+//                    mAdapter.notifyDataSetChanged();
                 }
                 mCircle.refreshComplete();
                 mCircle.loadMoreComplete();

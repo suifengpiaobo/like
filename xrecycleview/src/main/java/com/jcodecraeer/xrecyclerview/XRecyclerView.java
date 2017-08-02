@@ -101,6 +101,7 @@ public class XRecyclerView extends RecyclerView {
         isLoadingData = false;
         if (mFootView instanceof LoadingMoreFooter) {
             ((LoadingMoreFooter) mFootView).setState(LoadingMoreFooter.STATE_COMPLETE);
+//            ((LoadingMoreFooter) mFootView).destory();
         } else {
             mFootView.setVisibility(View.GONE);
         }

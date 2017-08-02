@@ -49,11 +49,11 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-//import com.scwang.smartrefresh.layout.util.DensityUtil;
 import com.tencent.mm.opensdk.modelmsg.SendMessageToWX;
 import com.yalantis.ucrop.UCrop;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.UUID;
 
@@ -63,6 +63,8 @@ import top.zibin.luban.Luban;
 import top.zibin.luban.OnCompressListener;
 
 import static android.R.attr.width;
+
+//import com.scwang.smartrefresh.layout.util.DensityUtil;
 
 /**
  * Description 发布日记页面
@@ -337,7 +339,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
             File sdRoot;
             if (isHasSDCard) {
                 // SD卡根目录
-                sdRoot = new File(FileUtils.getImageRootPath());
+                sdRoot = new File(FileUtils.getPhotoDirectory());
                 file = new File(sdRoot, UUID.randomUUID().toString().substring(0, 16) + ".jpeg");
                 mPath = file.getAbsolutePath();
                 fos = new FileOutputStream(file);
@@ -366,7 +368,6 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
         view.destroyDrawingCache();
 
-//        if (LikeAgent.getInstance().getOpenid())
         Luban.get(this).load(file).putGear(Luban.THIRD_GEAR).setCompressListener(new OnCompressListener() {
             @Override
             public void onStart() {
@@ -375,6 +376,12 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
             @Override
             public void onSuccess(File file) {
+                try {
+                    MediaStore.Images.Media.insertImage(getContentResolver(),
+                            file.getAbsolutePath(), file.getName(), null);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 //插入相册
                 sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file.getAbsoluteFile())));
                 mPresenter.publishPic(LikeAgent.getInstance().getOpenid(), file.getAbsolutePath(), mContent.getText().toString(), mDescription.getText().toString());

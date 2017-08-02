@@ -10,7 +10,9 @@ import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Message;
+import android.os.StrictMode;
 
 import com.aladdin.like.receiver.NotificationService;
 import com.aladdin.like.utils.FontsOverrideUtil;
@@ -18,6 +20,8 @@ import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 import com.tencent.android.tpush.XGCustomPushNotificationBuilder;
 import com.tencent.android.tpush.XGIOperateCallback;
 import com.tencent.android.tpush.XGPushManager;
@@ -26,29 +30,34 @@ import com.umeng.analytics.MobclickAgent;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.GINGERBREAD;
+
 /**
  * Description
  * Created by zxl on 2017/4/28 下午5:16.
  * Email:444288256@qq.com
  */
 public class LikeApplication extends Application {
-    public static LikeApplication instance;
+//    public static LikeApplication instance;
     private boolean isFirst = false;
-    private static Context mAppContext;
+//    private static Context mAppContext;
     private Message m;
     public static String APP_PATH;
     // 应用SD卡扩展路径
     public final static String APP_EXT_PATH = Environment
             .getExternalStorageDirectory().getAbsolutePath() + "/Like/";
+
+    private RefWatcher mRefWatcher;
     @Override
     public void onCreate() {
         super.onCreate();
-        mAppContext = this.getApplicationContext();
+        ContextUtils.getInstance().setContext(this.getApplicationContext()); // Must!! First call this method.
+        DensityUtils.setAppContext(this);
         APP_PATH = this.getFilesDir().getAbsolutePath() + "/";
 //        initImageLoader(getApplicationContext());
         if (!isFirst){
             isFirst = true;
-            instance = this;
             initConfig();
 
             //友盟统计
@@ -56,6 +65,17 @@ public class LikeApplication extends Application {
             MobclickAgent.startWithConfigure(umAnalyticsConfig);
             MobclickAgent.setCatchUncaughtExceptions(false);
             MobclickAgent.setDebugMode(false);
+        }
+        enabledStrictMode();
+        mRefWatcher = LeakCanary.install(this);
+    }
+    private void enabledStrictMode() {
+        if (SDK_INT >= GINGERBREAD) {
+            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder() //
+                    .detectAll() //
+                    .penaltyLog() //
+                    .penaltyDeath() //
+                    .build());
         }
     }
 
@@ -73,15 +93,18 @@ public class LikeApplication extends Application {
 //    }
 
     public void initConfig() {
-        //替换字体
-        FontsOverrideUtil.init(mAppContext);
-        //初始化消息数据库
-        NotificationService.getInstance(getApplicationContext());
-        //消息推送
-        initPushMessage();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                //替换字体
+                FontsOverrideUtil.init(getApplicationContext());
+                //初始化消息数据库
+                NotificationService.getInstance(getApplicationContext());
+                //消息推送
+                initPushMessage();
+            }
+        });
 
-        ContextUtils.getInstance().setContext(this.getApplicationContext()); // Must!! First call this method.
-        DensityUtils.setAppContext(this);
         Fresco.initialize(this);
 
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
@@ -117,7 +140,7 @@ public class LikeApplication extends Application {
 
             @Override
             public void onActivityDestroyed(Activity activity) {
-
+//                ContextUtils.getInstance().onDestroyContext();
             }
         });
 
@@ -177,11 +200,6 @@ public class LikeApplication extends Application {
 //         XGPushManager.setPushNotificationBuilder(this, build_id, build);
     }
 
-
-    public static LikeApplication getInstance(){
-        return instance;
-    }
-
     public static String getChannel() {
         String CHANNELID = "000000";
         try {
@@ -200,7 +218,7 @@ public class LikeApplication extends Application {
 
     @Override
     public void onLowMemory() {
-        android.os.Process.killProcess(android.os.Process.myPid());
+//        android.os.Process.killProcess(android.os.Process.myPid());
         super.onLowMemory();
     }
 

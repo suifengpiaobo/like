@@ -19,11 +19,29 @@ public class LoadingMoreFooter extends LinearLayout {
     public final static int STATE_LOADING = 0;
     public final static int STATE_COMPLETE = 1;
     public final static int STATE_NOMORE = 2;
+    public Context mContext;
 //    private TextView mText;
     private ImageView mImageView;
+    private AVLoadingIndicatorView loadingIndicator;
+    private AVLoadingIndicatorView backloadingIndicator;
+
+    public void destory(){
+        progressCon = null;
+        if (loadingIndicator != null){
+            loadingIndicator.destory();
+            loadingIndicator = null;
+        }
+
+        if (backloadingIndicator != null){
+            backloadingIndicator.destory();
+            backloadingIndicator= null;
+        }
+        mContext = null;
+    }
 
     public LoadingMoreFooter(Context context) {
         super(context);
+        this.mContext = context;
         initView();
     }
 
@@ -33,6 +51,7 @@ public class LoadingMoreFooter extends LinearLayout {
      */
     public LoadingMoreFooter(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.mContext = context;
         initView();
     }
 
@@ -46,15 +65,15 @@ public class LoadingMoreFooter extends LinearLayout {
 //        setPadding(0, dip10, 0, dip10);
         setLayoutParams(new RecyclerView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        progressCon = new SimpleViewSwitcher(getContext());
+        progressCon = new SimpleViewSwitcher(mContext);
         progressCon.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        AVLoadingIndicatorView progressView = new AVLoadingIndicatorView(this.getContext());
+        loadingIndicator = new AVLoadingIndicatorView(mContext);
 //        progressView.setIndicatorColor(0xff4A4A4A);
-        progressView.setIndicatorColor(0xFF0000);
-        progressView.setIndicatorId(ProgressStyle.BallSpinFadeLoader);
-        progressCon.setView(progressView);
+        loadingIndicator.setIndicatorColor(0xFF0000);
+        loadingIndicator.setIndicatorId(ProgressStyle.BallSpinFadeLoader);
+        progressCon.setView(loadingIndicator);
         addView(progressCon);
 
 //        mText = new TextView(getContext());
@@ -70,13 +89,13 @@ public class LoadingMoreFooter extends LinearLayout {
 
     public void setProgressStyle(int style) {
         if (style == ProgressStyle.SysProgress) {
-            progressCon.setView(new ProgressBar(getContext(), null, android.R.attr.progressBarStyle));
+            progressCon.setView(new ProgressBar(mContext, null, android.R.attr.progressBarStyle));
         } else {
-            AVLoadingIndicatorView progressView = new AVLoadingIndicatorView(this.getContext());
+            backloadingIndicator= new AVLoadingIndicatorView(mContext);
 //            progressView.setIndicatorColor(0xff4A4A4A);
-            progressView.setIndicatorColor(0xFF0000);
-            progressView.setIndicatorId(style);
-            progressCon.setView(progressView);
+            backloadingIndicator.setIndicatorColor(0xFF0000);
+            backloadingIndicator.setIndicatorId(style);
+            progressCon.setView(backloadingIndicator);
         }
     }
 
@@ -106,4 +125,5 @@ public class LoadingMoreFooter extends LinearLayout {
                 break;
         }
     }
+
 }

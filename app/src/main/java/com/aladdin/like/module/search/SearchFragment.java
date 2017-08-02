@@ -32,7 +32,6 @@ import com.aladdin.like.module.search.contract.SearchContract;
 import com.aladdin.like.module.search.prestener.SearchPrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.LogUtil;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.sunfusheng.glideimageview.GlideImageView;
@@ -66,6 +65,8 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
     int page = 1;
     int page_num = 10;
 
+    boolean isClick = true;
+
     private TextView.OnEditorActionListener onEditorActionListener = new TextView.OnEditorActionListener() {
 
         @Override
@@ -77,14 +78,13 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
                     inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(), 0);
                 }
 
-                mAlbymRecyclerview.setVisibility(View.GONE);
-                mSearchResult.setVisibility(View.VISIBLE);
                 mSearchTip.setText("搜索结果");
                 if (mAlbymAdapter!= null && mAlbymAdapter.getCommonItemCount() > 0){
                     mAlbymAdapter.clear();
                     mAlbymAdapter.notifyDataSetChanged();
                 }
-
+                mAlbymRecyclerview.setVisibility(View.GONE);
+                mSearchResult.setVisibility(View.VISIBLE);
                 if (mSearch.getText().toString().length() > 0) {
                     mPresenter.searchData(LikeAgent.getInstance().getOpenid(), mSearch.getText().toString());
                 }
@@ -105,7 +105,7 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         mPresenter.loadData(LikeAgent.getInstance().getOpenid());
 
         mSearchResult.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mSearchResult.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+//        mSearchResult.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mSearchResult.setArrowImageView(R.drawable.icon_refresh);
         mSearchResult.setLoadingListener(this);
         mSearchResult.setPullRefreshEnabled(false);
@@ -129,10 +129,6 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         mResultAdapter.setItemClickListener(new SearchResultAdapter.onItemClickListener() {
             @Override
             public void onItemClick(GlideImageView imageView, ThemeModes.Theme item) {
-//                Intent intent = new Intent(getActivity(),AlbymActivity.class);
-//                intent.putExtra("THEME",item);
-//                startActivity(intent);
-                LogUtil.i("--onItemClick-->>" + item);
                 startCorrelationActivity(imageView, item);
             }
         });
@@ -153,15 +149,15 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         mHorizontalAdapter.setItemClickListener(new HorizontalAdapter.onItemClickListener() {
             @Override
             public void onItemClick(ThemeModes.Theme item) {
-                mSearchResult.setVisibility(View.GONE);
-                mAlbymRecyclerview.setVisibility(View.VISIBLE);
-                page = 1;
-                if (mAlbymAdapter!= null && mAlbymAdapter.getCommonItemCount() > 0){
-                    mAlbymAdapter.clear();
-                    mAlbymAdapter.notifyDataSetChanged();
+                if (isClick){
+                    mSearchResult.setVisibility(View.GONE);
+                    mAlbymRecyclerview.setVisibility(View.VISIBLE);
+                    page = 1;
+
+                    mPresenter.getAlbym(LikeAgent.getInstance().getOpenid(),item.themeId,1,page_num);
+                    mSearchTip.setText(item.themeName);
+                    isClick = false;
                 }
-                mPresenter.getAlbym(LikeAgent.getInstance().getOpenid(),item.themeId,1,page_num);
-                mSearchTip.setText(item.themeName);
             }
         });
 
@@ -245,8 +241,8 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
                 }
                 if (data != null && data.themeList.size()>0){
                     mHorizontalAdapter.addAll(data.themeList);
-                    mHorizontalAdapter.notifyDataSetChanged();
                 }
+                mHorizontalAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -256,14 +252,16 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mResultAdapter != null && mResultAdapter.getCommonItemCount() > 0) {
-                    mResultAdapter.clear();
+                if (page==1){
+                    if (mResultAdapter != null && mResultAdapter.getCommonItemCount() > 0) {
+                        mResultAdapter.clear();
+                    }
                 }
 
                 if (data!=null && data.themeList.size()>0){
                     mResultAdapter.addAll(data.themeList);
-                    mResultAdapter.notifyDataSetChanged();
                 }
+                mResultAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -273,12 +271,18 @@ public class SearchFragment extends BaseFragment implements SearchContract.View,
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (albymData != null && albymData.albymList.size()>0){
-                    mAlbymAdapter.addAll(albymData.albymList);
-                    mAlbymAdapter.notifyDataSetChanged();
+                if (page == 1){
+                    if (mAlbymAdapter!= null && mAlbymAdapter.getCommonItemCount() > 0){
+                        mAlbymAdapter.clear();
+                    }
                 }
 
+                if (albymData != null && albymData.albymList.size()>0){
+                    mAlbymAdapter.addAll(albymData.albymList);
+                }
+                mAlbymAdapter.notifyDataSetChanged();
                 page = albymData.next_page;
+                isClick = true;
             }
         });
     }
