@@ -49,11 +49,12 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
     @Override
     protected void initView() {
         mPresenter = new PicturePrestener(this);
-        mPresenter.getPicture(LikeAgent.getInstance().getOpenid(),page,page_num,1);
+//        mPresenter.getPicture(LikeAgent.getInstance().getOpenid(),page,page_num,1);
 
         mPicture.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
 //        mPicture.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mPicture.setLoadingListener(this);
+        mPicture.setRefreshing(true);
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mPictureAdapter = new PictureAdapter(getActivity());
@@ -92,9 +93,6 @@ public class MinePictureFragment extends BaseFragment implements PictureContract
 
     @Override
     protected void onvisible() {
-        if (mPictureAdapter != null && mPictureAdapter.getCommonItemCount()>0){
-            mPictureAdapter.clear();
-        }
         page = 1;
         mPresenter.getPicture(LikeAgent.getInstance().getOpenid(),page,page_num,1);
     }

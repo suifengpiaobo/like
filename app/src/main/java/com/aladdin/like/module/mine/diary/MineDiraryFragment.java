@@ -19,7 +19,6 @@ import com.aladdin.like.module.mine.diary.contract.DiaryContract;
 import com.aladdin.like.module.mine.diary.prestener.DiaryPrestener;
 import com.aladdin.like.widget.SpacesItemDecoration;
 import com.aladdin.utils.DensityUtils;
-import com.aladdin.utils.LogUtil;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import com.sunfusheng.glideimageview.GlideImageView;
@@ -48,10 +47,11 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
     @Override
     protected void initView() {
         mPresenter = new DiaryPrestener(this);
-        mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
+//        mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
         mMineDiary.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
 //        mMineDiary.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
         mMineDiary.setLoadingListener(this);
+        mMineDiary.setRefreshing(true);
 
         StaggeredGridLayoutManager staggered = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         mDiaryAdapter = new MineDiaryAdapter(getActivity());
@@ -95,9 +95,6 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
 
     @Override
     protected void onvisible() {
-        if (mDiaryAdapter != null && mDiaryAdapter.getCommonItemCount()>0){
-            mDiaryAdapter.clear();
-        }
         page = 1;
         mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
     }
@@ -146,15 +143,12 @@ public class MineDiraryFragment extends BaseFragment implements DiaryContract.Vi
 
     @Override
     public void onRefresh() {
-        LogUtil.i("---onRefresh--->>>");
         page = 1;
         mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
     }
 
     @Override
     public void onLoadMore() {
-        LogUtil.i("---onLoadMore--->>>");
-        LogUtil.i("count--->>"+mDiaryAdapter.getCommonItemCount());
         mPresenter.getUserDiary(LikeAgent.getInstance().getOpenid(),page,page_num);
     }
 }

@@ -75,11 +75,14 @@ public class CircleAdapter extends BaseAdapter<DiaryDetail.Diary> {
                 if (pressedPosition >=0){
                     if (pressedPosition!=position){
                         viewHolder.mMainImgLayer.setVisibility(View.VISIBLE);
+                        viewHolder.mMainImg.setEnabled(false);
                     }else{
                         viewHolder.mMainImgLayer.setVisibility(View.GONE);
+                        viewHolder.mMainImg.setEnabled(true);
                     }
                 }else{
                     viewHolder.mMainImgLayer.setVisibility(View.GONE);
+                    viewHolder.mMainImg.setEnabled(true);
                 }
                 viewHolder.mMainImg.setOnClickListener(new View.OnClickListener() {
                     @Override

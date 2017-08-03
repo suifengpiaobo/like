@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.os.StrictMode;
 
 import com.aladdin.like.receiver.NotificationService;
 import com.aladdin.like.utils.FontsOverrideUtil;
@@ -20,8 +19,6 @@ import com.aladdin.utils.ContextUtils;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.LogUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 import com.tencent.android.tpush.XGCustomPushNotificationBuilder;
 import com.tencent.android.tpush.XGIOperateCallback;
 import com.tencent.android.tpush.XGPushManager;
@@ -29,9 +26,6 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.math.BigInteger;
 import java.security.SecureRandom;
-
-import static android.os.Build.VERSION.SDK_INT;
-import static android.os.Build.VERSION_CODES.GINGERBREAD;
 
 /**
  * Description
@@ -48,7 +42,7 @@ public class LikeApplication extends Application {
     public final static String APP_EXT_PATH = Environment
             .getExternalStorageDirectory().getAbsolutePath() + "/Like/";
 
-    private RefWatcher mRefWatcher;
+//    private RefWatcher mRefWatcher;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -66,18 +60,18 @@ public class LikeApplication extends Application {
             MobclickAgent.setCatchUncaughtExceptions(false);
             MobclickAgent.setDebugMode(false);
         }
-        enabledStrictMode();
-        mRefWatcher = LeakCanary.install(this);
+//        enabledStrictMode();
+//        mRefWatcher = LeakCanary.install(this);
     }
-    private void enabledStrictMode() {
-        if (SDK_INT >= GINGERBREAD) {
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder() //
-                    .detectAll() //
-                    .penaltyLog() //
-                    .penaltyDeath() //
-                    .build());
-        }
-    }
+//    private void enabledStrictMode() {
+//        if (SDK_INT >= GINGERBREAD) {
+//            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder() //
+//                    .detectAll() //
+//                    .penaltyLog() //
+//                    .penaltyDeath() //
+//                    .build());
+//        }
+//    }
 
 //    public void initImageLoader(Context context){
 //        ImageLoaderConfiguration.Builder config = new ImageLoaderConfiguration.Builder(context);

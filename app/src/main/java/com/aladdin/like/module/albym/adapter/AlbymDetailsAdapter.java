@@ -68,21 +68,15 @@ public class AlbymDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
             if (pressedPosition >= 0) {
                 if (pressedPosition != position) {
                     viewHolder.mLayer.setVisibility(View.VISIBLE);
+                    viewHolder.mMainImg.setEnabled(false);
                 } else {
                     viewHolder.mLayer.setVisibility(View.GONE);
+                    viewHolder.mMainImg.setEnabled(true);
                 }
             } else {
                 viewHolder.mLayer.setVisibility(View.GONE);
+                viewHolder.mMainImg.setEnabled(true);
             }
-
-            viewHolder.mMainImg.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mItemClickListener != null){
-                        mItemClickListener.onItemClick(v, viewHolder.mMainImg,item);
-                    }
-                }
-            });
 
             viewHolder.mMainImg.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -91,6 +85,15 @@ public class AlbymDetailsAdapter extends BaseAdapter<ThemeDetail.Theme> {
                         mItemClickListener.onLongClickListener(v,position,item);
                     }
                     return false;
+                }
+            });
+
+            viewHolder.mMainImg.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mItemClickListener != null){
+                        mItemClickListener.onItemClick(v, viewHolder.mMainImg,item);
+                    }
                 }
             });
         }

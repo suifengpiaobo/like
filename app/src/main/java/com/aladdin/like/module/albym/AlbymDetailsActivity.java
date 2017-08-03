@@ -239,7 +239,6 @@ public class AlbymDetailsActivity extends BaseActivity implements AlbymDetailsCo
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
         }
 
-
         MobclickAgent.onEvent(AlbymDetailsActivity.this, "DownLoad");
         try {
             fOut.flush();

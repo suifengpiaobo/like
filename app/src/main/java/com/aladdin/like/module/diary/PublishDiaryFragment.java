@@ -36,7 +36,6 @@ import com.aladdin.like.widget.PublishDialog;
 import com.aladdin.utils.BitmapUtils;
 import com.aladdin.utils.DensityUtils;
 import com.aladdin.utils.ImageLoaderUtils;
-import com.aladdin.utils.LogUtil;
 import com.aladdin.utils.SharedPreferencesUtil;
 import com.aladdin.utils.ToastUtil;
 import com.facebook.common.executors.CallerThreadExecutor;
@@ -180,7 +179,6 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
                     params.width = (int) (width * scale);
                     mShoosePicture.setLayoutParams(params);
                     mShoosePicture.setImageURI(data.getStringExtra("url"));
-                    LogUtil.i("url--ABAB-->>>"+data.getStringExtra("url"));
 //                    ImageLoaderUtils.loadLocalsPic(PublishDiaryFragment.this,mShoosePicture,data.getStringExtra("url"));
                     break;
             }
@@ -340,7 +338,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
             if (isHasSDCard) {
                 // SD卡根目录
                 sdRoot = new File(FileUtils.getPhotoDirectory());
-                file = new File(sdRoot, UUID.randomUUID().toString().substring(0, 16) + ".jpeg");
+                file = new File(sdRoot, UUID.randomUUID().toString().substring(0, 8) + ".jpeg");
                 mPath = file.getAbsolutePath();
                 fos = new FileOutputStream(file);
             } else
@@ -371,9 +369,7 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
         Luban.get(this).load(file).putGear(Luban.THIRD_GEAR).setCompressListener(new OnCompressListener() {
             @Override
             public void onStart() {
-
             }
-
             @Override
             public void onSuccess(File file) {
                 try {
@@ -392,6 +388,8 @@ public class PublishDiaryFragment extends BaseActivity implements PublishContrac
 
             }
         }).launch();
+
+        cachebmp.recycle();
     }
 
     private Bitmap loadBitmapFromView(View v) {

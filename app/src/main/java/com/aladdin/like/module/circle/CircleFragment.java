@@ -233,7 +233,7 @@ public class CircleFragment extends BaseFragment implements CircleContract.View,
         }else{
             mBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
         }
-
+        mBitmap.recycle();
         MobclickAgent.onEvent(getActivity(),"Download");
 
         try {
